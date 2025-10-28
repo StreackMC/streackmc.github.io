@@ -16,7 +16,7 @@ description: "授权协议"
 ### 此约定保护的作品
 
 * 由我们持有著作权的文章、图片、视频、文档、网页设计、计算机程序源代码、用户创作内容等作品，并发布在我们的网站上或经由我们网站引用的。
-* 由他人持有著作权且未指定授权协议的、由我们持有合法使用权的文章、图片、视频、文档、网页设计、计算机程序源代码、用户创作内容等作品，并发布在我们的网站上或经由我们网站引用的。
+* 由他人持有著作权且未指定授权协议的及由我们持有合法使用权的文章、图片、视频、文档、网页设计、计算机程序源代码、用户创作内容等作品，并发布在我们的网站上或经由我们网站引用的。
 
 如作品中另有声明，则不适用本约定。
 
@@ -47,7 +47,7 @@ description: "授权协议"
 在适用法律允许的最大范围内，我们按“现状”提供作品，不作任何明示或默示担保。对因使用或无法使用作品导致的任何间接、附带、特殊或后果性损失，我们不承担责任。相关法律另有规定的除外。
 
 ### 此约定的终止
-当您触发下列任意一条时，本约定自动终止，您使用我们的作品之许可被自动撤回：
+当您触发下列任意一类条件时，本约定自动终止，您使用我们的作品之许可被自动撤回：
 
 * 违反本约定的行为
 
@@ -59,21 +59,24 @@ description: "授权协议"
 * 此约定仅以简体中文版本为准，其余任何对此约定的官方或非官方译本都不能作为解释本约定的依据。
 * 本约定受中华人民共和国（大陆）法律管辖。因本约定产生的争议，双方同意向我们住所地人民法院提起诉讼解决。
 
-# 附加声明
-本网站（指`kdxiaoyi.top`及全部下属域名、关联域名）使用了部分作品，对此表示鸣谢，并按授权协议特此说明。
+# SDK鸣谢
+本网站使用了部分作品，对此表示鸣谢，并按授权协议特此说明。
 
-- [MiSans授权声明](https://hyperos.mi.com/font/download)
+> **MiSans**
+> Beijing Xiaomi Mobile Software Co.,Ltd & Hanyi Fonts
+> ARR <https://hyperos.mi.com/font/download>
 
+> **Page-markdown-reRender**
+> kdxiaoyi
+> MIT <https://gitee.com/kdxiaoyi/Pages-md-reRender/>
 
-·Page-markdown-reRender
-pmd-reRender, kdxiaoyi.
-https://gitee.com/kdxiaoyi/Pages-md-reRender/
-Licensed as MIT
+> **PagesSober**
+> kdxiaoyi
+> MIT <https://github.com/kdxhub/PagesSober>
 
-·Sober
-sober, Apprat.
-https://github.com/apprat/sober
-Licensed as MIT
+> **Sober**
+> Apprat
+> MIT <https://github.com/apprat/sober>
 
 其余另有作品仅在部分页面中使用，在相应页面内声明而不在此处列出。
 
