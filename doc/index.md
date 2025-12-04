@@ -6,6 +6,8 @@ description: "致力于解决您所想知道的一切"
 
 ![栈流Streack的宣传图片，含有栈流Streack的基本信息](https://mc.kdxiaoyi.top/Streack/assets/img/referral_1.png "宣传图")
 
+> [!] 服务器目前处于**「低效能运营」**状态。[详情请查看此公告฿](/news/2025/1204)。
+
 > [i] 目前服务器仍在快速更迭中，下述文档更新不一定及时。[更新日志](./updata)
 
 ## QuickStart
