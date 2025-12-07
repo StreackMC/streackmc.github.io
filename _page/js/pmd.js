@@ -84,7 +84,7 @@ const conf = {
 <s-chip id="side_ship_3" onclick="openURL('/Streack/doc/news/',true)" style="width:49%;margin:1% 0 1% 0%;" clickable="true" class="sidebar_btn">
 <s-icon slot="start"><svg viewBox="0 -960 960 960"><path d="M160-120q-33 0-56.5-23.5T80-200v-640l67 67 66-67 67 67 67-67 66 67 67-67 67 67 66-67 67 67 67-67 66 67 67-67v640q0 33-23.5 56.5T800-120H160Zm0-80h280v-240H160v240Zm360 0h280v-80H520v80Zm0-160h280v-80H520v80ZM160-520h640v-120H160v120Z"></path></svg></s-icon>
 近期资讯</s-chip>
-<s-chip id="side_ship_6" onclick="openURL('/Streack/webtool/status',true)" clickable="true" class="sidebar_btn">
+<s-chip id="side_ship_6" onclick="openURL('/Streack/webtool/status_next',true)" clickable="true" class="sidebar_btn">
 <s-icon slot="start"><svg viewBox="0 -960 960 960"><path d="M200-160v-240h120v240H200Zm240 0v-440h120v440H440Zm240 0v-640h120v640H680Z"></path></svg></s-icon>
 服务器实时状态</s-chip>`,
       /*左侧边栏·第2格内容中没有按文档编写请启用此项*/

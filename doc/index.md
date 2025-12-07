@@ -22,7 +22,8 @@ description: "致力于解决您所想知道的一切"
 
 ## 在线工具
 
-* [服务器状态查询](/Streack/webtool/status)
+* [栈流Streack状态查询](/Streack/webtool/status_next)
+* [通用MC服务器状态查询](/Streack/webtool/status)
 * [UUID生成器（Beta）](/Streack/webtool/uuid)
 
 ## 近期活动一览
