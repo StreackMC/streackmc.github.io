@@ -5,7 +5,9 @@ description: "linkaccount"
 <small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><small><a href="/Streack/doc">←返回</a> |
  创建：2025-02-22 | 最后更新：2025-05-14</small><br>
 
-> [x] 以下内容现已过时，该系统在[25w19a](/Streack/doc/updata#25w19a)中被大幅修改。
+> [x] 以下内容现已过时：<br>
+> * 该系统在[S1P1/25w19a](/Streack/doc/updata/s1-je1_21_3/#25w19a)中被大幅修改；
+> * 这篇文章已有至少半年未更新了。
 
 ## 前言
 
