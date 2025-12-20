@@ -251,12 +251,16 @@ function updateInfo(elements, result) {
 (function updateMasterServer() {
   try {//TODO: 没有async/await
     pageElements.content.main.master_server.progress.style = ``;
+    if (!pageElements._.debug) {
+      throw new Error("当前功能未上线");
+    }
     updateInfo(pageElements.content.main.master_server, server.master_server.instance.getStatus());
   } catch (e) {
     pageElements.content.main.master_server.infoRoot.style = `display:none;`;
     pageElements.content.main.master_server.subtitle.style = `color:#FBC116;`;
     pageElements.content.main.master_server.subtitle.innerHTML = `✕ API故障`;
-    console.error("Caught Error while looking up #master_server:\n", e)
+    console.error("Caught Error while looking up #master_server:\n", e);
+    msg(`未能获取「主生存服」状态${e.message ? `：${e.message}` : `。`}`, "好", true);
   } finally {
     pageElements.content.main.master_server.progress.style = `display:none;`;
     pageElements.content.main.master_server.progress.style = `display:none;`;
