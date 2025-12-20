@@ -66,6 +66,7 @@ pageElements = {
   },
   switch_dialog: {//TODO：多线路切换
     root: document.getElementById("switch_dialog"),
+    master_server: document.getElementById("master_server-switcher"),
   },
   content: {
     root: document.getElementById("mainContent"),
@@ -107,16 +108,11 @@ pageElements = {
         progress: document.getElementById("master_server-progress"),
         subtitle: document.getElementById("master_server-subtitle"),
         infoRoot: document.getElementById("master_server-field"),
-        /*         widgetbox: {
-                  icon: document.getElementById("master_server-icon"),
-                  motd: document.getElementById("master_server-motd"),
-                }, */
         online: {
           track: document.getElementById("master_server-player-track"),
           tip: document.getElementById("master_server-player-tip"),
           listBtn: document.getElementById("master_server-player-list-btn"),
           list: document.getElementById("master_server-player-list"),
-          eula: document.getElementById("master_server-eula-tip"),
         },
       },
     },
@@ -219,7 +215,7 @@ pageElements.appbar.switchBtn.addEventListener("click", () => {
   pageElements._.closeAllTabs();
   pageElements.switch_dialog.root.showed = true;
 });
-server = {
+const server = {
   master_server: {
     address: [
       { name: "主线", address: "http://streack.kdxiaoyi.top:16258/api/placeholder" },
@@ -227,10 +223,47 @@ server = {
       { name: "备线2", address: "http://streackmc.kdxiaoyi.top:16258/api/placeholder" },
     ],
     nowLine: 0,
+    intervalID: -1,
+    instance: null,
   }
 };
+/* 主生存服 */
+server.master_server.instance = new StreackServer(server.master_server.address[0].address, pageElements._.debug);
+pageElements.switch_dialog.master_server.addEventListener("change", () => {
+  server.master_server.nowLine = pageElements.switch_dialog.master_server.value;
+  msg(`已切换至${server.master_server.address[server.master_server.nowLine].name}线路`, "好");
+  server.master_server.instance.setAddress(server.master_server.address[server.master_server.nowLine].address);
+});
 
-// 数据获取
+// 数据更新
+function updateInfo(elements, result) {
+  if (!result.online) {
+    elements.subtitle.style = `color:#E23B2E;`;
+    elements.subtitle.innerHTML = `✕ 服务器已下线`;
+    elements.infoRoot.style = `display:none;`;
+  } else {
+    elements.subtitle.style = `color:#30C496;`;
+    elements.subtitle.innerHTML = `✓ 可连接`;
+    elements.infoRoot.style = ``;
+  };
+}
+/* 主服务器 */
+(function updateMasterServer() {
+  try {//TODO: 没有async/await
+    pageElements.content.main.master_server.progress.style = ``;
+    updateInfo(pageElements.content.main.master_server, server.master_server.instance.getStatus());
+  } catch (e) {
+    pageElements.content.main.master_server.infoRoot.style = `display:none;`;
+    pageElements.content.main.master_server.subtitle.style = `color:#FBC116;`;
+    pageElements.content.main.master_server.subtitle.innerHTML = `✕ API故障`;
+    console.error("Caught Error while looking up #master_server:\n", e)
+  } finally {
+    pageElements.content.main.master_server.progress.style = `display:none;`;
+    pageElements.content.main.master_server.progress.style = `display:none;`;
+    server.master_server.intervalID = setTimeout(server.master_server.instance.cooldown, window.autoUpdatedInt + 1000);
+  }
+})();
+
 
 //remove no script tip
 pageElements.no_script.remove();

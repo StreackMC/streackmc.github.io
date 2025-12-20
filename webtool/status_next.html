@@ -158,7 +158,30 @@
     <s-dialog id="switch_dialog">
       <div slot="headline"> 切换线路 </div>
       <div slot="text">
-      </div>
+        <p>请选择目标线路，在下一次刷新时生效：</p>
+        <p>
+          <b>主生存服</b>
+          <s-segmented-button id="master_server-switcher" value="0">
+            <s-segmented-button-item value="0">
+              主线路
+            </s-segmented-button-item>
+            <s-segmented-button-item value="1">
+              备线1
+            </s-segmented-button-item>
+            <s-segmented-button-item value="2">
+              备线2
+            </s-segmented-button-item>
+          </s-segmented-button>
+        </p>
+        <style>
+          s-dialog#switch_dialog p s-segmented-button {
+            width: 100%;
+          }
+          s-dialog#switch_dialog p:not(:first-child) {
+            text-align: center;
+          }
+        </style>
+        </div>
       <s-button slot="action" type="text">确定</s-button>
     </s-dialog>
     </s-page>
