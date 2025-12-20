@@ -22,6 +22,22 @@ description: "见证每一次变化"
 
 ## S1P2「樱飘雪霁月」更新日志
 
+### 25w51a
+
+* 修复部分文本无法发送的问题
+* 新增控制台命令`/stops`
+  * 计划一个30s后、有全局提示的重启事件
+* 更新APIHolders至0.2.0
+  * 现在CORS策略为允许任意域进行查询了
+  * 新增其它功能，详见[StreackMC/APIHolders 更新日志฿](https://github.com/StreackMC/APIHolders/releases/v0.2.0)
+
+### 25w50a
+
+> [i] 由于此次更新需要重启服务器，而更新发布时服务器内已有玩家正在游玩，故实装时间可能延迟。
+
+* 下调「轻松模式」的最大精英怪等级为45级
+* 新增FileDeliverService
+
 ### 25w49a
 
 * 新增日志类功能「回放系统」
