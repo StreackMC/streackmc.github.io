@@ -1,6 +1,6 @@
 //def
 function/*修改过的func，找不到时返回空字符串*/ getQueryString(name) { let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); let r = window.location.search.substr(1).match(reg); if (r != null) { return unescape(r[2]); }; return ""; };
-String.prototype./*移除指定参数*/removeQuery = function(name) { if (name == undefined) {return this.replace(/[?&].*=[^&]*&?/g, "");} else {return this.replace(`/[?&]` + name + `=[^&]*&?/g`, "");}; };
+String.prototype./*移除指定参数*/removeQuery = function (name) { if (name == undefined) { return this.replace(/[?&].*=[^&]*&?/g, ""); } else { return this.replace(`/[?&]` + name + `=[^&]*&?/g`, ""); }; };
 function openURL(URI, IsInPresentWindow) {
   let linkEle = document.createElement("a");
   if (!!IsInPresentWindow) {
@@ -19,12 +19,12 @@ function msg(Message, ConfirmBtnText, isWarning, duration, onclick, align, icon)
     type: "basic",
     action: {},
   };
-  if (ConfirmBtnText) {infoJSON.action.text = ConfirmBtnText.toString();};
-  if (isWarning) {infoJSON.type = "error";};
-  if (duration) {infoJSON.duration = parseInt(duration.toString());};
-  if (onclick) {infoJSON.action.click = onclick;};
-  if (align) {infoJSON.align = ["auto", "top", "bottom"][ align.toString().match(/\d+/) % 3 ];};
-  if (icon) {infoJSON.icon = icon;};
+  if (ConfirmBtnText) { infoJSON.action.text = ConfirmBtnText.toString(); };
+  if (isWarning) { infoJSON.type = "error"; };
+  if (duration) { infoJSON.duration = parseInt(duration.toString()); };
+  if (onclick) { infoJSON.action.click = onclick; };
+  if (align) { infoJSON.align = ["auto", "top", "bottom"][align.toString().match(/\d+/) % 3]; };
+  if (icon) { infoJSON.icon = icon; };
   customElements.get("s-snackbar").builder(infoJSON);
   return infoJSON;
 };
@@ -45,13 +45,16 @@ function CopyText(text) {
     },
   );
 };
-/*引入pmd里的存储api*/const pmdStorage={Cookies:{set:function(e,t,o,n){const s=`${encodeURIComponent(e)}=${encodeURIComponent(t)}`;if(o){const e=new Date;e.setTime(e.getTime()+1e3*o),document.cookie=`${s}; expires=${e.toUTCString()}; path=${n}`}else document.cookie=`${s}; path=${n}`},get:function(e){const t=document.cookie.split("; ");for(const o of t){const[t,n]=o.split("=",2);if(decodeURIComponent(t)===e)return decodeURIComponent(n)}return null},remove:function(e){this.set(e,"",{expires:-1})},getAll:function(){const e=document.cookie.split("; "),t={};for(const o of e){const[e,n]=o.split("=",2);t[decodeURIComponent(e)]=decodeURIComponent(n)}return t},reset_dangerous:function(){const e=this.getAll();for(const t in e)this.remove(t)}},Local:{set:function(e,t){localStorage.setItem(e,JSON.stringify(t))},get:function(e){const t=localStorage.getItem(e);try{return JSON.parse(t)}catch(e){return t}},remove:function(e){localStorage.removeItem(e)},getAll:function(){const e={};for(let t=0;t<localStorage.length;t++){const o=localStorage.key(t);e[o]=this.get(o)}return e},reset_dangerous:function(){localStorage.clear()}},Session:{set:function(e,t){sessionStorage.setItem(e,JSON.stringify(t))},get:function(e){const t=sessionStorage.getItem(e);try{return JSON.parse(t)}catch(e){return t}},remove:function(e){sessionStorage.removeItem(e)},getAll:function(){const e={};for(let t=0;t<sessionStorage.length;t++){const o=sessionStorage.key(t);e[o]=this.get(o)}return e},reset_dangerous:function(){sessionStorage.clear()}}};
+/*引入pmd里的存储api*/const pmdStorage = { Cookies: { set: function (e, t, o, n) { const s = `${encodeURIComponent(e)}=${encodeURIComponent(t)}`; if (o) { const e = new Date; e.setTime(e.getTime() + 1e3 * o), document.cookie = `${s}; expires=${e.toUTCString()}; path=${n}` } else document.cookie = `${s}; path=${n}` }, get: function (e) { const t = document.cookie.split("; "); for (const o of t) { const [t, n] = o.split("=", 2); if (decodeURIComponent(t) === e) return decodeURIComponent(n) } return null }, remove: function (e) { this.set(e, "", { expires: -1 }) }, getAll: function () { const e = document.cookie.split("; "), t = {}; for (const o of e) { const [e, n] = o.split("=", 2); t[decodeURIComponent(e)] = decodeURIComponent(n) } return t }, reset_dangerous: function () { const e = this.getAll(); for (const t in e) this.remove(t) } }, Local: { set: function (e, t) { localStorage.setItem(e, JSON.stringify(t)) }, get: function (e) { const t = localStorage.getItem(e); try { return JSON.parse(t) } catch (e) { return t } }, remove: function (e) { localStorage.removeItem(e) }, getAll: function () { const e = {}; for (let t = 0; t < localStorage.length; t++) { const o = localStorage.key(t); e[o] = this.get(o) } return e }, reset_dangerous: function () { localStorage.clear() } }, Session: { set: function (e, t) { sessionStorage.setItem(e, JSON.stringify(t)) }, get: function (e) { const t = sessionStorage.getItem(e); try { return JSON.parse(t) } catch (e) { return t } }, remove: function (e) { sessionStorage.removeItem(e) }, getAll: function () { const e = {}; for (let t = 0; t < sessionStorage.length; t++) { const o = sessionStorage.key(t); e[o] = this.get(o) } return e }, reset_dangerous: function () { sessionStorage.clear() } } };
 pageElements = {
   _: {
-    closeAllTabs: function() {
-      document.querySelector('s-bottom-sheet').showed = false;
-      document.querySelector('s-dialog').showed = false;
+    closeAllTabs: function () {
+      try {
+        document.querySelector('s-bottom-sheet').showed = false;
+        document.querySelector('s-dialog').showed = false;
+      } catch (e) { }
     },
+    debug: false,
   },
   root: document.getElementById("pageRoot"),
   no_script: document.getElementById("no_script"),
@@ -60,6 +63,9 @@ pageElements = {
     menuBtn: document.getElementById("menuBtn"),
     title: document.getElementById("pageTitle"),
     switchBtn: document.getElementById("switchBtn"),
+  },
+  switch_dialog: {//TODO：多线路切换
+    root: document.getElementById("switch_dialog"),
   },
   content: {
     root: document.getElementById("mainContent"),
@@ -101,10 +107,10 @@ pageElements = {
         progress: document.getElementById("master_server-progress"),
         subtitle: document.getElementById("master_server-subtitle"),
         infoRoot: document.getElementById("master_server-field"),
-/*         widgetbox: {
-          icon: document.getElementById("master_server-icon"),
-          motd: document.getElementById("master_server-motd"),
-        }, */
+        /*         widgetbox: {
+                  icon: document.getElementById("master_server-icon"),
+                  motd: document.getElementById("master_server-motd"),
+                }, */
         online: {
           track: document.getElementById("master_server-player-track"),
           tip: document.getElementById("master_server-player-tip"),
@@ -115,6 +121,12 @@ pageElements = {
       },
     },
   },
+};
+if (!!getQueryString("debug")) {
+  pageElements._.debug = true;
+  msg("调试模式已启用", "好")
+  console.warn("Debug模式已启用");
+  console.log("pageElements:", pageElements);
 };
 
 //PMD框架相关处理
@@ -161,7 +173,7 @@ if (!!pmdStorage.Cookies.get("pmd-prefer_color_theme") && pmdStorage.Cookies.get
   };
 };
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-  if (pageElements.content.lsidebar.slot3.user_setting.color.root.value != "auto") {return;};
+  if (pageElements.content.lsidebar.slot3.user_setting.color.root.value != "auto") { return; };
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     ChangeColorTheme("dark");
   } else {
@@ -199,8 +211,26 @@ function RefreshCountup(countupY, countupM, countupD) {
   pageElements.content.lsidebar.slot4.time.innerHTML = `<center><small>本站已建立${countupD_}天${countupH}小时${countupM_}分钟${countupS}秒</small></center>`;
 };
 if (conf.info.time[0] && !conf.sidebar.replacement) {
-  pageElements.content.lsidebar.slot4._.timeCountInterval = setInterval(() => {RefreshCountup(conf.info.time[1],conf.info.time[2],conf.info.time[3])}, 1000);
-} else {pageElements.content.lsidebar.slot4.time.remove();};
+  pageElements.content.lsidebar.slot4._.timeCountInterval = setInterval(() => { RefreshCountup(conf.info.time[1], conf.info.time[2], conf.info.time[3]) }, 1000);
+} else { pageElements.content.lsidebar.slot4.time.remove(); };
+
+// 线路切换
+pageElements.appbar.switchBtn.addEventListener("click", () => {
+  pageElements._.closeAllTabs();
+  pageElements.switch_dialog.root.showed = true;
+});
+server = {
+  master_server: {
+    address: [
+      { name: "主线", address: "http://streack.kdxiaoyi.top:16258/api/placeholder" },
+      { name: "备线1", address: "http://streack.kdx233.eu.org:16258/api/placeholder" },
+      { name: "备线2", address: "http://streackmc.kdxiaoyi.top:16258/api/placeholder" },
+    ],
+    nowLine: 0,
+  }
+};
+
+// 数据获取
 
 //remove no script tip
 pageElements.no_script.remove();
