@@ -7,10 +7,10 @@ description: " "
 > [i] 关于现在正在进行的活动，请在[文档首页](../)查看。
 
 ## 历史活动列表
-* [「诡谲高塔：原初」冲塔迎取丰厚奖励](./event/20250531)
-* [「熵流巡礼」签到奖励再加码](./20250502)
-* [「雨纷纷」限时掉落物倍增](./20250402)
-* [「幻境此间」新春活动](./20250125)
+* [「诡谲高塔：原初」冲塔迎取丰厚奖励](./event/2025/0531)
+* [「熵流巡礼」签到奖励再加码](./2025/0502)
+* [「雨纷纷」限时掉落物倍增](./2025/0402)
+* [「幻境此间」新春活动](./2025/0125)
 
 <div id="mdRender_config" data-sideship-hide="4"></div>
 <script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script><script src="https://mc.kdxiaoyi.top/Streack/_page/js/pmd.js"></script><script src="https://rs.kdxiaoyi.top/res/scripts/js/pmd-reRender.min.js"></script>
