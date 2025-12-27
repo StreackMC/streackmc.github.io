@@ -8,7 +8,7 @@ description: "需要修改的Java版"
 ## 使用资源包
 
 > [x] 本段内容现已过时：<br>
-> * 我们在[S1P2/25w34a](/Streack/doc/updata/#25w34a)中实装了更好的方案
+> * 我们在[S1P2/25w34a](/Streack/doc/updata/s1p2#25w34a)中实装了更好的方案
 
 > [i] Forge/NeoForge需要安装[*Optfine*฿](https://optifine.net/downloads)，Fabric需要安装[*Cit Respawn*模组฿](https://modrinth.com/mod/cit-resewn)。
 
