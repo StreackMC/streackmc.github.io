@@ -101,20 +101,7 @@ pageElements = {
       root: document.getElementById("pContent"),
       notice: {
         root: document.getElementById("notice"),
-        time: document.getElementById("notice-time"),
-      },
-      master_server: {
-        root: document.getElementById("master_server"),
-        progress: document.getElementById("master_server-progress"),
-        subtitle: document.getElementById("master_server-subtitle"),
-        infoRoot: document.getElementById("master_server-field"),
-        online: {
-          track: document.getElementById("master_server-player-track"),
-          tip: document.getElementById("master_server-player-tip"),
-          listBtn: document.getElementById("master_server-player-list-btn"),
-          list: document.getElementById("master_server-player-list"),
-        },
-      },
+      }
     },
   },
 };
@@ -211,62 +198,108 @@ if (conf.info.time[0] && !conf.sidebar.replacement) {
 } else { pageElements.content.lsidebar.slot4.time.remove(); };
 
 // 线路切换
-pageElements.appbar.switchBtn.addEventListener("click", () => {
-  pageElements._.closeAllTabs();
-  pageElements.switch_dialog.root.showed = true;
-});
 const server = {
   master_server: {
     address: [
-      { name: "主线", address: "http://streack.kdxiaoyi.top:16258/api/placeholder" },
-      { name: "备线1", address: "http://streack.kdx233.eu.org:16258/api/placeholder" },
-      { name: "备线2", address: "http://streackmc.kdxiaoyi.top:16258/api/placeholder" },
+      { name: "主线", address: "http://streack.kdxiaoyi.top:16258/api/status" },
+      { name: "备线1", address: "http://streack.kdx233.eu.org:16258/api/status" },
+      { name: "备线2", address: "http://streackmc.kdxiaoyi.top:16258/api/status" },
     ],
     nowLine: 0,
     intervalID: -1,
-    instance: null,
+    fetching: false,
+    countdown: 0,
+    elements: {
+      root: document.getElementById("master_server"),
+      progress: document.getElementById("master_server-progress"),
+      statustitle: document.getElementById("master_server-subtitle1"),
+      countdowntitle: document.getElementById("master_server-subtitle2"),
+      infoRoot: document.getElementById("master_server-field"),
+      online: {
+        track: document.getElementById("master_server-player-track"),
+        tip: document.getElementById("master_server-player-tip"),
+        listBtn: document.getElementById("master_server-player-list-btn"),
+        list: document.getElementById("master_server-player-list"),
+      },
+    }
   }
 };
-/* 主生存服 */
-server.master_server.instance = new StreackServer(server.master_server.address[0].address, pageElements._.debug);
-pageElements.switch_dialog.master_server.addEventListener("change", () => {
-  server.master_server.nowLine = pageElements.switch_dialog.master_server.value;
-  msg(`已切换至${server.master_server.address[server.master_server.nowLine].name}线路`, "好");
-  server.master_server.instance.setAddress(server.master_server.address[server.master_server.nowLine].address);
-});
 
-// 数据更新
-function updateInfo(elements, result) {
-  if (!result.online) {
-    elements.subtitle.style = `color:#E23B2E;`;
-    elements.subtitle.innerHTML = `✕ 服务器已下线`;
-    elements.infoRoot.style = `display:none;`;
-  } else {
-    elements.subtitle.style = `color:#30C496;`;
-    elements.subtitle.innerHTML = `✓ 可连接`;
-    elements.infoRoot.style = ``;
-  };
-}
-/* 主服务器 */
-(function updateMasterServer() {
-  try {//TODO: 没有async/await
-    pageElements.content.main.master_server.progress.style = ``;
-    if (!pageElements._.debug) {
-      throw new Error("当前功能未上线");
+// 数据更新工具
+const UpdateUtils = {
+  countdown: function (instance) {
+    const elements = instance.elements;
+    if (instance.countdown <= 0) {
+      elements.countdowntitle.innerHTML = `（${0 - instance.countdown}秒）`;
+      instance.countdown -= 1;
+      if (!instance.fetching) {
+        elements.statustitle.style = `color:#1A73E7`;
+        elements.statustitle.innerHTML = `正在查询`;
+        UpdateUtils.fetch(instance);
+        instance.fetching = true;
+      }
+    } else {
+      elements.countdowntitle.innerHTML = `（${instance.countdown}秒后更新）`;
+      instance.countdown -= 1;
     }
-    updateInfo(pageElements.content.main.master_server, server.master_server.instance.getStatus());
-  } catch (e) {
-    pageElements.content.main.master_server.infoRoot.style = `display:none;`;
-    pageElements.content.main.master_server.subtitle.style = `color:#FBC116;`;
-    pageElements.content.main.master_server.subtitle.innerHTML = `✕ API故障`;
-    console.error("Caught Error while looking up #master_server:\n", e);
-    msg(`未能获取「主生存服」状态${e.message ? `：${e.message}` : `。`}`, "好", true);
-  } finally {
-    pageElements.content.main.master_server.progress.style = `display:none;`;
-    pageElements.content.main.master_server.progress.style = `display:none;`;
-    server.master_server.intervalID = setTimeout(server.master_server.instance.cooldown, window.autoUpdatedInt + 1000);
+  },
+  process: function (instance, result) {
+    const elements = instance.elements;
+    if (result.err != null) {
+      elements.statustitle.innerHTML = `✕ API故障：${result.err.message}`;
+      elements.statustitle.style = `color:#FBC116;`;
+      elements.infoRoot.style = `display:none;`;
+      instance.countdown = 60;
+      return;
+    } else if (!result.online) {
+      elements.statustitle.innerHTML = `✕ 服务器已下线`;
+      elements.statustitle.style = `color:#E23B2E;`;
+      elements.infoRoot.style = `display:none;`;
+      instance.countdown = 60;
+      return;
+    } else {
+      this.info(result, elements);
+      elements.statustitle.style = `color:#30C496;`;
+      elements.statustitle.innerHTML = `✓ 可连接`;
+      elements.infoRoot.style = ``;
+      instance.countdown = 60;
+      return;
+    };
+  },
+  info: function (result, elements) {
+    // 在线玩家
+    const trackEle = elements.online.track;
+    trackEle.max = result.players.max;
+    trackEle.value = result.players.online;
+    elements.online.tip.innerHTML = `${result.players.online} / ${result.players.max}`;
+  },
+  fetch: async function (instance) {
+    try {
+      const url = instance.address[instance.nowLine].address;
+      const response = await fetch(url);
+      const jsonData = await response.json();
+      if (!response.ok) {// 如果请求发生错误则判断是服务器下线还是API故障
+        const error = new Error(`HTTP错误: ${response.status} ${response.statusText}`);
+        if (response.status >= 500) {
+          this.process(instance, { online: false });
+          return;
+        } else if (response.status >= 400) {
+          // 4xx 错误 - 客户端错误（如404、403等）
+          error.type = 'CLIENT_ERROR';
+          error.status = response.status;
+          error.message = `客户端错误 (${response.status})：请求无效或资源不存在`;
+        }
+        throw error;
+      }
+      this.process(instance, jsonData);
+    } catch (e) {
+      this.process(instance, { online: false, err: e});
+    }
   }
-})();
+};
+
+// 设置更新计划
+server.master_server.intervalID = window.setInterval(() => { UpdateUtils.countdown(server.master_server) }, 1000);
 
 
 //remove no script tip
