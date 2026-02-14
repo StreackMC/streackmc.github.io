@@ -91,6 +91,7 @@
         <s-card id="notice" class="main-card">
           <p>
             此面板是栈流Streack各项服务的在线状态查询与监测页。
+            <br><del>点击服务器名可以更换查询线路</del>目前还还在开发……
           </p>
         </s-card>
         <s-card S id="master_server" class="main-card">
@@ -99,7 +100,7 @@
             <span id="master_server-subtitle1" style="color:#1A73E7">正在查询</span>
             <span id="master_server-subtitle2"></span>
           </div>
-          <s-linear-progress S id="master_server-progress" indeterminate="true"></s-linear-progress>
+          <s-linear-progress S id="master_server-progress" indeterminate="true" animated="true"></s-linear-progress>
           <div S id="master_server-field" style="display: none;">
             <s-field content="online">
               <div slot="label">在线玩家</div>

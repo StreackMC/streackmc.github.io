@@ -232,6 +232,7 @@ const UpdateUtils = {
     if (instance.countdown <= 0) {
       elements.countdowntitle.innerHTML = `（${0 - instance.countdown}秒）`;
       instance.countdown -= 1;
+      this.editProgress(instance.elements.progress, true);
       if (!instance.fetching) {
         elements.statustitle.style = `color:#1A73E7`;
         elements.statustitle.innerHTML = `正在查询`;
@@ -240,8 +241,14 @@ const UpdateUtils = {
       }
     } else {
       elements.countdowntitle.innerHTML = `（${instance.countdown}秒后更新）`;
+      this.editProgress(instance.elements.progress, false, instance.countdown);
       instance.countdown -= 1;
     }
+  },
+  editProgress: function (progressEle = document.createElement("s-linear-progress"), indeterminate = true, value = 0) {
+    progressEle.indeterminate = indeterminate;
+    progressEle.value = value;
+    return progressEle;
   },
   process: function (instance, result) {
     const elements = instance.elements;
@@ -249,19 +256,22 @@ const UpdateUtils = {
       elements.statustitle.innerHTML = `✕ API故障：${result.err.message}`;
       elements.statustitle.style = `color:#FBC116;`;
       elements.infoRoot.style = `display:none;`;
+      instance.elements.progress.max = 60;
       instance.countdown = 60;
       return;
     } else if (!result.online) {
       elements.statustitle.innerHTML = `✕ 服务器已下线`;
       elements.statustitle.style = `color:#E23B2E;`;
       elements.infoRoot.style = `display:none;`;
-      instance.countdown = 60;
+      instance.elements.progress.max = 30;
+      instance.countdown = 30;
       return;
     } else {
       this.info(result, elements);
       elements.statustitle.style = `color:#30C496;`;
       elements.statustitle.innerHTML = `✓ 可连接`;
       elements.infoRoot.style = ``;
+      instance.elements.progress.max = 60;
       instance.countdown = 60;
       return;
     };

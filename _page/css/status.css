@@ -100,6 +100,7 @@ html::-webkit-scrollbar {
 }
 s-linear-progress {
   width: 100%;
+  margin: .3em 0 .3em 0;
 }
 s-field, .modlist {
   width: 49%;
