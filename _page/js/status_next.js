@@ -221,12 +221,17 @@ const server = {
         listBtn: document.getElementById("master_server-player-list-btn"),
         list: document.getElementById("master_server-player-list"),
       },
+      tps: document.getElementById("master_server-tps"),
     }
   }
 };
 
 // 数据更新工具
 const UpdateUtils = {
+  /**
+   * 每个服务器查询块的生命周期切入点
+   * @param {Object} instance 传入对应服务器的数据实例
+   */
   countdown: function (instance) {
     const elements = instance.elements;
     if (instance.countdown <= 0) {
@@ -245,11 +250,24 @@ const UpdateUtils = {
       instance.countdown -= 1;
     }
   },
+  /**
+   * 编辑一个服务器查询块的进度条状态
+   * @param {Element} progressEle 传入一个进度条，默认新建
+   * @param {boolean} indeterminate 是否设置为未定状态，默认是
+   * @param {int} value 当前的进度，默认0
+   * @returns 返回这个进度条
+   */
   editProgress: function (progressEle = document.createElement("s-linear-progress"), indeterminate = true, value = 0) {
     progressEle.indeterminate = indeterminate;
     progressEle.value = value;
     return progressEle;
   },
+  /**
+   * 处理一个结果
+   * @param {Object} instance 
+   * @param {JSON} result 
+   * @returns 
+   */
   process: function (instance, result) {
     const elements = instance.elements;
     if (result.err != null) {
@@ -276,13 +294,27 @@ const UpdateUtils = {
       return;
     };
   },
+  /**
+   * 更新结果到页面上
+   * @param {JSON} result 
+   * @param {Object} elements 
+   */
   info: function (result, elements) {
     // 在线玩家
     const trackEle = elements.online.track;
     trackEle.max = result.players.max;
     trackEle.value = result.players.online;
     elements.online.tip.innerHTML = `${result.players.online} / ${result.players.max}`;
+
+    // TPS
+    elements.tps.innerHTML =
+      `${this.renderTPS(result.tps.live)} | ${this.renderTPS(result.tps.avg_1m)} | ${this.renderTPS(result.tps.avg_5m)} | ${this.renderTPS(result.tps.avg_15m)}`;
   },
+  /**
+   * 获取目标服务的状态
+   * @param {Object} instance 
+   * @returns 
+   */
   fetch: async function (instance) {
     try {
       const url = instance.address[instance.nowLine].address;
@@ -304,6 +336,23 @@ const UpdateUtils = {
       this.process(instance, jsonData);
     } catch (e) {
       this.process(instance, { online: false, err: e});
+    }
+  },
+  /**
+   * 渲染一个TPS数值为HTML元素
+   * @param {int} tps tps数值，如果不是数字自动改为-1
+   * @returns 渲染好的TPS
+   */
+  renderTPS: function (tps = -1.0) {
+    if (typeof tps != "number") { tps = -1.0 };
+    if (tps < 0) {
+      return `<span style="color:#1A73E7"><b>?</b></span>`;
+    } else if (tps <= 10.0) {
+      return `<span style="color:#E23B2E">${tps}</span>`;
+    } else if (tps <= 18.0) {
+      return `<span style="color:#FBC116">${tps}</span>`;
+    } else {// 18.0 < TPS <= 20.0..
+      return `<span style="color:#30C496">${tps}</span>`;
     }
   }
 };

@@ -134,6 +134,19 @@
                 </s-popup>
               </div>
             </s-field>
+            <s-field content="tps">
+              <div slot="label">TPS</div>
+              <div class="field">
+                <s-tooltip>
+                  <p slot="trigger">
+                    <span>实时 | 1分钟 | 5分钟 | 15分钟</span><br>
+                    <span S id="master_server-tps"></span>
+                  </p>
+                  TPS（Ticks Per Second，每秒刻数），指的是服务器每秒进行了多少次运算（刻）。<br>
+                  对于正常的Minecraft服务器，其值应为20.0。如果低于此值，则代表服务器发生了卡顿。<br>
+                </s-tooltip>
+              </div>
+            </s-field>
           </div>
         </s-card>
         <div class="unselectable" id="no_script">
