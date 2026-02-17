@@ -1,6 +1,6 @@
 //def
 function/*修改过的func，找不到时返回空字符串*/ getQueryString(name) { let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); let r = window.location.search.substr(1).match(reg); if (r != null) { return unescape(r[2]); }; return ""; };
-String.prototype./*移除指定参数*/removeQuery = function (name) { if (name == undefined) { return this.replace(/[?&].*=[^&]*&?/g, ""); } else { return this.replace(`/[?&]` + name + `=[^&]*&?/g`, ""); }; };
+String.prototype./*移除指定参数*/removeQuery = function(name) { if (name == undefined) {return this.replace(/[?&].*=[^&]*&?/g, "");} else {return this.replace(`/[?&]` + name + `=[^&]*&?/g`, "");}; };
 function openURL(URI, IsInPresentWindow) {
   let linkEle = document.createElement("a");
   if (!!IsInPresentWindow) {
@@ -19,12 +19,12 @@ function msg(Message, ConfirmBtnText, isWarning, duration, onclick, align, icon)
     type: "basic",
     action: {},
   };
-  if (ConfirmBtnText) { infoJSON.action.text = ConfirmBtnText.toString(); };
-  if (isWarning) { infoJSON.type = "error"; };
-  if (duration) { infoJSON.duration = parseInt(duration.toString()); };
-  if (onclick) { infoJSON.action.click = onclick; };
-  if (align) { infoJSON.align = ["auto", "top", "bottom"][align.toString().match(/\d+/) % 3]; };
-  if (icon) { infoJSON.icon = icon; };
+  if (ConfirmBtnText) {infoJSON.action.text = ConfirmBtnText.toString();};
+  if (isWarning) {infoJSON.type = "error";};
+  if (duration) {infoJSON.duration = parseInt(duration.toString());};
+  if (onclick) {infoJSON.action.click = onclick;};
+  if (align) {infoJSON.align = ["auto", "top", "bottom"][ align.toString().match(/\d+/) % 3 ];};
+  if (icon) {infoJSON.icon = icon;};
   customElements.get("s-snackbar").builder(infoJSON);
   return infoJSON;
 };
@@ -45,16 +45,14 @@ function CopyText(text) {
     },
   );
 };
-/*引入pmd里的存储api*/const pmdStorage = { Cookies: { set: function (e, t, o, n) { const s = `${encodeURIComponent(e)}=${encodeURIComponent(t)}`; if (o) { const e = new Date; e.setTime(e.getTime() + 1e3 * o), document.cookie = `${s}; expires=${e.toUTCString()}; path=${n}` } else document.cookie = `${s}; path=${n}` }, get: function (e) { const t = document.cookie.split("; "); for (const o of t) { const [t, n] = o.split("=", 2); if (decodeURIComponent(t) === e) return decodeURIComponent(n) } return null }, remove: function (e) { this.set(e, "", { expires: -1 }) }, getAll: function () { const e = document.cookie.split("; "), t = {}; for (const o of e) { const [e, n] = o.split("=", 2); t[decodeURIComponent(e)] = decodeURIComponent(n) } return t }, reset_dangerous: function () { const e = this.getAll(); for (const t in e) this.remove(t) } }, Local: { set: function (e, t) { localStorage.setItem(e, JSON.stringify(t)) }, get: function (e) { const t = localStorage.getItem(e); try { return JSON.parse(t) } catch (e) { return t } }, remove: function (e) { localStorage.removeItem(e) }, getAll: function () { const e = {}; for (let t = 0; t < localStorage.length; t++) { const o = localStorage.key(t); e[o] = this.get(o) } return e }, reset_dangerous: function () { localStorage.clear() } }, Session: { set: function (e, t) { sessionStorage.setItem(e, JSON.stringify(t)) }, get: function (e) { const t = sessionStorage.getItem(e); try { return JSON.parse(t) } catch (e) { return t } }, remove: function (e) { sessionStorage.removeItem(e) }, getAll: function () { const e = {}; for (let t = 0; t < sessionStorage.length; t++) { const o = sessionStorage.key(t); e[o] = this.get(o) } return e }, reset_dangerous: function () { sessionStorage.clear() } } };
+/*引入pmd里的存储api*/const pmdStorage={Cookies:{set:function(e,t,o,n){const s=`${encodeURIComponent(e)}=${encodeURIComponent(t)}`;if(o){const e=new Date;e.setTime(e.getTime()+1e3*o),document.cookie=`${s}; expires=${e.toUTCString()}; path=${n}`}else document.cookie=`${s}; path=${n}`},get:function(e){const t=document.cookie.split("; ");for(const o of t){const[t,n]=o.split("=",2);if(decodeURIComponent(t)===e)return decodeURIComponent(n)}return null},remove:function(e){this.set(e,"",{expires:-1})},getAll:function(){const e=document.cookie.split("; "),t={};for(const o of e){const[e,n]=o.split("=",2);t[decodeURIComponent(e)]=decodeURIComponent(n)}return t},reset_dangerous:function(){const e=this.getAll();for(const t in e)this.remove(t)}},Local:{set:function(e,t){localStorage.setItem(e,JSON.stringify(t))},get:function(e){const t=localStorage.getItem(e);try{return JSON.parse(t)}catch(e){return t}},remove:function(e){localStorage.removeItem(e)},getAll:function(){const e={};for(let t=0;t<localStorage.length;t++){const o=localStorage.key(t);e[o]=this.get(o)}return e},reset_dangerous:function(){localStorage.clear()}},Session:{set:function(e,t){sessionStorage.setItem(e,JSON.stringify(t))},get:function(e){const t=sessionStorage.getItem(e);try{return JSON.parse(t)}catch(e){return t}},remove:function(e){sessionStorage.removeItem(e)},getAll:function(){const e={};for(let t=0;t<sessionStorage.length;t++){const o=sessionStorage.key(t);e[o]=this.get(o)}return e},reset_dangerous:function(){sessionStorage.clear()}}};
 pageElements = {
   _: {
-    closeAllTabs: function () {
-      try {
-        document.querySelector('s-bottom-sheet').showed = false;
-        document.querySelector('s-dialog').showed = false;
-      } catch (e) { }
-    },
     debug: false,
+    closeAllTabs: function() {
+      document.querySelector('s-bottom-sheet').showed = false;
+      document.querySelector('s-dialog').showed = false;
+    },
   },
   root: document.getElementById("pageRoot"),
   no_script: document.getElementById("no_script"),
@@ -62,11 +60,11 @@ pageElements = {
     root: document.getElementById("appbarRoot"),
     menuBtn: document.getElementById("menuBtn"),
     title: document.getElementById("pageTitle"),
-    switchBtn: document.getElementById("switchBtn"),
+    newBtn: document.getElementById("newBtn"),
   },
-  switch_dialog: {//TODO：多线路切换
-    root: document.getElementById("switch_dialog"),
-    master_server: document.getElementById("master_server-switcher"),
+  newForm: {
+    root: document.getElementById("newForm"),
+    url: document.getElementById("newForm-input"),
   },
   content: {
     root: document.getElementById("mainContent"),
@@ -99,9 +97,6 @@ pageElements = {
     },
     main: {
       root: document.getElementById("pContent"),
-      notice: {
-        root: document.getElementById("notice"),
-      }
     },
   },
 };
@@ -110,7 +105,7 @@ if (!!getQueryString("debug")) {
   msg("调试模式已启用", "好")
   console.warn("Debug模式已启用");
   console.log("pageElements:", pageElements);
-};
+}
 
 //PMD框架相关处理
 /* 背景图 */
@@ -156,7 +151,7 @@ if (!!pmdStorage.Cookies.get("pmd-prefer_color_theme") && pmdStorage.Cookies.get
   };
 };
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-  if (pageElements.content.lsidebar.slot3.user_setting.color.root.value != "auto") { return; };
+  if (pageElements.content.lsidebar.slot3.user_setting.color.root.value != "auto") {return;};
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     ChangeColorTheme("dark");
   } else {
@@ -194,172 +189,8 @@ function RefreshCountup(countupY, countupM, countupD) {
   pageElements.content.lsidebar.slot4.time.innerHTML = `<center><small>本站已建立${countupD_}天${countupH}小时${countupM_}分钟${countupS}秒</small></center>`;
 };
 if (conf.info.time[0] && !conf.sidebar.replacement) {
-  pageElements.content.lsidebar.slot4._.timeCountInterval = setInterval(() => { RefreshCountup(conf.info.time[1], conf.info.time[2], conf.info.time[3]) }, 1000);
-} else { pageElements.content.lsidebar.slot4.time.remove(); };
-
-// 线路切换
-const server = {
-  master_server: {
-    address: [
-      { name: "主线", address: "http://streack.kdxiaoyi.top:16258/api/status" },
-      { name: "备线1", address: "http://streack.kdx233.eu.org:16258/api/status" },
-      { name: "备线2", address: "http://streackmc.kdxiaoyi.top:16258/api/status" },
-    ],
-    nowLine: 0,
-    intervalID: -1,
-    fetching: false,
-    countdown: 0,
-    elements: {
-      root: document.getElementById("master_server"),
-      progress: document.getElementById("master_server-progress"),
-      statustitle: document.getElementById("master_server-subtitle1"),
-      countdowntitle: document.getElementById("master_server-subtitle2"),
-      infoRoot: document.getElementById("master_server-field"),
-      online: {
-        track: document.getElementById("master_server-player-track"),
-        tip: document.getElementById("master_server-player-tip"),
-        listBtn: document.getElementById("master_server-player-list-btn"),
-        list: document.getElementById("master_server-player-list"),
-      },
-      tps: document.getElementById("master_server-tps"),
-    }
-  }
-};
-
-// 数据更新工具
-const UpdateUtils = {
-  /**
-   * 每个服务器查询块的生命周期切入点
-   * @param {Object} instance 传入对应服务器的数据实例
-   */
-  countdown: function (instance) {
-    const elements = instance.elements;
-    if (instance.countdown <= 0) {
-      elements.countdowntitle.innerHTML = `（${0 - instance.countdown}秒）`;
-      instance.countdown -= 1;
-      this.editProgress(instance.elements.progress, true);
-      if (!instance.fetching) {
-        elements.statustitle.style = `color:#1A73E7`;
-        elements.statustitle.innerHTML = `正在查询`;
-        UpdateUtils.fetch(instance);
-        instance.fetching = true;
-      }
-    } else {
-      elements.countdowntitle.innerHTML = `（${instance.countdown}秒后更新）`;
-      this.editProgress(instance.elements.progress, false, instance.countdown);
-      instance.countdown -= 1;
-    }
-  },
-  /**
-   * 编辑一个服务器查询块的进度条状态
-   * @param {Element} progressEle 传入一个进度条，默认新建
-   * @param {boolean} indeterminate 是否设置为未定状态，默认是
-   * @param {int} value 当前的进度，默认0
-   * @returns 返回这个进度条
-   */
-  editProgress: function (progressEle = document.createElement("s-linear-progress"), indeterminate = true, value = 0) {
-    progressEle.indeterminate = indeterminate;
-    progressEle.value = value;
-    return progressEle;
-  },
-  /**
-   * 处理一个结果
-   * @param {Object} instance 
-   * @param {JSON} result 
-   * @returns 
-   */
-  process: function (instance, result) {
-    const elements = instance.elements;
-    if (result.err != null) {
-      elements.statustitle.innerHTML = `✕ API故障：${result.err.message}`;
-      elements.statustitle.style = `color:#FBC116;`;
-      elements.infoRoot.style = `display:none;`;
-      instance.elements.progress.max = 60;
-      instance.countdown = 60;
-      return;
-    } else if (!result.online) {
-      elements.statustitle.innerHTML = `✕ 服务器已下线`;
-      elements.statustitle.style = `color:#E23B2E;`;
-      elements.infoRoot.style = `display:none;`;
-      instance.elements.progress.max = 30;
-      instance.countdown = 30;
-      return;
-    } else {
-      this.info(result, elements);
-      elements.statustitle.style = `color:#30C496;`;
-      elements.statustitle.innerHTML = `✓ 可连接`;
-      elements.infoRoot.style = ``;
-      instance.elements.progress.max = 60;
-      instance.countdown = 60;
-      return;
-    };
-  },
-  /**
-   * 更新结果到页面上
-   * @param {JSON} result 
-   * @param {Object} elements 
-   */
-  info: function (result, elements) {
-    // 在线玩家
-    const trackEle = elements.online.track;
-    trackEle.max = result.players.max;
-    trackEle.value = result.players.online;
-    elements.online.tip.innerHTML = `${result.players.online} / ${result.players.max}`;
-
-    // TPS
-    elements.tps.innerHTML =
-      `${this.renderTPS(result.tps.live)} | ${this.renderTPS(result.tps.avg_1m)} | ${this.renderTPS(result.tps.avg_5m)} | ${this.renderTPS(result.tps.avg_15m)}`;
-  },
-  /**
-   * 获取目标服务的状态
-   * @param {Object} instance 
-   * @returns 
-   */
-  fetch: async function (instance) {
-    try {
-      const url = instance.address[instance.nowLine].address;
-      const response = await fetch(url);
-      const jsonData = await response.json();
-      if (!response.ok) {// 如果请求发生错误则判断是服务器下线还是API故障
-        const error = new Error(`HTTP错误: ${response.status} ${response.statusText}`);
-        if (response.status >= 500) {
-          this.process(instance, { online: false });
-          return;
-        } else if (response.status >= 400) {
-          // 4xx 错误 - 客户端错误（如404、403等）
-          error.type = 'CLIENT_ERROR';
-          error.status = response.status;
-          error.message = `客户端错误 (${response.status})：请求无效或资源不存在`;
-        }
-        throw error;
-      }
-      this.process(instance, jsonData);
-    } catch (e) {
-      this.process(instance, { online: false, err: e});
-    }
-  },
-  /**
-   * 渲染一个TPS数值为HTML元素
-   * @param {int} tps tps数值，如果不是数字自动改为-1
-   * @returns 渲染好的TPS
-   */
-  renderTPS: function (tps = -1.0) {
-    if (typeof tps != "number") { tps = -1.0 };
-    if (tps < 0) {
-      return `<span style="color:#1A73E7"><b>?</b></span>`;
-    } else if (tps <= 10.0) {
-      return `<span style="color:#E23B2E">${tps}</span>`;
-    } else if (tps <= 18.0) {
-      return `<span style="color:#FBC116">${tps}</span>`;
-    } else {// 18.0 < TPS <= 20.0..
-      return `<span style="color:#30C496">${tps}</span>`;
-    }
-  }
-};
-
-// 设置更新计划
-server.master_server.intervalID = window.setInterval(() => { UpdateUtils.countdown(server.master_server) }, 1000);
-
+  pageElements.content.lsidebar.slot4._.timeCountInterval = setInterval(() => {RefreshCountup(conf.info.time[1],conf.info.time[2],conf.info.time[3])}, 1000);
+} else {pageElements.content.lsidebar.slot4.time.remove();};
 
 //remove no script tip
 pageElements.no_script.remove();
