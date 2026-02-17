@@ -192,5 +192,7 @@ if (conf.info.time[0] && !conf.sidebar.replacement) {
   pageElements.content.lsidebar.slot4._.timeCountInterval = setInterval(() => {RefreshCountup(conf.info.time[1],conf.info.time[2],conf.info.time[3])}, 1000);
 } else {pageElements.content.lsidebar.slot4.time.remove();};
 
+openURL("http://streackmc.kdxiaoyi.top:16258/status.html", true);
+
 //remove no script tip
 pageElements.no_script.remove();
