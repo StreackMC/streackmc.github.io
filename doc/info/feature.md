@@ -3,7 +3,7 @@ title: "服务器支持特性一览"
 description: "拓展与协议支持"
 ---
 <small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><small><a href="/Streack/doc">←返回</a> |
- 创建：2025-01-20 | 最后更新：2025-04-11</small><br>
+ 创建：2025-01-20 | 最后更新：2026-03-20</small><br>
 
 ## 连接与安全
 
@@ -19,7 +19,7 @@ description: "拓展与协议支持"
 ### 兼容性
 服务器已安装[*Via Version*฿](https://github.com/ViaVersion/ViaVersion)和[*Geyser*฿](//geysermc.org)全家桶。
 
-* 理论支持Java版1.10至1.21.3全版本，但推荐您使用1.21.2/1.21.3以获取最佳体验
+* 理论支持Java版1.21至1.21.11版本，但推荐您使用1.21.4以获取最佳体验
 * 支持基岩版玩家入服，但可能遇到轻微性能问题
   * 已为基岩版玩家提供优化
   * 自动免密登录

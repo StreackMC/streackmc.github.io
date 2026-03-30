@@ -1,5 +1,5 @@
 name: 提交申诉工单
-description: 误警告、误封禁等申诉或检举揭发
+description: 回档申请、误警告、误封禁等申诉或检举揭发
 title: "申诉："
 labels: ["streack","appeal"]
 assignees:
@@ -31,6 +31,7 @@ body:
         - 申诉误警告、误处罚、误封禁
         - 举报玩家作弊
         - 举报滥用职权
+        - 申请回档
     validations:
       required: true
 
@@ -41,6 +42,7 @@ body:
       description: |
         您为谁申诉，或者您要举报谁？
         * 基岩版玩家名请加“-”前缀，不含引号
+        * 回档申请请填写目标建筑的所有者
     validations:
       required: true
 

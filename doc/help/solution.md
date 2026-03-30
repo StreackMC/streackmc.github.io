@@ -3,7 +3,7 @@ title: "无法连接到服务器常见问题"
 description: "快速疑难解答"
 ---
 <small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><small><a href="/Streack/doc">←返回</a> |
- 创建：2025-01-19 | 最后更新：2025-03-05</small><br>
+ 创建：2025-01-19 | 最后更新：2026-03-20</small><br>
 
 > [@] 在左侧边栏可以找到目录树，您也可以使用`Ctrl/Command`+`F`快捷键打开「在网页上查找」等类似功能。<br>
 > 但本文列出的错误原因通常只列出关键字，请考虑搜索单词而不是输入整个错误提示。
@@ -12,7 +12,7 @@ description: "快速疑难解答"
 > [必应฿](https://bing.com) 或者 [百度฿](httpa://baidu.com)。
 
 ## Connection refused (连接被拒绝)
-多试几次，如果还不行就在群里发送`streack`让机器人帮您查询服务器状态。<br>
+多试几次，如果还不行可以[查询服务器状态](//mc.kdxiaoyi.top/Streack/status_next)。<br>
 一般而言，在多试几次还不行那多半是服务器崩溃了或者正在~~崩溃~~启动中，联系管理员后耐心等待。
 
 ## Unknown Host (未知的主机)
@@ -38,10 +38,9 @@ description: "快速疑难解答"
 **为了您的游玩体验，请考虑使用服务器资源包。**
 
 ## 无效会话
-您的账户因未知（或者您自己作的）原因导致服务器对您的账户开启了正版验证，而您并未使用正版登录。<br>
+您的账户开启了正版验证，而您并未使用正版登录。<br>
 解决方案：<br>
-* [购买正版฿](https://www.xbox.com/zh-CN/games/store/minecraft-java-bedrock-edition-for-pc/9nxp44l49shj)
-* 联系管理员
+* 使用同名正版账号登录，或者[购买正版฿](https://www.xbox.com/zh-CN/games/store/minecraft-java-bedrock-edition-for-pc/9nxp44l49shj)
 * 更换您的离线登录用户名
 
 ## 无法连接至身份验证服务器
