@@ -7,7 +7,7 @@ description: "见证每一次变化"
 ## 未来计划
 
 > [i] 开发中内容，请以最终实装品质为准。<br>
-> 若您有其它建议、BUG反馈、申诉需求等，请前往[Github฿](https://github.com/kdxhub/Streack/issues/new)或[Gitee฿](https://gitee.com/kdxiaoyi/Streack/issues/new)发起Issue。
+> 若您有其它建议、BUG反馈、申诉需求等，请前往[Github฿](https://github.com/StreackMC/Streack/issues/new)或[Gitee฿](https://gitee.com/kdxiaoyi/Streack/issues/new)发起Issue。
 
 ### 即将到来
 
