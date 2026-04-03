@@ -1,7 +1,7 @@
 //定义页面元素集合
 pageElements = {
   _: {
-    closeAllTabs: function() {
+    closeAllTabs: function () {
       document.querySelector('s-bottom-sheet').showed = false;
       document.querySelector('s-dialog').showed = false;
     },
@@ -45,8 +45,8 @@ pageElements = {
   },
   issueMessage: {
     _: {
-      value: ["github","gitee","qq","email"],
-      link: ["https://github.com/StreackMC/Streack/issues/new","https://gitee.com/kdxiaoyi/Streack/issues/new","javascript:qqunlink()","mailto:streack@kdxiaoyi.top"],
+      value: ["github", "gitee", "qq", "email"],
+      link: ["https://github.com/StreackMC/Streack/issues/new", "https://gitee.com/kdxiaoyi/Streack/issues/new", "javascript:qqunlink()", "mailto:streack@kdxiaoyi.top"],
     },
     root: document.getElementById("issue_message"),
     selector: document.getElementById("issue_link_selector"),
@@ -83,12 +83,12 @@ function msg(Message, ConfirmBtnText, isWarning, duration, onclick, align, icon)
     type: "basic",
     action: {},
   };
-  if (ConfirmBtnText) {infoJSON.action.text = ConfirmBtnText.toString();};
-  if (isWarning) {infoJSON.type = "error";};
-  if (duration) {infoJSON.duration = parseInt(duration.toString());};
-  if (onclick) {infoJSON.action.click = onclick;};
-  if (align) {infoJSON.align = ["auto", "top", "bottom"][ align.toString().match(/\d+/) % 3 ];};
-  if (icon) {infoJSON.icon = icon;};
+  if (ConfirmBtnText) { infoJSON.action.text = ConfirmBtnText.toString(); };
+  if (isWarning) { infoJSON.type = "error"; };
+  if (duration) { infoJSON.duration = parseInt(duration.toString()); };
+  if (onclick) { infoJSON.action.click = onclick; };
+  if (align) { infoJSON.align = ["auto", "top", "bottom"][align.toString().match(/\d+/) % 3]; };
+  if (icon) { infoJSON.icon = icon; };
   customElements.get("s-snackbar").builder(infoJSON);
   return infoJSON;
 };
@@ -109,7 +109,7 @@ function CopyText(text) {
     },
   );
 };
-/*引入pmd里的存储api*/const pmdStorage={Cookies:{set:function(e,t,o,n){const s=`${encodeURIComponent(e)}=${encodeURIComponent(t)}`;if(o){const e=new Date;e.setTime(e.getTime()+1e3*o),document.cookie=`${s}; expires=${e.toUTCString()}; path=${n}`}else document.cookie=`${s}; path=${n}`},get:function(e){const t=document.cookie.split("; ");for(const o of t){const[t,n]=o.split("=",2);if(decodeURIComponent(t)===e)return decodeURIComponent(n)}return null},remove:function(e){this.set(e,"",{expires:-1})},getAll:function(){const e=document.cookie.split("; "),t={};for(const o of e){const[e,n]=o.split("=",2);t[decodeURIComponent(e)]=decodeURIComponent(n)}return t},reset_dangerous:function(){const e=this.getAll();for(const t in e)this.remove(t)}},Local:{set:function(e,t){localStorage.setItem(e,JSON.stringify(t))},get:function(e){const t=localStorage.getItem(e);try{return JSON.parse(t)}catch(e){return t}},remove:function(e){localStorage.removeItem(e)},getAll:function(){const e={};for(let t=0;t<localStorage.length;t++){const o=localStorage.key(t);e[o]=this.get(o)}return e},reset_dangerous:function(){localStorage.clear()}},Session:{set:function(e,t){sessionStorage.setItem(e,JSON.stringify(t))},get:function(e){const t=sessionStorage.getItem(e);try{return JSON.parse(t)}catch(e){return t}},remove:function(e){sessionStorage.removeItem(e)},getAll:function(){const e={};for(let t=0;t<sessionStorage.length;t++){const o=sessionStorage.key(t);e[o]=this.get(o)}return e},reset_dangerous:function(){sessionStorage.clear()}}};
+/*引入pmd里的存储api*/const pmdStorage = { Cookies: { set: function (e, t, o, n) { const s = `${encodeURIComponent(e)}=${encodeURIComponent(t)}`; if (o) { const e = new Date; e.setTime(e.getTime() + 1e3 * o), document.cookie = `${s}; expires=${e.toUTCString()}; path=${n}`; } else document.cookie = `${s}; path=${n}`; }, get: function (e) { const t = document.cookie.split("; "); for (const o of t) { const [t, n] = o.split("=", 2); if (decodeURIComponent(t) === e) return decodeURIComponent(n); } return null; }, remove: function (e) { this.set(e, "", { expires: -1 }); }, getAll: function () { const e = document.cookie.split("; "), t = {}; for (const o of e) { const [e, n] = o.split("=", 2); t[decodeURIComponent(e)] = decodeURIComponent(n); } return t; }, reset_dangerous: function () { const e = this.getAll(); for (const t in e) this.remove(t); } }, Local: { set: function (e, t) { localStorage.setItem(e, JSON.stringify(t)); }, get: function (e) { const t = localStorage.getItem(e); try { return JSON.parse(t); } catch (e) { return t; } }, remove: function (e) { localStorage.removeItem(e); }, getAll: function () { const e = {}; for (let t = 0; t < localStorage.length; t++) { const o = localStorage.key(t); e[o] = this.get(o); } return e; }, reset_dangerous: function () { localStorage.clear(); } }, Session: { set: function (e, t) { sessionStorage.setItem(e, JSON.stringify(t)); }, get: function (e) { const t = sessionStorage.getItem(e); try { return JSON.parse(t); } catch (e) { return t; } }, remove: function (e) { sessionStorage.removeItem(e); }, getAll: function () { const e = {}; for (let t = 0; t < sessionStorage.length; t++) { const o = sessionStorage.key(t); e[o] = this.get(o); } return e; }, reset_dangerous: function () { sessionStorage.clear(); } } };
 
 //pmd框架支持
 /* pmd-计时器（改版） */
@@ -132,8 +132,8 @@ function RefreshCountup(countupY, countupM, countupD) {
   pageElements.counting_msg.innerHTML = `；今天是${date.getFullYear()}年的第${weekNumber}周，迄今为止我们已运营${countupD_}天${countupH}小时${countupM_}分钟${countupS}秒（${window.timezone.offsetStrMin}）`;
 };
 if (conf.info.time[0]) {
-  pageElements.counting_msg.dataset.intervalId = setInterval(() => {RefreshCountup(conf.info.time[1],conf.info.time[2],conf.info.time[3])}, 1000);
-} else {pageElements.counting_msg.remove();};
+  pageElements.counting_msg.dataset.intervalId = setInterval(() => { RefreshCountup(conf.info.time[1], conf.info.time[2], conf.info.time[3]); }, 1000);
+} else { pageElements.counting_msg.remove(); };
 
 //safari user-scalable=no
 document.addEventListener('gesturestart', (event) => event.preventDefault());
@@ -147,8 +147,8 @@ function ChangeColorTheme(target, animationCenter) {
 };
 if (!!pmdStorage.Cookies.get("pmd-prefer_color_theme")) {
   /*如果检测到Cookies中相关设置则启用用户偏好配色，即继承文档配色设置*/
-  if (pmdStorage.Cookies.get("pmd-prefer_color_theme") == "dark") {ChangeColorTheme("dark")};
-  if (pmdStorage.Cookies.get("pmd-prefer_color_theme") == "light") {ChangeColorTheme("light")};
+  if (pmdStorage.Cookies.get("pmd-prefer_color_theme") == "dark") { ChangeColorTheme("dark"); };
+  if (pmdStorage.Cookies.get("pmd-prefer_color_theme") == "light") { ChangeColorTheme("light"); };
 };
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   if ((pmdStorage.Cookies.get("pmd-prefer_color_theme") == "dark" || pmdStorage.Cookies.get("pmd-prefer_color_theme") == "light")) { return; };
@@ -236,7 +236,7 @@ function scrollToSlot(slotIndex) {
         pageElements.main.slot0_floatP.classList.add("show");
       }, 500);
       pageElements.main._.CurrentSlot = slotIndex;
-      window.location.hash = slotIndex;
+      history.replaceState(null, "", "#" + slotIndex);
       // let isScrolling;
       // pageElements.main.root.addEventListener('scroll', function slot0_isScrolledToTop() {
       //   clearTimeout(isScrolling);
@@ -252,11 +252,11 @@ function scrollToSlot(slotIndex) {
       behavior: 'smooth',
     });
     pageElements.main._.CurrentSlot = slotIndex;
-    window.location.hash = slotIndex;
+    history.replaceState(null, "", "#" + slotIndex);
     return;
   } else {
     msg("不存在的分栏……", "好", true);
-    console.error("捕获了错误：","\n> StreackPage：不存在的分栏\n",`准备跳转目标分栏，但发现了${slotIndex}，其不存在于分栏表中。\n分栏表：`,pageElements.main.slot,`\n上下文：`,this);
+    console.error("捕获了错误：", "\n> StreackPage：不存在的分栏\n", `准备跳转目标分栏，但发现了${slotIndex}，其不存在于分栏表中。\n分栏表：`, pageElements.main.slot, `\n上下文：`, this);
   };
 };
 pageElements.main.root.addEventListener('wheel', handleScroll, { passive: false });
@@ -283,12 +283,12 @@ function donatelink(/*赞助*/from = "first") {
   switch (from.toLowerCase()) {
     case "then": {
       pageElements.donateMessage.thk.innerHTML = `谢谢。`;
-      dc=true;
+      dc = true;
       break;
     };
     case "first": {
       pageElements.donateMessage.thk.innerHTML = `赞助`;
-      dC=10;
+      dC = 10;
       break;
     };
   };
@@ -358,8 +358,8 @@ pageElements.donateMessage.selector.addEventListener("change", (event) => {
   event.target.value = "";
 });
 const dCbT = `我已认真阅读并同意<a href="./doc/policy/donate">赞助方针</a>。`;
-setInterval(()=>{
-  const e=pageElements.donateMessage.checkbox;
+setInterval(() => {
+  const e = pageElements.donateMessage.checkbox;
   if (dC === false) {
     //pause
     return;
@@ -372,7 +372,7 @@ setInterval(()=>{
     //unlock
     e.disabled = false;
     e.innerHTML = dCbT;
-    dC=false;
+    dC = false;
   } else {
     //lock counting
     e.disabled = true;
@@ -383,12 +383,12 @@ setInterval(()=>{
   }
 }, 1000);
 pageElements.donateMessage.checkbox.addEventListener("click", () => {
-  const e=pageElements.donateMessage.checkbox;
+  const e = pageElements.donateMessage.checkbox;
   if (e.disabled) {
-    e.checked=false;
+    e.checked = false;
     return;
   };
-  pageElements.donateMessage.fold.folded=!e.checked;
+  pageElements.donateMessage.fold.folded = !e.checked;
 });
 
 //移除no_script标签
