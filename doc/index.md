@@ -43,6 +43,7 @@ description: "致力于解决您所想知道的一切"
 
 ## 政策方针
 * [基本方针](./policy/rule)
+* [赞助方针](./policy/donate)
 * [备份与恢复方针](./policy/backup_and_restore)
 * [《栈流Streack隐私政策》](./policy/privacy)
 * [《栈流Streack用户协议》](./policy/user)

@@ -3,7 +3,7 @@ title: "备份与恢复方针"
 description: " "
 ---
 <small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><small><a href="../../">←返回</a> |
- 创建：2025-10-28 | 最后更新：2025-10-29</small><br>
+ 创建：2025-10-28 | 最后更新：2026-04-03</small><br>
 
 ## 备份
 栈流Streack基于备份颗粒度大小拥有以下几种备份方式。
@@ -60,8 +60,9 @@ description: " "
 ### 最小化修改
 如无必要则不使用颗粒度更大的回档方式，以期最小化影响。
 
-# 注释
+## 注释
 * 本页面、文本的样式仅用作辅助阅读，不得用作解释内容的依据。
 * 栈流Streack保留上述文本的最终解释权。
+* 您不得利用或恶意本规则的漏洞。
 
 <script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script><script src="https://mc.kdxiaoyi.top/Streack/_page/js/pmd.js"></script><script src="https://rs.kdxiaoyi.top/res/scripts/js/pmd-reRender.min.js"></script>
