@@ -35,6 +35,8 @@ pageElements = {
   donateMessage: {
     root: document.getElementById("donate_message"),
     thk: document.getElementById("donate_THK_message"),
+    checkbox: document.getElementById("donate_checkbox"),
+    fold: document.getElementById("donate_fold"),
     selector: document.getElementById("donate_link_selector"),
   },
   commentMessage: {
@@ -263,7 +265,7 @@ pageElements.main.root.addEventListener('touchstart', (e) => {
 }, { passive: true });
 pageElements.main.root.addEventListener('touchmove', handleScroll, { passive: false });
 
-//Hash识别与处理
+//Hash识别与处理（todo:需要重写）
 function qqunlink(/*加群*/) {
   pageElements._.closeAllTabs();
   pageElements.qunMessage.root.showed = true;
@@ -276,29 +278,31 @@ function commentlink(/*评论*/) {
   openURL("#comment_done", true);
   openURL(pageElements.commentMessage.id.href, true);
 };
-function donatelink(/*赞助*/from) {
-  if (!from) { from = "first"; };
+let dC = -1;
+function donatelink(/*赞助*/from = "first") {
   switch (from.toLowerCase()) {
     case "then": {
       pageElements.donateMessage.thk.innerHTML = `谢谢。`;
+      dc=true;
       break;
     };
     case "first": {
       pageElements.donateMessage.thk.innerHTML = `赞助`;
+      dC=10;
       break;
     };
   };
   pageElements._.closeAllTabs();
   pageElements.donateMessage.root.showed = true;
-  openURL("#donate_done__", true);
+  history.replaceState(null, "", "#donate_done");
 };
 function issuelink(/*发起issue*/) {
   pageElements._.closeAllTabs();
   pageElements.issueMessage.root.showed = true;
   openURL("#issue_done", true);
 };
-function hashChange() {
-  switch (window.location.hash.replace('#', '').toLowerCase()) {
+function hashChange(h = window.location.hash.replace('#', '').toLowerCase()) {
+  switch (h) {
     case "play": {
       pageElements._.closeAllTabs();
       pageElements.startPlay.root.showed = true;
@@ -306,7 +310,6 @@ function hashChange() {
     }
     case "donate": { donatelink("first"); break; };
     case "donate_done": { donatelink("then"); break; };
-    case "donate_done__": { pageElements.donateMessage.thk.innerHTML = `赞助`; pageElements.donateMessage.root.showed = true; break; };
     case "qqun": { qqunlink(); break; };
     case "qqun_done": { pageElements.qunMessage.root.showed = true; break; };
     case "comment": { commentlink(); break; };
@@ -348,11 +351,44 @@ pageElements.issueMessage.selector.addEventListener("change", (event) => {
   event.target.value = "";
 });
 
-//处理Donate Link Selector
+//处理Donate面板
 pageElements.donateMessage.selector.addEventListener("change", (event) => {
   openURL("#donate_done", true);
   openURL(event.target.value, true);
   event.target.value = "";
+});
+const dCbT = `我已认真阅读并同意<a href="./doc/policy/donate">赞助方针</a>。`;
+setInterval(()=>{
+  const e=pageElements.donateMessage.checkbox;
+  if (dC === false) {
+    //pause
+    return;
+  } else if (dC === true) {
+    //contiune
+    e.disabled = false;
+    pageElements.donateMessage.fold.folded = true;
+    dC = -1;
+  } else if (dC <= 0) {
+    //unlock
+    e.disabled = false;
+    e.innerHTML = dCbT;
+    dC=false;
+  } else {
+    //lock counting
+    e.disabled = true;
+    pageElements.donateMessage.fold.folded = true;
+    e.checked = false;
+    e.innerHTML = dCbT + `(${dC})`;
+    dC -= 1;
+  }
+}, 1000);
+pageElements.donateMessage.checkbox.addEventListener("click", () => {
+  const e=pageElements.donateMessage.checkbox;
+  if (e.disabled) {
+    e.checked=false;
+    return;
+  };
+  pageElements.donateMessage.fold.folded=!e.checked;
 });
 
 //移除no_script标签
