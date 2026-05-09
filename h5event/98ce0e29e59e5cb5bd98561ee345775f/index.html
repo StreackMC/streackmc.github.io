@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- AI真的太好用了！但是本页面还是经过了人工审核的。 -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>区块保留查询 · 区域状态确认 - 栈流Streack</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f4fa 0%, #e6edf4 100%);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        /* 主卡片容器 */
+        .glass-card {
+            max-width: 620px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(0px);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 30px 55px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 头部区域 */
+        .hero {
+            background: #1a2c3e;
+            background-image: linear-gradient(135deg, #1e2f3f 0%, #15232e 100%);
+            padding: 1.8rem 2rem;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 1.85rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .hero h1 span {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            backdrop-filter: blur(2px);
+        }
+
+        .announce-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            color: #f9f9ff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .announce-link:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .subhead {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* 内容主体 */
+        .content {
+            padding: 2rem 2rem 2.2rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+        }
+
+        .input-field {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1e2f3f;
+            letter-spacing: 0.3px;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            font-size: 1rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1.2rem;
+            background: #ffffff;
+            transition: all 0.2s;
+            font-family: 'JetBrains Mono', 'SF Mono', monospace;
+            font-weight: 500;
+            color: #0a1c2a;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        input:hover {
+            border-color: #b9c8f0;
+        }
+
+        .query-btn {
+            background: #1e2f3f;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .query-btn:hover:not(:disabled) {
+            background: #0f2a3b;
+            transform: scale(0.98);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .query-btn:active {
+            transform: scale(0.97);
+        }
+
+        .query-btn:disabled {
+            background: #9aaebf;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* 结果卡片 */
+        .result-card {
+            margin-top: 2rem;
+            background: #f9fbfd;
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.5rem;
+            border-left: 5px solid #cddfe7;
+            transition: all 0.2s;
+            word-break: break-word;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: #1f3a4b;
+        }
+
+        .result-detail {
+            font-size: 0.95rem;
+            color: #2c4c6c;
+            line-height: 1.4;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #eef3fc;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #2c5f8a;
+        }
+
+        .status-preserve {
+            color: #2b7e3a;
+            background: #e3f7e9;
+            font-weight: 700;
+            border-radius: 36px;
+            padding: 0.2rem 1rem;
+            display: inline-block;
+        }
+
+        .status-destroy {
+            color: #b91c1c;
+            background: #ffe6e6;
+            font-weight: 700;
+            border-radius: 36px;
+            padding: 0.2rem 1rem;
+            display: inline-block;
+        }
+
+        .error-message {
+            background: #fff5f0;
+            border-left-color: #f97316;
+            color: #b45309;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 1.8rem;
+            color: #6c89a0;
+            border-top: 1px solid #e2edf5;
+            padding-top: 1.2rem;
+        }
+
+        .coords-info {
+            background: #eef2f7;
+            border-radius: 1rem;
+            padding: 0.4rem 0.9rem;
+            font-size: 0.8rem;
+            font-family: monospace;
+        }
+
+        @media (max-width: 500px) {
+            .content {
+                padding: 1.5rem;
+            }
+            .hero h1 {
+                font-size: 1.4rem;
+            }
+            .input-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        button svg {
+            width: 18px;
+            height: 18px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="glass-card">
+    <div class="hero">
+        <h1>
+            🗺️ 区块保留查询
+            <span>状态验证</span>
+        </h1>
+        <div class="subhead">
+            <span>🔍 输入世界坐标 (X, Z) → 判断区块是否会在更新后保留</span>
+            <br><span><b>结果仅供参考，不作为区块是否保留的最终依据。</b></span>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- 坐标输入区 -->
+        <div class="input-group">
+            <div class="input-row">
+                <div class="input-field">
+                    <label>📍 X 坐标 <span style="font-weight: normal;">(整数)</span></label>
+                    <input type="number" id="xCoord" placeholder="例如: 112" value="0" step="1">
+                </div>
+                <div class="input-field">
+                    <label>📍 Z 坐标 <span style="font-weight: normal;">(整数)</span></label>
+                    <input type="number" id="zCoord" placeholder="例如: -256" value="0" step="1">
+                </div>
+            </div>
+            <button class="query-btn" id="queryBtn">
+                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                查询区块保留状态
+            </button>
+        </div>
+
+        <!-- 结果展示区 -->
+        <div id="resultContainer">
+            <div class="result-card" style="background: #fafcff; border-left-color: #aac5e0;">
+                <div class="result-header">
+                    📋 等待查询
+                </div>
+                <div class="result-detail">
+                    输入 X / Z 坐标后点击查询，将显示该坐标所在区块是否保留。
+                </div>
+            </div>
+        </div>
+        <footer>
+            <big>栈流Streack</big><br>
+            Copryright (C) 2026, kdxiaoyi & Streack.<br>All right reserved.<br>
+            本页面由AI生成。
+        </footer>
+    </div>
+</div>
+
+<script>
+    // ========================  运营人员配置区域 ========================
+    // 公告链接（指向具体公告页面，例如: https://www.yourcommunity.com/updates/region-reset）
+    const announce_link = "https://mc.kdxiaoyi.top/Streack/doc/news/2026/0508";  // 👈 请修改为真实公告链接
+    
+    // API 基础地址（结尾一定是字母，不包含 ? 或 #）
+    // 示例: "https://your-mc-server.net/api/region/query" 或 "http://localhost:8080/api/region/query"
+    // 插件注册端点默认 "/api/region/query"，请确保完整 URL 正确，并支持 GET 参数 x 与 z
+    const api_port = "https://server-s1.kdxiaoyi.top/api/region/query";   // 👈 请替换为实际 API 地址（结尾字母，无?/#）
+    // ================================================================
+
+    // 将公告链接动态应用到页面
+    (function setAnnounceLink() {
+        // 找到可以添加公告链接的位置 —— 在标题区右侧增加一个显眼的链接入口
+        const heroH1 = document.querySelector('.hero h1');
+        if (heroH1 && !document.querySelector('.custom-announce-btn')) {
+            const linkTag = document.createElement('a');
+            linkTag.href = announce_link;
+            linkTag.target = '_blank';
+            linkTag.rel = 'noopener noreferrer';
+            linkTag.className = 'announce-link custom-announce-btn';
+            linkTag.innerHTML = '📢 查看公告 →';
+            // 把链接加在 h1 内右侧
+            heroH1.appendChild(linkTag);
+        }
+    })();
+
+    // DOM 元素
+    const xInput = document.getElementById('xCoord');
+    const zInput = document.getElementById('zCoord');
+    const queryBtn = document.getElementById('queryBtn');
+    const resultContainer = document.getElementById('resultContainer');
+
+    // 辅助函数：展示结果（成功/失败/加载）
+    function showResult(data, statusType, extraInfo = {}) {
+        const { x, z, destroyRaw, errorMsg, httpStatus } = extraInfo;
+        
+        let innerHtml = '';
+        if (statusType === 'loading') {
+            innerHtml = `
+                <div class="result-card" style="background: #fefce8; border-left-color: #facc15;">
+                    <div class="result-header">
+                        <div class="loading-spinner" style="border-top-color:#eab308;"></div>
+                        <span style="margin-left: 8px;">正在查询区块状态...</span>
+                    </div>
+                    <div class="result-detail">
+                        坐标 (${x ?? '?'}, ${z ?? '?'}) 正在与区域数据库通信，请稍后。
+                    </div>
+                </div>
+            `;
+            resultContainer.innerHTML = innerHtml;
+            return;
+        }
+        
+        if (statusType === 'error') {
+            innerHtml = `
+                <div class="result-card error-message" style="border-left-color: #f97316;">
+                    <div class="result-header">
+                        ⚠️ 查询失败
+                    </div>
+                    <div class="result-detail">
+                        <strong>错误详情：</strong> ${errorMsg || '网络异常或后端无响应'}<br>
+                        <span style="font-size:0.8rem; margin-top: 8px; display:inline-block;">💡 请检查坐标是否合法，或联系管理员确认 API 地址可用。</span>
+                        ${httpStatus ? `<div class="badge" style="margin-top: 8px;">HTTP ${httpStatus}</div>` : ''}
+                    </div>
+                </div>
+            `;
+            resultContainer.innerHTML = innerHtml;
+            return;
+        }
+        
+        if (statusType === 'success') {
+            // destroy = true => 区块不会保留（应销毁）; destroy = false => 区块将保留
+            const willPreserve = (destroyRaw === false);   // destroy为false代表保留，为true代表不保留
+            const preserveText = willPreserve ? '✅ 区块将会保留' : '❌ 区块不会被保留';
+            const statusClass = willPreserve ? 'status-preserve' : 'status-destroy';
+            const description = willPreserve 
+                ? '该区块的活跃时长低于阈值 / 未达重置标准，将在维护后继续保留。'
+                : '该区块的活跃时长超过阈值 / 符合清理条件，更新后不会保留（将被重置或删除）。';
+            
+            // 额外展示坐标对应的区块信息 (Chunk: floor(x/16), floor(z/16))
+            const chunkX = Math.floor(parseInt(x) / 16);
+            const chunkZ = Math.floor(parseInt(z) / 16);
+            
+            innerHtml = `
+                <div class="result-card" style="background: #ffffff; border-left-color: ${willPreserve ? '#2b7e3a' : '#b91c1c'}; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+                    <div class="result-header">
+                        🧾 查询结果 · 坐标 (${x}, ${z})
+                    </div>
+                    <div class="result-detail">
+                        <div style="margin-bottom: 12px;">
+                            <span class="${statusClass}">${preserveText}</span>
+                        </div>
+                        <p style="margin: 8px 0 6px 0;">${description}</p>
+                        <div class="coords-info" style="margin-top: 12px; display: flex; gap: 16px; flex-wrap: wrap;">
+                            <span>🗺️ 区块坐标: [${chunkX}, ${chunkZ}]</span>
+                            <span>📦 区域文件定位: r.${Math.floor(chunkX / 32)}.${Math.floor(chunkZ / 32)}.mca</span>
+                        </div>
+                        <div class="badge" style="margin-top: 12px; background:#eef2f7;">
+                            ⏱️ 判定依据: InhabitedTime 阈值比较
+                        </div>
+                    </div>
+                </div>
+            `;
+            resultContainer.innerHTML = innerHtml;
+            return;
+        }
+        
+        // 初始或纯净状态
+        resultContainer.innerHTML = `
+            <div class="result-card" style="background: #fafcff; border-left-color: #aac5e0;">
+                <div class="result-header">
+                    📋 等待查询
+                </div>
+                <div class="result-detail">
+                    输入 X / Z 坐标后点击查询，将显示该坐标所在区块是否保留。
+                </div>
+            </div>
+        `;
+    }
+    
+    // 核心查询逻辑
+    async function queryRegionStatus(x, z) {
+        // 参数有效性（前端基础校验）
+        if (isNaN(x) || isNaN(z)) {
+            showResult(null, 'error', { errorMsg: '请输入有效的整数坐标 (X 和 Z 必须为数字)' });
+            return;
+        }
+        
+        const intX = Math.floor(Number(x));
+        const intZ = Math.floor(Number(z));
+        
+        // 避免过大范围导致稀奇古怪，但一般不限，只提示友好
+        if (intX < -30000000 || intX > 30000000 || intZ < -30000000 || intZ > 30000000) {
+            showResult(null, 'error', { errorMsg: '坐标超出合理范围 (-30M ~ 30M)，请重新输入' });
+            return;
+        }
+        
+        // 显示加载状态，展示当前坐标
+        showResult(null, 'loading', { x: intX, z: intZ });
+        
+        // 构建 API URL：确保 api_port 结尾没有 ?, # 等，直接拼接 ?x=...&z=...
+        let baseUrl = api_port;
+        // 移除末尾多余空格，并检查结尾字符基本保证不包含 ?
+        baseUrl = baseUrl.trim();
+        // 安全处理：如果运营人员不小心加了?，手动移除（但规范约定结尾是字母，不过防御一下）
+        if (baseUrl.endsWith('?')) {
+            baseUrl = baseUrl.slice(0, -1);
+        }
+        if (baseUrl.endsWith('#')) {
+            baseUrl = baseUrl.slice(0, -1);
+        }
+        // 组合参数
+        const url = `${baseUrl}?x=${intX}&z=${intZ}`;
+        
+        try {
+            // 发起请求，超时控制 10s
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            
+            // 处理 HTTP 状态
+            if (!response.ok) {
+                let errorText = `HTTP ${response.status}`;
+                try {
+                    const errorJson = await response.json();
+                    errorText = errorJson.error || errorJson.message || errorText;
+                } catch (e) {
+                    // 忽略，保留状态码
+                }
+                showResult(null, 'error', { errorMsg: `后端响应异常: ${errorText}`, httpStatus: response.status, x: intX, z: intZ });
+                return;
+            }
+            
+            // 解析 JSON
+            let jsonData;
+            try {
+                jsonData = await response.json();
+            } catch (e) {
+                showResult(null, 'error', { errorMsg: '后端返回数据格式无效 (非JSON)', x: intX, z: intZ });
+                return;
+            }
+            
+            // 检查是否包含 destroy 字段
+            if (jsonData && typeof jsonData === 'object' && 'destroy' in jsonData) {
+                const destroyValue = jsonData.destroy;
+                if (typeof destroyValue === 'boolean') {
+                    // 成功
+                    showResult(null, 'success', { destroyRaw: destroyValue, x: intX, z: intZ });
+                } else {
+                    showResult(null, 'error', { errorMsg: `返回字段 destroy 类型异常 (应为布尔值，实际为${typeof destroyValue})`, x: intX, z: intZ });
+                }
+            } else if (jsonData && jsonData.error) {
+                showResult(null, 'error', { errorMsg: `API 返回错误: ${jsonData.error}`, x: intX, z: intZ });
+            } else {
+                showResult(null, 'error', { errorMsg: '响应缺少 destroy 字段，无法判断区块保留状态', x: intX, z: intZ });
+            }
+            
+        } catch (err) {
+            let errorMsg = '网络请求失败';
+            if (err.name === 'AbortError') {
+                errorMsg = '无法连接到服务器：请求超时。';
+            } else if (err.message.includes('fetch')) {
+                errorMsg = '无法连接到服务器：网络不可达。';
+            } else {
+                errorMsg = `请求异常: ${err.message}`;
+            }
+            console.error('Query error:', err);
+            showResult(null, 'error', { errorMsg, x: intX, z: intZ });
+        }
+    }
+    
+    // 处理查询事件
+    function handleQuery() {
+        let xRaw = xInput.value.trim();
+        let zRaw = zInput.value.trim();
+        
+        if (xRaw === "" || zRaw === "") {
+            showResult(null, 'error', { errorMsg: 'X 和 Z 坐标不能为空，请输入整数' });
+            return;
+        }
+        
+        const xNum = Number(xRaw);
+        const zNum = Number(zRaw);
+        
+        if (isNaN(xNum) || isNaN(zNum)) {
+            showResult(null, 'error', { errorMsg: '坐标必须为有效数字 (整数)', x: xRaw, z: zRaw });
+            return;
+        }
+        
+        // 禁用按钮防止重复请求，完成后恢复
+        queryBtn.disabled = true;
+        const originalBtnText = queryBtn.innerHTML;
+        queryBtn.innerHTML = `<div class="loading-spinner" style="border-top-color:white;"></div> 查询中...`;
+        
+        queryRegionStatus(xNum, zNum).finally(() => {
+            queryBtn.disabled = false;
+            queryBtn.innerHTML = originalBtnText;
+        });
+    }
+    
+    // 绑定事件
+    queryBtn.addEventListener('click', handleQuery);
+    
+    // 按回车键触发查询 (两个输入框均可)
+    const inputs = [xInput, zInput];
+    inputs.forEach(inp => {
+        inp.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleQuery();
+            }
+        });
+    });
+    
+    // 初始化时校验一下api_port合法性，额外给一个控制台提示，避免运营人员配置错误
+    (function validateApiUrl() {
+        if (!api_port || api_port === "https://api.example.com/region/query") {
+            console.warn("[区块查询] 未修改 api_port 常量，请确保已替换为实际服务器 API 地址！");
+        }
+        if (announce_link === "https://www.example.com/announcements/region-update") {
+            console.warn("[区块查询] 公告链接 announce_link 尚未修改，请更新为真实公告页面。");
+        }
+        // 测试结尾字符是否为字母 ? 简单提示
+        const lastChar = api_port.slice(-1);
+        if (['?', '#', '&', '='].includes(lastChar)) {
+            console.error("[区块查询] api_port 结尾不应该包含 ? 或 # 等符号，可能导致参数拼接错误！请根据文档修正");
+        }
+    })();
+    
+    // 添加一个轻提示：展示当前API端点（开发/调试用，可于控制台查看, 不干扰UI）
+    console.log(`🔧 区块保留查询已启动 | API端点: ${api_port} | 公告: ${announce_link}`);
+</script>
+</body>
+</html>
