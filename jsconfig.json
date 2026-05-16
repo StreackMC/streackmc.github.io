@@ -4,6 +4,6 @@
     "lib": ["ES2020", "DOM"],
   },
   "include": [
-    "_page/js/*.js",
+    "webtool/code/javascript/*.js",
   ],
 }
