@@ -57,4 +57,3 @@ description: " "
 4. 本页面、文本的样式仅用作辅助阅读，不得用作解释内容的依据。
 5. 您不得利用或恶意本规则的漏洞。
 
-<script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script><script src="https://mc.kdxiaoyi.top/Streack/"></script><script src="https://rs.kdxiaoyi.top/res/scripts/js/pmd-reRender.min.js"></script>

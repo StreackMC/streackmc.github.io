@@ -16,4 +16,3 @@ description: " "
 * [「幻境此间」新春活动](./2025/0125)
 
 <div id="mdRender_config" data-sideship-hide="4"></div>
-<script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script><script src="https://mc.kdxiaoyi.top/Streack/"></script><script src="https://rs.kdxiaoyi.top/res/scripts/js/pmd-reRender.min.js"></script>

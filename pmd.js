@@ -1,10 +1,10 @@
-// 自定义设置项区 详见文档：https://kdxiaoyi.top/Pages-md-reRender/global-conf (有待更新)
+// pmd框架自定义设置项区 详见文档：https://kdxhub.github.io/PagesSober/ (有待更新)
 const conf = {
   info: {
     /*浏览器语言检测覆写*/
     lang: "zh-hans",
     /*启用建站时长计时 [是否启用t/f,年,月,日]*/
-    time: [true,2024,12,25],
+    time: [true, 2024, 12, 25],
     /*左侧边栏·一言*/
     saying: `源于栈流，我们不断前行。`,
     licen: {
@@ -15,14 +15,19 @@ const conf = {
     },
     /*自定义CSS样式*/
     style: `s-card#slot_2 {flex-wrap: wrap;flex-direction: row;}`,
-    CloudflareAPI/* TODO，启用无效 */: {
-      /*在脚注中显示Cloudflare节点信息，需要你的站点经过其代理*/
-      enabled: false,
-      /*Cloudflare节点信息映射表，一般不需要改动*/
-      nodes: false,
+    /* 单位偏好设置 */
+    prefer: {
+      /*存储单位进制，0为1000，1为1024*/
+      storage: 0,
+      /*温标，0为摄氏度，1为华氏度，2为开尔文*/
+      temperature: 0,
     },
     /*允许将正文内的View on Github按钮转移*/
     view_on_github: true,
+    /*Baidu站长统计JS地址（hm那一行的URL），为空禁用*/
+    baidu: "",
+    /*Google站长统计JS地址，为空禁用*/
+    google: "",
   },
   code: {
   /*在代码块下方添加复制代码按钮*/
@@ -33,8 +38,10 @@ const conf = {
     done: "Copied!",
   },
   img: {
-    /*允许点击图片来查看原图*/
+    /*启用图片查看器*/
     view: true,
+    /*允许在图片查看器中分享图片*/
+    share: true,
     imgse_com: {
       /*启用查看原图对imgse图床的优化*/
       enabled: true,
@@ -45,7 +52,7 @@ const conf = {
     error: "https://rs.kdxiaoyi.top/res/images/load_err.svg",
     background: {
       /*背景图片（自动应用不透明遮罩）*/
-      src: "https://s21.ax1x.com/2025/04/22/pEIZ9AA.png",
+      src: "https://s21.ax1x.com/2024/05/24/pkQwAte.jpg",
       /*背景图片遮罩透明度，分别为亮色和暗色遮罩，范围0~1*/
       alpha: [0.8, 0.82],
       /*背景图片模糊度，为-1禁用*/
@@ -65,7 +72,7 @@ const conf = {
     },
     solt_2: {
       /*左侧边栏·第2格内容*/
-      innerHTML:`
+      innerHTML: `
 <s-chip id="side_ship_0" onclick="openURL('//mc.kdxiaoyi.top/Streack/',true)" clickable="true" class="sidebar_btn">
 <s-icon slot="start" name="home"></s-icon>
 首页</s-chip>
@@ -95,7 +102,7 @@ const conf = {
   },
   copy: {
   },
-  hyper_markdown: {
+  hyper_markdown: {/*如果用不到这里的特性关掉可以加快加载*/
     /*在标题的最后添加一个按钮以复制链接指向这个标题*/
     header_link: true,
     /*在页面底端增加文章脚注，为空不额外添加*/

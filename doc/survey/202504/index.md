@@ -23,4 +23,3 @@ description: "调研结果公示"
 
 已收到相关反馈，会逐步探索发放各种礼盒的可能性。
 
-<script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script><script src="https://mc.kdxiaoyi.top/Streack/"></script><script src="https://rs.kdxiaoyi.top/res/scripts/js/pmd-reRender.min.js"></script>
