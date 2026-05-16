@@ -1,27 +1,31 @@
-<!DOCTYPE HTML><html lang="zh-cn">
+<!DOCTYPE HTML>
+<html lang="zh-cn">
+
 <head>
   <style></style>
   <title>栈流Streack</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <script src="https://mc.kdxiaoyi.top/Streack/"></script>
-  <script src="//rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script>
-  <link rel="stylesheet" href="//rs.kdxiaoyi.top/res/css/-predef.css" />
-  <link rel="stylesheet" href="//rs.kdxiaoyi.top/res/css/redirect.css" />
-  <link rel="stylesheet" href="//rs.kdxiaoyi.top/res/css/sober-theme-turquoise.css" />
-  <link rel="stylesheet" href="//rs.kdxiaoyi.top/res/css/font.css" />
+  <script src="https://mc.kdxiaoyi.top/Streack/pmd.js"></script>
+  <script src="/res/scripts/js/sober@1.0.6.min.js"></script>
+  <link rel="stylesheet" href="/res/static/site/predefs.css" />
+  <link rel="stylesheet" href="/res/static/site_rs/redirect.css" />
+  <link rel="stylesheet" href="/res/css/sober-theme-turquoise.css" />
+  <link rel="stylesheet" href="/res/static/site/font.css" />
 </head>
+
 <body>
   <s-page id="pageRoot" theme="light">
     <s-appbar id="appbarRoot">
       <s-tooltip slot="navigation">
-        <s-icon-button id="menuBtn" type="filled-tonal" slot="trigger" onclick="document.querySelector('s-drawer').toggle()">
+        <s-icon-button id="menuBtn" type="filled-tonal" slot="trigger"
+          onclick="document.querySelector('s-drawer').toggle()">
           <s-icon name="menu"></s-icon>
         </s-icon-button>
         切换侧栏
       </s-tooltip>
-      <div id="pageTitle" slot="headline">  </div>
+      <div id="pageTitle" slot="headline"> </div>
     </s-appbar>
     <s-drawer id="mainContent">
       <div id="LeftSiderbar" slot="start"><s-scroll-view class="unselectable" style="height: 100%; padding-bottom: 1rem;">
@@ -85,6 +89,7 @@
     </s-drawer>
     <div id="config" data-default_from="栈流Streack" data-default_uri="http://streackmc.kdxiaoyi.top:16258/status.html"></div>
   </s-page>
-  <script src="//rs.kdxiaoyi.top/res/scripts/js/redirect.js"></script>
+  <script src="/res/static/site_rs/redirect.js"></script>
 </body>
+
 </html>
