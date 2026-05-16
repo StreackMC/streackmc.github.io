@@ -15,13 +15,24 @@ google_analytics:
 
 # 包含的文件
 include:
-  - file_example
+  - _release
+  - assets
+  - doc
+  - h5event
+  - webtool
+  - 404.html
+  - index.html
+  - LICENSE
+  - pmd.js
 
 # 不包含的文件
 exclude:
   - Gemfile
   - Gemfile.lock
   - CNAME
+  - .gitignore
+  - jsconfig.json
+  - readme.md
 
 url: 'https://mc.kdxiaoyi.top'
 
