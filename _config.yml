@@ -15,11 +15,10 @@ google_analytics:
 
 # 包含的文件
 include:
-  - _release
-  - assets
-  - doc
-  - h5event
-  - h5event/_100_110010001
+  - _release/
+  - assets/
+  - doc/
+  - h5event/
   - webtool
   - 404.html
   - index.html
@@ -50,8 +49,8 @@ paginate_path: /page:num/
 # ADVANCED CONFIG BELOW. NO MODIFY WITHOUT SPECIAL CASE.
 plugins:
   - jekyll-feed
-#   - jekyll-sitemap
-#   - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-paginate
 theme: minima
 livereload: true
 debug: true
