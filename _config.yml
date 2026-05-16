@@ -19,6 +19,7 @@ include:
   - assets
   - doc
   - h5event
+  - h5event/_100_110010001
   - webtool
   - 404.html
   - index.html
