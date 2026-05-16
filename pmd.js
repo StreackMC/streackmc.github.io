@@ -2,7 +2,7 @@
 const conf = {
   info: {
     /*浏览器语言检测覆写*/
-    lang: "zh-hans",
+    lang: "zh-cn",
     /*启用建站时长计时 [是否启用t/f,年,月,日]*/
     time: [true, 2024, 12, 25],
     /*左侧边栏·一言*/
@@ -52,7 +52,7 @@ const conf = {
     error: "https://rs.kdxiaoyi.top/res/images/load_err.svg",
     background: {
       /*背景图片（自动应用不透明遮罩）*/
-      src: "https://s21.ax1x.com/2024/05/24/pkQwAte.jpg",
+      src: "http://mc.kdxiaoyi.top/Streack/assets/img/cover.png",
       /*背景图片遮罩透明度，分别为亮色和暗色遮罩，范围0~1*/
       alpha: [0.8, 0.82],
       /*背景图片模糊度，为-1禁用*/
@@ -106,7 +106,7 @@ const conf = {
     /*在标题的最后添加一个按钮以复制链接指向这个标题*/
     header_link: true,
     /*在页面底端增加文章脚注，为空不额外添加*/
-    footer: `Copyright © 2025, Streack & kdxiaoyi. All Right Reserved.<br><a href="https://mc.kdxiaoyi.top/Streack/policy/user" target="_blank">用户协议</a> | <a href="https://mc.kdxiaoyi.top/Streack/policy/privacy" target="_blank">隐私政策</a> | <a href="mailto:streack@kdxiaoyi.top" target="_blank">电子邮箱</a> | <a href="https://github.com/StreackMC" target="_blank">Github</a> | <a href="https://mc.kdxiaoyi.top/our_license">版权许可</a><br>此站点与Mojang Studio、Microsoft或网易Netease没有任何关联。`,
+    footer: `Copyright © 2026, Streack & kdxiaoyi. All Right Reserved.<br><a href="https://mc.kdxiaoyi.top/Streack/policy/user" target="_blank">用户协议</a> | <a href="https://mc.kdxiaoyi.top/Streack/policy/privacy" target="_blank">隐私政策</a> | <a href="mailto:streack@kdxiaoyi.top" target="_blank">电子邮箱</a> | <a href="https://github.com/StreackMC" target="_blank">Github</a> | <a href="https://mc.kdxiaoyi.top/our_license">版权许可</a><br>此站点与Mojang Studio、Microsoft或网易Netease没有任何关联。`,
     /*检查引用部分高级语法，详见文档*/
     quotepro: [true,`#1A73E7`,`#FBC116`,`#E23B2E`,`#30C496`],
   },
@@ -130,4 +130,4 @@ const conf = {
   },
 };
 /*在复制的文本结尾追加文字，见文档*/
-conf.copy.endnote = `Copyright © 2025, kdxiaoyi & Streack.<br>本站点和服务器与Mojang Studio、Microsoft、网易Netease均没有关联。`;
+conf.copy.endnote = `Copyright © 2026, kdxiaoyi & Streack.<br>本站点和服务器与Mojang Studio、Microsoft、网易Netease均没有关联。`;
