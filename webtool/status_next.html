@@ -1,31 +1,29 @@
-<!DOCTYPE HTML>
-<html lang="zh-cn">
-
+<!DOCTYPE HTML><html lang="zh-cn">
 <head>
   <style></style>
-  <title>栈流Streack</title>
+  <title>栈流Streack：UUID生成器</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
   <meta name="mobile-web-app-capable" content="yes" />
   <script src="https://mc.kdxiaoyi.top/Streack/pmd.js"></script>
-  <script src="/res/scripts/js/sober@1.0.6.min.js"></script>
-  <link rel="stylesheet" href="/res/static/site/predefs.css" />
-  <link rel="stylesheet" href="/res/static/site_rs/redirect.css" />
-  <link rel="stylesheet" href="/res/css/sober-theme-turquoise.css" />
-  <link rel="stylesheet" href="/res/static/site/font.css" />
+  <script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script>
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/css/sober-theme-turquoise.css" />
+  <link rel="stylesheet" href="./code/css/uuidg.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/predefs.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/font.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/SourceHanSerifCN/result.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/WenQuanWeiMiHei/result.css" />
 </head>
-
 <body>
   <s-page id="pageRoot" theme="light">
     <s-appbar id="appbarRoot">
       <s-tooltip slot="navigation">
-        <s-icon-button id="menuBtn" type="filled-tonal" slot="trigger"
-          onclick="document.querySelector('s-drawer').toggle()">
+        <s-icon-button id="menuBtn" type="filled-tonal" slot="trigger" onclick="document.querySelector('s-drawer').toggle()">
           <s-icon name="menu"></s-icon>
         </s-icon-button>
         切换侧栏
       </s-tooltip>
-      <div id="pageTitle" slot="headline"> </div>
+      <div id="pageTitle" slot="headline"> UUID生成器（Beta） </div>
     </s-appbar>
     <s-drawer id="mainContent">
       <div id="LeftSiderbar" slot="start"><s-scroll-view class="unselectable" style="height: 100%; padding-bottom: 1rem;">
@@ -69,27 +67,16 @@
         </s-card>
       </div></s-scroll-view>
       <s-scroll-view id="pContent" class="selectable">
-        <s-card id="notice" class="main-card unselectable">
-          <h1 id="msg">请稍后，<br>您将被重定向。</h1>
-          <p id="goal">请坐和放宽。</p>
-          <s-button onclick="window.history.back();">
-            <s-icon slot="start" name="arrow_back"></s-icon>
-            返回上一页
-          </s-button>
-          <s-button id="goBtn" disabled="true">
-            <s-icon slot="end" name="arrow_forward"></s-icon>
-            立即前往<span id="secDisplay"> (3)</span>
-          </s-button>
-          <s-linear-progress id="counter" animated="true"></s-linear-progress>
+        <s-card id="resultCard" class="main-card">
+          <h3>升级优化中</h3>
+          <p>
+            本功能正在升级维护中，暂时无法使用。对此带来的不便我们深表歉意。<br>
+            冒险家可以使用<a href="https://mc.kdxiaoyi.top/Streack/webtool/status" herf="https://mc.kdxiaoyi.top/Streack/webtool/status" note="算了就这样吧">旧版查询页</a>进行状态查询。
+          </p>
         </s-card>
-        <div class="unselectable" id="no_script">
-          <h1>您似乎没有启用JavaScript，而这是此网站正常运行所必须的。<br>此外，该页面不支持过老的浏览器内核。</h1>
-        </div>
+        <div class="unselectable" id="no_script"><h1>您似乎没有启用JavaScript，而这是此网站正常运行所必须的。<br>此外，该页面不支持过老的浏览器内核。</h1></div>
       </s-scroll-view>
     </s-drawer>
-    <div id="config" data-default_from="栈流Streack" data-default_uri="http://streackmc.kdxiaoyi.top:16258/status.html"></div>
   </s-page>
-  <script src="/res/static/site_rs/redirect.js"></script>
 </body>
-
 </html>
