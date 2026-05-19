@@ -20,6 +20,7 @@ description: "致力于解决您所想知道的一切"
 * [优化粘液科技体验](./wiki/slimefun)
 * [将Bedrock账户绑定至Java版账户](./wiki/linkaccount)
 * [群智能体指南](./wiki/qbot)
+* [特有进度与挑战](./wiki/advancements)
 
 ## 在线工具
 
