@@ -140,7 +140,7 @@ pageElements = {
 
 // Import Library: uuidWorker
 try {
-  uuidWorker = new Worker("https://mc.kdxiaoyi.top/Streack/webtool/code/javascript/uuidg.worker.js");
+  uuidWorker = new Worker("./code/javascript/uuidg.worker.js");
   if (typeof uuidWorker !== "object") {
     throw new Error("Worker对象创建失败");
   };
@@ -259,19 +259,19 @@ if (conf.info.time[0] && !conf.sidebar.replacement) {
 } else {pageElements.content.lsidebar.slot4.time.remove();};
 
 // 注册高度自适应
-TextareaHelper = {
+const TextareaHelper = {
   updataHeight: function(t){
     t.style.height = 'fit-content';
     t.style.height = t.scrollHeight + 'px';
     return t.offsetHeight;
   },
   updataLineCount: function (t, d) {
-    d.innerHTML = "";
+    eles = [""];
     for (let i = 0; i < (t.value.lineCount() - 0); i++) {
-      let span = document.createElement("span");
-      span.dataset.line = i + 1;
-      d.appendChild(span);
+      // 使用文本创建
+      eles.push(`<span data-line="${i+1}"></span>`);
     };
+    d.innerHTML = eles.join("");
     return [t.offsetHeight, d.offsetHeight];
   },
   setValue: function (t, v, d) {
