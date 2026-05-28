@@ -13,13 +13,14 @@ description: "致力于解决您所想知道的一切"
 ## QuickStart
 * [资讯一览](./news/)
 * [更新日志](./updata)
-* [服务器特性](./info/feature)
+* [服务器特性](./policy/feature)
 
-## 教程
-* [无法连接到服务器的一般解决方案](./help/solution)
-* [优化粘液科技体验](./help/slimefun)
-* [将Bedrock账户绑定至Java版账户](./help/linkaccount)
-* [群智能体指南](./help/qbot)
+## 教程与百科
+* [无法连接到服务器的一般解决方案](./wiki/solution)
+* [优化粘液科技体验](./wiki/slimefun)
+* [将Bedrock账户绑定至Java版账户](./wiki/linkaccount)
+* [群智能体指南](./wiki/qbot)
+* [特有进度与挑战](./wiki/advancements)
 
 ## 在线工具
 
@@ -37,8 +38,7 @@ description: "致力于解决您所想知道的一切"
 
 ## 信息公示
 * [栈流Streack团队成员](../webtool/credits.html)
-* [「熵流」概率公示](./info/entroprix)
-* [封禁信息公示](./info/ban)
+* [「熵流」概率公示](./policy/entroprix)
 * [历次调研结果公示](./survey/)
 
 ## 政策方针
