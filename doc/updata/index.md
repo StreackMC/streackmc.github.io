@@ -25,6 +25,6 @@ description: "见证每一次变化"
 
 ## 过往版本更新日志
 
-* [S1P1「樱飘雪霁月」](./s1-je1_21_3)
+* [S1P1「樱飘雪霁月」](./s1p1)
 
 <div id="mdRender_config" data-sideship-hide="2"></div>

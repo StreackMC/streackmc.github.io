@@ -6,7 +6,7 @@ description: "linkaccount"
  创建：2025-02-22 | 最后更新：2025-05-14</small><br>
 
 > [x] 以下内容现已过时：<br>
-> * 该系统在[S1P1/25w19a](/Streack/doc/updata/s1-je1_21_3/#25w19a)中被大幅修改；
+> * 该系统在[S1P1/25w19a](/Streack/doc/updata/s1p1/#25w19a)中被大幅修改；
 > * 这篇文章已有至少半年未更新了。
 
 ## 前言
