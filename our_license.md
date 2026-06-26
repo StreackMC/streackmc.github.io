@@ -79,5 +79,3 @@ description: "授权协议"
 > MIT <https://github.com/apprat/sober>
 
 其余另有作品仅在部分页面中使用，在相应页面内声明而不在此处列出。
-
-<script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script><script src="https://streack.top/_page/js/pmd.js"></script><script src="https://rs.kdxiaoyi.top/res/scripts/js/pmd-reRender.min.js"></script>
