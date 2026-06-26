@@ -2,7 +2,7 @@
 title: "特有进度与挑战"
 description: "非原版的部分进度与挑战一览表"
 ---
-<small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><small><a href="../../">←返回</a> |
+<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../../">←返回</a> |
  创建：2026-05-19 | 最后更新：2026-05-19</small><br>
 
 > [@] 仍在施工中……

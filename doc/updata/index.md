@@ -2,12 +2,12 @@
 title: "更新日志"
 description: "见证每一次变化"
 ---
-<small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><small><a href="../">←返回</a></small><br>
+<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../">←返回</a></small><br>
 
 ## 未来计划
 
 > [i] 开发中内容，请以最终实装品质为准。<br>
-> 若您有其它建议、BUG反馈、申诉需求等，请前往[Github฿](https://github.com/StreackMC/Streack/issues/new)或[Gitee฿](https://gitee.com/kdxiaoyi/Streack/issues/new)发起Issue。
+> 若您有其它建议、BUG反馈、申诉需求等，请前往[Github฿](https://github.com/StreackMC/issues/new)或[Gitee฿](https://gitee.com/kdxiaoyi/issues/new)发起Issue。
 
 ### 即将到来
 

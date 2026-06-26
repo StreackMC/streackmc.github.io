@@ -2,7 +2,7 @@
 title: "栈流Streack隐私政策"
 description: " "
 ---
-<small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><br><small><a href="/Streack/doc">←返回</a></small><br>
+<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><br><small><a href="/doc">←返回</a></small><br>
 
 > [i] 历史版本一览：<br>
 > 

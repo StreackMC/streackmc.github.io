@@ -46,7 +46,7 @@ pageElements = {
   issueMessage: {
     _: {
       value: ["github", "gitee", "qq", "email"],
-      link: ["https://github.com/StreackMC/Streack/issues/new", "https://gitee.com/kdxiaoyi/Streack/issues/new", "javascript:qqunlink()", "mailto:streack@kdxiaoyi.top"],
+      link: ["https://github.com/StreackMC/issues/new", "https://gitee.com/kdxiaoyi/issues/new", "javascript:qqunlink()", "mailto:streack@kdxiaoyi.top"],
     },
     root: document.getElementById("issue_message"),
     selector: document.getElementById("issue_link_selector"),

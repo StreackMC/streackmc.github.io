@@ -2,7 +2,7 @@
 title: "栈流Streack用户协议"
 description: " "
 ---
-<small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><small><a href="/Streack/doc">←返回</a></small><br>
+<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="/doc">←返回</a></small><br>
 
 > [i] 历史版本一览：<br>
 > 
@@ -48,7 +48,7 @@ description: " "
   4.3 本协议可能会根据法律法规、业务发展等需要进行更新。如协议内容发生重大变更，我们将通过公告或其他合理方式通知您。如您继续使用我们的服务，即表示您同意接受更新后的协议。
 </p>
 <p>
-  4.4 本服务会为您提供随机奖励机制（亦称“抽卡”），相关概率公示见于该网址：http://streack.top/Streack/doc/policy/entroprix。
+  4.4 本服务会为您提供随机奖励机制（亦称“抽卡”），相关概率公示见于该网址：http://streack.top/doc/policy/entroprix。
 </p>
 <p>
   4.5 本协议最终解释权归属我们所有。

@@ -2,9 +2,9 @@
 title: "文档目录"
 description: "致力于解决您所想知道的一切"
 ---
-<small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><br><small><a href="/Streack/">←返回</a></small><br>
+<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><br><small><a href="/">←返回</a></small><br>
 
-![栈流Streack的宣传图片，含有栈流Streack的基本信息](https://streack.top/Streack/assets/img/referral_1.png "宣传图")
+![栈流Streack的宣传图片，含有栈流Streack的基本信息](https://streack.top/assets/img/referral_1.png "宣传图")
 
 > [!] 服务器目前处于**「低效能运营」**状态。[详情请查看此公告฿](/news/2025/1204)。
 
@@ -24,9 +24,9 @@ description: "致力于解决您所想知道的一切"
 
 ## 在线工具
 
-* [栈流Streack状态查询](/Streack/webtool/status_next)
-* [通用MC服务器状态查询](/Streack/webtool/status)
-* [UUID生成器（Beta）](/Streack/webtool/uuid)
+* [栈流Streack状态查询](/webtool/status_next)
+* [通用MC服务器状态查询](/webtool/status)
+* [UUID生成器（Beta）](/webtool/uuid)
 
 ## 近期活动
 * [「试用版密钥」不详宝库无限开](./event/2025/0920)

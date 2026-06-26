@@ -2,7 +2,7 @@
 title: "赞助方针"
 description: " "
 ---
-<small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><small><a href="../../">←返回</a> |
+<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../../">←返回</a> |
  创建：2026-04-03 | 最后更新：2026-04-03</small><br>
 
 > [@] 未成年小朋友请不要赞助哦。
@@ -22,7 +22,7 @@ description: " "
 > [!] 代肝是代肝，`/give`是`/give`。本方针禁止后者。
 
 ## 参与赞助列表
-您赞助服务器可以获得「赞助列表」权益，该列表会在[官网文档](/Streack/webtool/credits.html)、资源包的著作权信息列表、服务器内暂停界面的著作权表（仅Java版）内展示。<br>
+您赞助服务器可以获得「赞助列表」权益，该列表会在[官网文档](/webtool/credits.html)、资源包的著作权信息列表、服务器内暂停界面的著作权表（仅Java版）内展示。<br>
 该列表随每次资源包更新而更新。
 
 ### 身份鉴别

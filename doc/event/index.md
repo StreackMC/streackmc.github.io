@@ -2,7 +2,7 @@
 title: "活动一览"
 description: " "
 ---
-<small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><br><small><a href="/Streack/doc/">←返回</a></small><br>
+<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><br><small><a href="/doc/">←返回</a></small><br>
 
 > [i] 关于现在正在进行的活动，请在[文档首页](../)查看。
 

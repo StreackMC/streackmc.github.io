@@ -2,7 +2,7 @@
 title: "备份与恢复方针"
 description: " "
 ---
-<small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><small><a href="../../">←返回</a> |
+<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../../">←返回</a> |
  创建：2025-10-28 | 最后更新：2026-04-03</small><br>
 
 ## 备份
@@ -21,7 +21,7 @@ description: " "
 
 > [i] 「恢复」、「回档」与「回滚」在此语境下是同一个意思。
 
-> [@] 如果您有回档需求，请[发起工单](/Streack/#issue)。
+> [@] 如果您有回档需求，请[发起工单](/#issue)。
 
 对服务器进行回档遵循以下原则：
 

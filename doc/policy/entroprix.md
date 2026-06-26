@@ -2,7 +2,7 @@
 title: "「熵流」概率公示"
 description: "Entroprix Probability Publicity"
 ---
-<small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><small><a href="../../">←返回</a></small><br>
+<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../../">←返回</a></small><br>
 
 ## 定义<sup>*</sup>
 ### 熵流

@@ -2,7 +2,7 @@
 title: "栈流Streack 2025年6月用户调研"
 description: "调研结果公示"
 ---
-<small id="old_menu"><a href="/Streack/">首页</a> | <a href="/Streack/doc/">文档</a></small><small><a href="../../">←返回</a> |
+<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../../">←返回</a> |
  创建：2025-06-25 | 最后更新：2025-07-01</small><br>
 
 > [i] [调研问卷网址฿](https://wj.qq.com/s2/22395825/n6st/)<br>
