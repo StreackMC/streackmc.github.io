@@ -19,8 +19,6 @@ const DOM = {
   slot0Float: document.getElementById("slot0-bg-floatingText"),
   noScript: document.getElementById("no_script"),
 
-  slots: document.querySelectorAll("div[slot='true']"),
-
   dialog: {
     play: document.getElementById("go-play"),
   },
@@ -248,113 +246,20 @@ function issuelink() {
 
 
 // ============================================================
-//  五、滚动分栏系统
-//    关键重构：calcWhereOfWhichSlot 不再写入 window.location.hash
-//    仅由 scrollToSlot 在返回首屏时通过 replaceState 同步 URL
+//  五、伪参数路由（使用 pushState 替代 hash）
 // ============================================================
 
-const SlotScroll = {
-  currentIndex: 0,
-  total: DOM.slots.length,
-  touchStartY: 0,
-};
-
-/** 定位当前可见分栏（仅更新内部状态，不操作 URL/hash） */
-function updateCurrentSlot() {
-  let closest = 0;
-  let minDist = Infinity;
-  DOM.slots.forEach((el, i) => {
-    const rect = el.getBoundingClientRect();
-    const dist = Math.abs(rect.top - 0);
-    if (rect.top <= 0 && dist < minDist) {
-      minDist = dist;
-      closest = i;
-    }
-  });
-  // 首屏浮层未消失时仍视为 slot 0
-  if (closest === 1 && DOM.slot0Float.classList.contains("show")) {
-    closest = 0;
-  }
-  SlotScroll.currentIndex = closest;
-}
-
-/** 滚动到指定分栏 */
-function scrollToSlot(slotIndex) {
-  const target = DOM.slots[slotIndex];
-  if (!target) {
-    msg("不存在的分栏……", "好", true);
-    console.error("scrollToSlot：分栏不存在", slotIndex);
-    return;
-  }
-
-  const wasOnSlot0 = SlotScroll.currentIndex === 0;
-  const goingToSlot0 = slotIndex === 0;
-
-  // 离开首屏：上移首屏并隐藏浮层
-  if (wasOnSlot0 && !goingToSlot0) {
-    DOM.slots[0].style.top = "-100vh";
-    DOM.slot0Float.classList.remove("show");
-  }
-
-  // 返回首屏：重置位置，延迟显示浮层
-  if (!wasOnSlot0 && goingToSlot0) {
-    DOM.slots[0].style.top = "0";
-    DOM.main.scrollTo({ top: 0, behavior: "smooth" });
-    setTimeout(() => DOM.slot0Float.classList.add("show"), 500);
-    SlotScroll.currentIndex = 0;
-    // replaceState 不产生新历史条目
-    history.replaceState(null, "", "#0");
-    return;
-  }
-
-  DOM.main.scrollTo({ top: target.offsetTop, behavior: "smooth" });
-  SlotScroll.currentIndex = slotIndex;
-}
-
-/** 统一滚动事件处理 */
-function handleScroll(e) {
-  updateCurrentSlot();
-
-  let delta;
-  const THRESHOLD = 5;
-  if (e.type === "wheel") {
-    delta = e.deltaY;
-  } else if (e.type === "touchmove") {
-    delta = SlotScroll.touchStartY - e.touches[0].clientY;
-  } else {
-    return;
-  }
-
-  // 首屏 ↔ 内容区切换
-  if (delta > THRESHOLD && SlotScroll.currentIndex === 0) {
-    e.preventDefault();
-    scrollToSlot(1);
-  } else if (delta < -THRESHOLD && DOM.main.scrollTop === 0) {
-    e.preventDefault();
-    scrollToSlot(0);
-  }
-}
-
-DOM.main.addEventListener("wheel", handleScroll, { passive: false });
-DOM.main.addEventListener(
-  "touchstart",
-  (e) => { SlotScroll.touchStartY = e.touches[0].clientY; },
-  { passive: true }
-);
-DOM.main.addEventListener("touchmove", handleScroll, { passive: false });
-
-
-// ============================================================
-//  六、哈希路由（仅用于深层链接 & 浏览器回退/前进）
-//    说明：此处只被动响应 hashchange，不再主动写入 hash
-// ============================================================
-
-function handleHashChange(rawHash) {
-  const h = (rawHash || location.hash.replace("#", "")).toLowerCase();
+/**
+ * 通过 pushState 打开弹窗，不污染 URL hash
+ * @param {string} name - 动作标识：play/donate/qqun/comment/issue
+ */
+function func(name) {
+  const h = String(name).toLowerCase();
+  closeAllDialogs();
 
   switch (h) {
     case "play":
-      openPlayDialog();
+      DOM.dialog.play.showed = true;
       break;
     case "donate":
       donatelink("first");
@@ -374,26 +279,21 @@ function handleHashChange(rawHash) {
     case "issue_done":
       issuelink();
       break;
-    default: {
-      const idx = parseInt(h, 10);
-      if (
-        !isNaN(idx) &&
-        idx >= 0 &&
-        idx < SlotScroll.total &&
-        idx !== SlotScroll.currentIndex
-      ) {
-        scrollToSlot(idx);
-      }
-      break;
-    }
+    default:
+      return; // 未知动作，不 pushState
   }
+
+  history.pushState({ action: h }, "", window.location.pathname + window.location.search);
 }
 
-window.addEventListener("hashchange", () => handleHashChange());
+// 浏览器后退/前进时关闭弹窗
+window.addEventListener("popstate", () => {
+  closeAllDialogs();
+});
 
 
 // ============================================================
-//  七、运营计时器
+//  六、运营计时器
 // ============================================================
 
 function refreshCountup(year, month, day) {
@@ -415,7 +315,7 @@ function refreshCountup(year, month, day) {
 
 
 // ============================================================
-//  八、事件绑定
+//  七、事件绑定
 // ============================================================
 
 // 禁止 Safari 双指缩放
@@ -485,23 +385,20 @@ DOM.donate.checkbox.addEventListener("click", () => {
 
 
 // ============================================================
-//  九、初始化
+//  八、初始化
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
   // 移除非脚本提示
   if (DOM.noScript) DOM.noScript.remove();
 
-  // 处理初始 hash（深层链接）
-  const initialHash = location.hash.replace("#", "");
-  if (initialHash) {
-    handleHashChange(initialHash);
-  }
+  // 处理初始深层链接（通过 func() + pushState）
+  const params = new URLSearchParams(window.location.search);
+  const action = params.get("action");
+  if (action) func(action);
 
   // 首屏浮层
-  if (SlotScroll.currentIndex === 0) {
-    DOM.slot0Float.classList.add("show");
-  }
+  DOM.slot0Float.classList.add("show");
 
   // 启动计时器
   if (window.conf && window.conf.info && window.conf.info.time && window.conf.info.time[0]) {
