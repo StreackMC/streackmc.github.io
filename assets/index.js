@@ -477,13 +477,18 @@ function shrinkToolbar() {
  * @param {string} [slotName] - 插槽名称，不传则 toolbar2 内容为空
  */
 function expandToolbar(slotName) {
-  DOM.toolbar.root.classList.add('expanded');
   toolbarExpanded = true;
   // 隐藏所有插槽，仅激活指定插槽
   Object.values(toolbarSlots).forEach((s) => s.classList.remove('active'));
   if (slotName && toolbarSlots[slotName]) {
     toolbarSlots[slotName].classList.add('active');
+    if (toolbarSlots[slotName].dataset.noscroll) {
+      DOM.toolbar.actions.root.style.overflow = 'hidden';
+    } else {
+      DOM.toolbar.actions.root.style.overflow = 'auto';
+    }
   }
+  DOM.toolbar.root.classList.add('expanded');
 }
 
 /** 切换Toolbar（兼容旧调用） */
@@ -517,6 +522,10 @@ async function loadSearchSuggestions() {
     const res = await fetch('./assets/search-suggestion.json');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     searchSuggestionData = await res.json();
+    // 数据加载完成后，如果搜索插槽已激活则重新渲染
+    if (toolbarSlots.search?.classList.contains('active')) {
+      renderSuggestions(filterSuggestions(searchInput.value.trim()));
+    }
   } catch (err) {
     console.warn('搜索建议加载失败:', err);
   }
@@ -525,29 +534,42 @@ async function loadSearchSuggestions() {
 /**
  * 高效关键词匹配
  * 返回按匹配度排序的建议列表
+ * 无搜索词时按原始顺序返回全部
  */
-function filterSuggestions(query) {
-  if (!query || !searchSuggestionData.length) return [];
+function filterSuggestions(query = '') {
+  if (!searchSuggestionData.length) return [];
+
+  // 无搜索词时按原始顺序返回全部
+  if (!query) return searchSuggestionData.slice();
+
   const q = query.toLowerCase();
   const scored = [];
 
   for (const item of searchSuggestionData) {
     let score = 0;
-    // 检查每个关键词
+
+    // 关键词匹配
     for (const kw of item.keywords) {
       const kwLower = kw.toLowerCase();
       if (kwLower === q) {
-        score += 100; // 完全匹配权重最高
+        score += 100;
       } else if (kwLower.startsWith(q)) {
-        score += 50;  // 前缀匹配
+        score += 50;
       } else if (kwLower.includes(q)) {
-        score += 20;  // 子串匹配
+        score += 20;
       }
     }
-    // 标题匹配加分
+
+    // 标题匹配
     if (item.title.toLowerCase().includes(q)) {
       score += 10;
     }
+
+    // 链接匹配
+    if (item.link.toLowerCase().includes(q)) {
+      score += 8;
+    }
+
     if (score > 0) {
       scored.push({ item, score });
     }
@@ -570,7 +592,8 @@ function calcMaxSuggestionItems() {
   const searchBoxHeight = searchBox ? searchBox.offsetHeight : 48;
   const reserved = searchBoxHeight + 20; // 搜索框 + padding
   const available = containerRect.height - reserved;
-  if (available <= 0) return 0;
+  // 容器尚在展开动画中（高度未就绪）时使用默认值
+  if (available <= 8) return 5;
   // 每条建议约 36px（padding + line-height）
   return Math.max(1, Math.floor(available / 36));
 }
@@ -598,19 +621,18 @@ function setHighlight(index) {
   items[index].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
-/** 渲染搜索建议 */
+/** 渲染搜索建议（有查询时末尾追加「在 Bing 上查找」） */
 function renderSuggestions(items) {
   searchSuggestions.innerHTML = '';
-  currentSuggestionItems = items;
+  currentSuggestionItems = [];
 
-  if (!items.length) {
-    searchSuggestions.classList.remove('has-items');
-    clearHighlight();
-    return;
-  }
+  const currentQuery = searchInput.value.trim();
+  const hasQuery = !!currentQuery;
 
+  // 有查询时需为 Bing 项预留 1 个位置
   const maxItems = calcMaxSuggestionItems();
-  const limited = items.slice(0, maxItems);
+  const bingReserved = hasQuery ? 1 : 0;
+  const limited = items.slice(0, Math.max(0, maxItems - bingReserved));
 
   limited.forEach((item, i) => {
     const el = document.createElement('div');
@@ -631,7 +653,46 @@ function renderSuggestions(items) {
     });
     el.addEventListener('mousemove', () => setHighlight(i));
     searchSuggestions.appendChild(el);
+    currentSuggestionItems.push(item);
   });
+
+  // 有查询时在末尾追加「在 Bing 上查找」
+  if (hasQuery) {
+    const bingIdx = limited.length;
+    const bingEl = document.createElement('div');
+    bingEl.className = 'ts-suggestion-item ts-suggestion-bing';
+    bingEl.style.animationDelay = `${bingIdx * 40}ms`;
+    bingEl.innerHTML = `
+      <span class="ts-suggestion-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
+          <path fill="#888" d="M14.298,27.202l-3.87-3.87c0.701-0.929,1.122-2.081,1.122-3.332c0-3.06-2.489-5.55-5.55-5.55c-3.06,0-5.55,2.49-5.55,5.55 c0,3.061,2.49,5.55,5.55,5.55c1.251,0,2.403-0.421,3.332-1.122l3.87,3.87c0.151,0.151,0.35,0.228,0.548,0.228 s0.396-0.076,0.548-0.228C14.601,27.995,14.601,27.505,14.298,27.202z M1.55,20c0-2.454,1.997-4.45,4.45-4.45 c2.454,0,4.45,1.997,4.45,4.45S8.454,24.45,6,24.45C3.546,24.45,1.55,22.454,1.55,20z" transform="translate(0, -9)"/>
+        </svg>
+      </span>
+      <span class="ts-suggestion-title">在 Bing 上查找「${escapeHtml(currentQuery)}」</span>
+    `;
+    bingEl.addEventListener('click', () => {
+      const q = searchInput.value.trim();
+      if (!q) return;
+      const url = 'https://cn.bing.com/search?q=' +
+        encodeURIComponent(q + ' (site:streack.top OR site:mc.kdxiaoyi.top)');
+      window.open(url, '_blank');
+      searchInput.value = '';
+      shrinkToolbar();
+    });
+    bingEl.addEventListener('mousemove', () => setHighlight(bingIdx));
+    searchSuggestions.appendChild(bingEl);
+    currentSuggestionItems.push({ link: null, title: '在 Bing 上查找', bing: true });
+  }
+
+  if (!limited.length && !hasQuery) {
+    // 无数据也无查询 → 不显示列表
+    searchSuggestions.classList.remove('has-items');
+    clearHighlight();
+    searchSuggestions.innerHTML = '';
+    currentSuggestionItems = [];
+    return;
+  }
+
   searchSuggestions.classList.add('has-items');
   // 默认高亮第一个
   setHighlight(0);
@@ -669,6 +730,8 @@ DOM.toolbar.btns.search.addEventListener('click', () => {
     searchInput.value = "";
     requestAnimationFrame(() => {
       searchInput.focus();
+      // 展开后立即显示默认建议列表
+      renderSuggestions(filterSuggestions());
     });
   }
 });
@@ -694,7 +757,15 @@ searchInput.addEventListener('keydown', (e) => {
     e.preventDefault();
     if (highlightIndex >= 0 && highlightIndex < currentSuggestionItems.length) {
       const item = currentSuggestionItems[highlightIndex];
-      openURL(item.link, true);
+      if (item.bing) {
+        const q = searchInput.value.trim();
+        if (!q) return;
+        const url = 'https://cn.bing.com/search?q=' +
+          encodeURIComponent(q + ' (site:streack.top OR site:mc.kdxiaoyi.top)');
+        window.open(url, '_blank');
+      } else {
+        openURL(item.link, true);
+      }
       searchInput.value = '';
       shrinkToolbar();
     }
@@ -703,7 +774,16 @@ searchInput.addEventListener('keydown', (e) => {
     if (highlightIndex >= 0 && highlightIndex < currentSuggestionItems.length) {
       e.preventDefault();
       const item = currentSuggestionItems[highlightIndex];
-      openURL(item.link, true);
+      if (item.bing) {
+        // Bing 查找项
+        const q = searchInput.value.trim();
+        if (!q) return;
+        const url = 'https://cn.bing.com/search?q=' +
+          encodeURIComponent(q + ' (site:streack.top OR site:mc.kdxiaoyi.top)');
+        window.open(url, '_blank');
+      } else {
+        openURL(item.link, true);
+      }
       searchInput.value = '';
       shrinkToolbar();
       return;
@@ -820,4 +900,7 @@ window.streack = {
   donatelink: donatelink,
   issuelink: issuelink,
   openState: openState,
+  switchToolbar: switchToolbar,
+  expandToolbar: expandToolbar,
+  shrinkToolbar: shrinkToolbar,
 };
