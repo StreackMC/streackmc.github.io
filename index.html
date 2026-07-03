@@ -19,11 +19,10 @@
     <div class="unselectable" style="position: absolute;" id="no_script">
       <h1>您似乎没有启用JavaScript，而这是此网站正常运行所必须的。<br>此外，该页面不支持过老的浏览器内核。</h1>
     </div>
-    <div lg-render id="main" class="main">
+    <div id="main" class="main">
       <div class="bg"></div>
       <div class="bg-filter"></div>
-      <div class="glass" id="toolbar"
-        data-config="{&quot;blurAmount&quot;:1,&quot;refraction&quot;:0.75,&quot;chromAberration&quot;:0.05,&quot;edgeHighlight&quot;:0.07,&quot;specular&quot;:0,&quot;fresnel&quot;:1,&quot;distortion&quot;:0,&quot;cornerRadius&quot;:16,&quot;zRadius&quot;:43,&quot;opacity&quot;:1,&quot;saturation&quot;:0,&quot;brightness&quot;:0,&quot;shadowOpacity&quot;:0.25,&quot;shadowSpread&quot;:10,&quot;bevelMode&quot;:0}">
+      <div class="glass" id="toolbar">
         栈流Streack
       </div>
       <div class="contents">
@@ -31,7 +30,7 @@
           <h1>栈流Streack</h1>
         </div>
       </div>
-      <div class="glass" id="floating" data-config='{"blurAmount": 0.25,"button": true,"cornerRadius": 24}'
+      <div class="glass" clickable id="floating" style="--lg-radius:24px;"
         onclick='javascript:window.streack.openState("play")'>
         <s-tooltip>
           <svg slot="trigger" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +131,6 @@
   <script>
     window.streack = {};
   </script>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@ybouane/liquidglass/dist/index.js"></script>
   <script type="module" src="./assets/index.js"></script>
 </body>
 </html>

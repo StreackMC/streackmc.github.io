@@ -9,8 +9,6 @@
  *   - 转换为 ES Module，集成 LiquidGlass
  */
 
-import { LiquidGlass } from 'https://cdn.jsdelivr.net/npm/@ybouane/liquidglass/dist/index.js';
-
 // ============================================================
 //  一、DOM 元素引用
 // ============================================================
@@ -386,37 +384,8 @@ DOM.donate.checkbox.addEventListener("click", () => {
   DOM.donate.fold.folded = !DOM.donate.checkbox.checked;
 });
 
-
 // ============================================================
-//  八、LiquidGlass 初始化
-// ============================================================
-
-/** 声明式初始化 LiquidGlass 毛玻璃特效 */
-async function initLiquidGlass() {
-  // 选中全部根元素
-  document.querySelectorAll("*[lg-render]").forEach((root) => {
-    // 再选择全部子控件
-    let subs = Array.of(...root.querySelectorAll(".glass"));
-    subs = subs.filter((sub) => {
-      if (!(sub instanceof HTMLElement)) return false;
-      return true;
-    });
-    try {
-      console.log("准备在", root, "上初始化 LiquidGlass 控件", subs);
-      LiquidGlass.init({
-        root: root,
-        glassElements: subs,
-      });
-    } catch (error) {
-      console.warn("在", root, "上的 LiquidGlass 初始化失败:", err);
-    }
-  });
-
-}
-
-
-// ============================================================
-//  九、初始化
+//  八、初始化
 // ============================================================
 
 if (document.readyState === 'loading') {
@@ -425,7 +394,7 @@ if (document.readyState === 'loading') {
   init();
 }
 
-function init() {
+async function init() {
   // 移除非脚本提示
   if (DOM.noScript) DOM.noScript.remove();
 
@@ -433,14 +402,12 @@ function init() {
   const params = new URLSearchParams(window.location.search);
   const action = params.get("action");
   if (action) openState(action);
-  // 初始化 LiquidGlass
-  initLiquidGlass();
 }
 
 
 
 // ============================================================
-//  十、导出（ES Module 接口）
+//  九、导出（ES Module 接口）
 // ============================================================
 
 // 导出内部 API 以供其他模块使用

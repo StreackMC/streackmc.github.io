@@ -11,11 +11,18 @@
    1. Reset & Base —— 基础重置与全局规则
    ============================================================ */
 :root {
+  --toolbar-padding-v: 1rem;/* 工具栏内容距离左侧距离 */
+  --toolbar-padding-h: .7rem;/* 工具栏内容距离顶部距离 */
+  --toolbar-height: 2.2em;/* 工具栏高度 */
+  /* 以下为自动计算区域，无需修改 */
   --h: 100vh;
+  --w: 100vw;
+  --h-clean: calc(var(--h) - var(--toolbar-height));/* 不计入工具栏的高度 */
 }
 @supports (height: 100dvh) {
   :root {
     --h: 100dvh !important;
+    --w: 100dvw !important;
   }
 }
 
@@ -49,14 +56,12 @@ s-page {
 /* --- 背景滤镜层 --- */
 s-page .bg-filter {
   background-color: rgba(222, 222, 222, 0.1);
-  backdrop-filter: blur(10px);
-  width: 100vw;
+  width: var(--w);
   height: var(--h);
   position: absolute;
 }
 s-page[dark] .bg-filter {
   background-color: rgba(22, 22, 22, 0.4);
-  backdrop-filter: blur(10px);
 }
 
 /* --- 彩色渐变背景 --- */
@@ -83,18 +88,25 @@ s-page[dark] .bg-filter {
     -30vmax 20vmax,
     50vmax 50vmax;
   background-repeat: no-repeat;
-  width: 100vw;
+  width: var(--w);
   height: var(--h);
   position: absolute;
 }
 
 /* --- 主内容区域 --- */
 .main {
-  width: 100vw;
+  width: var(--w);
   height: var(--h);
   background: transparent;
   overflow-x: hidden;
   overflow-y: auto;
+}
+.main::-webkit-scrollbar {
+  width: 4px;
+}
+.main::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
 }
 
 /* --- Slot 布局 --- */
@@ -122,6 +134,7 @@ s-page[dark] .bg-filter {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 #floating svg {
   width: 1.5em;
@@ -135,17 +148,10 @@ s-dialog div.dialog {
 
 /* --- 最上方工具栏 --- */
 #toolbar {
-  --toolbar-padding-v: 1rem;/* 水平间距 */
-  --toolbar-padding-h: .7rem;/* 垂直间距 */
   position: sticky;
-  top: 0;
+  top: 0px;
   width: calc(100% - var(--toolbar-padding-v) - var(--toolbar-padding-v));
-  height: 2.2rem;
-  background-color: rgba(22, 22, 22, 0.2);
-  border-radius: 16px;
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  height: var(--toolbar-height);
   z-index: 10;
   display: flex;
   flex-direction: row;
@@ -163,12 +169,33 @@ span#counting_msg {
   height: fit-content;
 }
 
+/* 毛玻璃效果 */
+.glass {
+  background-color: rgba(22, 22, 22, 0.2);
+  border-radius: var(--lg-radius, 16px);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition:
+    border 200ms,
+    background-color 200ms;
+}
+.glass[clickable] {
+  transition:
+    border 200ms,
+    background-color 200ms;
+}
+.glass[clickable]:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(22, 22, 22, 0.2);
+}
+
 /* ============================================================
    5. Contents —— 主内容
    ============================================================ */
 .contents {
-  min-height: 1000%;
   width: 100%;
+  height: max-content;
   display: flex;
   flex-direction: column;
   overflow: visible;
@@ -183,15 +210,18 @@ span#counting_msg {
   width: 100%;
 }
 
-.contents .content:first-child {
-  height: 100dvh;
-}
-
+/* 首栏 */
 .content[slot="0"] {
+  height: var(--h-clean);
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: aqua;
+  position: relative;
+}
+.content[slot="0"] * {
+  margin-top: 0;
+  margin-bottom: 0;
 }
