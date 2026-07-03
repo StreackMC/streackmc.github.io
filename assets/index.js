@@ -1,12 +1,15 @@
 /**
- * Streack 主页 · 主逻辑
+ * Streack 主页 · 主逻辑（ES Module）
  * 重构目标：消除历史记录污染，功能语义清晰化
  * 变更说明：
  *   - 移除所有滚动/弹窗操作对 window.location.hash 的写入，根源上消除历史污染
  *   - 弹窗不再通过 hash 导航触发，直接调用函数；hash 仅用于深层链接和浏览器回退
  *   - 修复 dc/dC 大小写 Bug；移除 ChangeColorTheme 等死代码
  *   - 使用清晰的语义化命名，分模块组织
+ *   - 转换为 ES Module，集成 LiquidGlass
  */
+
+import { LiquidGlass } from 'https://cdn.jsdelivr.net/npm/@ybouane/liquidglass/dist/index.js';
 
 // ============================================================
 //  一、DOM 元素引用
@@ -70,7 +73,6 @@ function getCurrentTimeZone() {
     ianaName: Intl.DateTimeFormat().resolvedOptions().timeZone || "unknown",
   };
 }
-window.timezone = getCurrentTimeZone();
 
 /** 获取 URL 查询参数 */
 function getQueryString(name) {
@@ -253,7 +255,7 @@ function issuelink() {
  * 通过 pushState 打开弹窗，不污染 URL hash
  * @param {string} name - 动作标识：play/donate/qqun/comment/issue
  */
-function func(name) {
+function openState(name) {
   const h = String(name).toLowerCase();
   closeAllDialogs();
 
@@ -280,6 +282,7 @@ function func(name) {
       issuelink();
       break;
     default:
+      console.warn('未知的动作：' + h);
       return; // 未知动作，不 pushState
   }
 
@@ -385,26 +388,92 @@ DOM.donate.checkbox.addEventListener("click", () => {
 
 
 // ============================================================
-//  八、初始化
+//  八、LiquidGlass 初始化
 // ============================================================
 
-document.addEventListener("DOMContentLoaded", () => {
+/** 声明式初始化 LiquidGlass 毛玻璃特效 */
+async function initLiquidGlass() {
+  // 选中全部根元素
+  document.querySelectorAll("*[lg-render]").forEach((root) => {
+    // 再选择全部子控件
+    let subs = Array.of(...root.querySelectorAll(".glass"));
+    subs = subs.filter((sub) => {
+      if (!(sub instanceof HTMLElement)) return false;
+      return true;
+    });
+    try {
+      console.log("准备在", root, "上初始化 LiquidGlass 控件", subs);
+      LiquidGlass.init({
+        root: root,
+        glassElements: subs,
+      });
+    } catch (error) {
+      console.warn("在", root, "上的 LiquidGlass 初始化失败:", err);
+    }
+  });
+
+}
+
+
+// ============================================================
+//  九、初始化
+// ============================================================
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+function init() {
   // 移除非脚本提示
   if (DOM.noScript) DOM.noScript.remove();
 
-  // 处理初始深层链接（通过 func() + pushState）
+  // 处理初始深层链接（通过 openState() + pushState）
   const params = new URLSearchParams(window.location.search);
   const action = params.get("action");
-  if (action) func(action);
+  if (action) openState(action);
+  // 初始化 LiquidGlass
+  initLiquidGlass();
+}
 
-  // 首屏浮层
-  DOM.slot0Float.classList.add("show");
 
-  // 启动计时器
-  if (window.conf && window.conf.info && window.conf.info.time && window.conf.info.time[0]) {
-    const [, y, m, d] = window.conf.info.time;
-    setInterval(() => refreshCountup(y, m, d), 1000);
-  } else if (DOM.counting) {
-    DOM.counting.remove();
-  }
-});
+
+// ============================================================
+//  十、导出（ES Module 接口）
+// ============================================================
+
+// 导出内部 API 以供其他模块使用
+export {
+  DOM,
+  openURL,
+  msg,
+  CopyText,
+  pmdStorage,
+  closeAllDialogs,
+  openPlayDialog,
+  qqunlink,
+  commentlink,
+  donatelink,
+  issuelink,
+  openState,
+  getCurrentTimeZone,
+};
+
+// 暴露给 HTML 内联事件处理器（onclick 等）
+if (!window.streack) {
+  window.streack = {};
+}
+window.streack = {
+  timezone: getCurrentTimeZone(),
+  CopyText: CopyText,
+  msg: msg,
+  openURL: openURL,
+  closeAllDialogs: closeAllDialogs,
+  openPlayDialog: openPlayDialog,
+  qqunlink: qqunlink,
+  commentlink: commentlink,
+  donatelink: donatelink,
+  issuelink: issuelink,
+  openState: openState,
+};
