@@ -1,0 +1,513 @@
+/**
+ * Streack 主页 · 主逻辑
+ * 重构目标：消除历史记录污染，功能语义清晰化
+ * 变更说明：
+ *   - 移除所有滚动/弹窗操作对 window.location.hash 的写入，根源上消除历史污染
+ *   - 弹窗不再通过 hash 导航触发，直接调用函数；hash 仅用于深层链接和浏览器回退
+ *   - 修复 dc/dC 大小写 Bug；移除 ChangeColorTheme 等死代码
+ *   - 使用清晰的语义化命名，分模块组织
+ */
+
+// ============================================================
+//  一、DOM 元素引用
+// ============================================================
+
+const DOM = {
+  page: document.getElementById("page"),
+  main: document.getElementById("main"),
+  counting: document.getElementById("counting"),
+  slot0Float: document.getElementById("slot0-bg-floatingText"),
+  noScript: document.getElementById("no_script"),
+
+  slots: document.querySelectorAll("div[slot='true']"),
+
+  dialog: {
+    play: document.getElementById("go-play"),
+  },
+
+  sheet: {
+    qun: document.getElementById("qun_message"),
+    donate: document.getElementById("donate_message"),
+    comment: document.getElementById("comment_message"),
+    issue: document.getElementById("issue_message"),
+  },
+
+  donate: {
+    thk: document.getElementById("donate_THK_message"),
+    checkbox: document.getElementById("donate_checkbox"),
+    fold: document.getElementById("donate_fold"),
+    selector: document.getElementById("donate_link_selector"),
+  },
+
+  issue: {
+    selector: document.getElementById("issue_link_selector"),
+    values: ["github", "gitee", "qq", "email"],
+    links: [
+      "https://github.com/StreackMC/issues/new",
+      "https://gitee.com/kdxiaoyi/issues/new",
+      null, // QQ 由函数处理
+      "mailto:streack@kdxiaoyi.top",
+    ],
+  },
+
+  qun: { link: document.getElementById("qqunid") },
+  comment: { link: document.getElementById("commentid") },
+};
+
+
+// ============================================================
+//  二、工具函数
+// ============================================================
+
+/** 获取当前时区信息 */
+function getCurrentTimeZone() {
+  const offset = new Date().getTimezoneOffset();
+  const absH = String(Math.abs(offset) / 60).padStart(2, "0");
+  const absM = String(Math.abs(offset) % 60).padStart(2, "0");
+  const sign = offset <= 0 ? "+" : "-";
+  return {
+    offset,
+    offsetStr: `UTC${sign}${absH}:${absM}`,
+    offsetStrMin: `UTC${sign}${Math.abs(offset) / 60}`,
+    ianaName: Intl.DateTimeFormat().resolvedOptions().timeZone || "unknown",
+  };
+}
+window.timezone = getCurrentTimeZone();
+
+/** 获取 URL 查询参数 */
+function getQueryString(name) {
+  const m = window.location.search.substr(1).match(
+    new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i")
+  );
+  return m ? unescape(m[2]) : null;
+}
+
+/**
+ * 打开链接（不产生多余 history 条目）
+ * @param {string} uri - 目标 URI
+ * @param {boolean} stayInSameWindow - 是否在当前窗口打开（默认 false，新窗口）
+ */
+function openURL(uri, stayInSameWindow = false) {
+  const a = document.createElement("a");
+  a.target = stayInSameWindow ? "_self" : "_blank";
+  a.href = uri;
+  a.click();
+  return a;
+}
+
+/** 显示 Snackbar 消息 */
+function msg(message, confirmText, isWarning, duration, onClick, align, icon) {
+  const info = {
+    root: DOM.page,
+    text: message,
+    type: isWarning ? "error" : "basic",
+    action: {},
+  };
+  if (confirmText) info.action.text = String(confirmText);
+  if (duration) info.duration = parseInt(String(duration), 10);
+  if (onClick) info.action.click = onClick;
+  if (align != null) info.align = ["auto", "top", "bottom"][Number(align) % 3];
+  if (icon) info.icon = icon;
+  customElements.get("s-snackbar").builder(info);
+  return info;
+}
+
+/** 复制文本到剪贴板 */
+function CopyText(text) {
+  if (!navigator.clipboard) {
+    msg("未能复制文本，因为方法不支持", "好", true);
+    return false;
+  }
+  navigator.clipboard.writeText(String(text)).then(
+    () => msg("✓ 已复制文本", "好"),
+    () => msg("未能复制文本，因为拒绝访问剪贴板", "好", true)
+  );
+}
+
+
+// ============================================================
+//  三、存储 API（来自 pmd）
+// ============================================================
+
+const pmdStorage = {
+  Cookies: {
+    set(key, value, maxAge, path) {
+      const encoded = `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+      if (maxAge) {
+        const d = new Date(Date.now() + maxAge * 1000);
+        document.cookie = `${encoded}; expires=${d.toUTCString()}; path=${path || "/"}`;
+      } else {
+        document.cookie = `${encoded}; path=${path || "/"}`;
+      }
+    },
+    get(key) {
+      for (const pair of document.cookie.split("; ")) {
+        const [k, v] = pair.split("=", 2);
+        if (decodeURIComponent(k) === key) return decodeURIComponent(v);
+      }
+      return null;
+    },
+    remove(key) { this.set(key, "", -1); },
+    getAll() {
+      const r = {};
+      for (const pair of document.cookie.split("; ")) {
+        const [k, v] = pair.split("=", 2);
+        r[decodeURIComponent(k)] = decodeURIComponent(v);
+      }
+      return r;
+    },
+    reset_dangerous() { Object.keys(this.getAll()).forEach((k) => this.remove(k)); },
+  },
+  Local: {
+    set(key, value) { localStorage.setItem(key, JSON.stringify(value)); },
+    get(key) {
+      try { return JSON.parse(localStorage.getItem(key)); } catch { return localStorage.getItem(key); }
+    },
+    remove(key) { localStorage.removeItem(key); },
+    getAll() {
+      const r = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        r[k] = this.get(k);
+      }
+      return r;
+    },
+    reset_dangerous() { localStorage.clear(); },
+  },
+  Session: {
+    set(key, value) { sessionStorage.setItem(key, JSON.stringify(value)); },
+    get(key) {
+      try { return JSON.parse(sessionStorage.getItem(key)); } catch { return sessionStorage.getItem(key); }
+    },
+    remove(key) { sessionStorage.removeItem(key); },
+    getAll() {
+      const r = {};
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const k = sessionStorage.key(i);
+        r[k] = this.get(k);
+      }
+      return r;
+    },
+    reset_dangerous() { sessionStorage.clear(); },
+  },
+};
+
+
+// ============================================================
+//  四、对话框 / 底栏管理（不操作 hash，不污染历史）
+// ============================================================
+
+/** 关闭所有弹窗 */
+function closeAllDialogs() {
+  document.querySelectorAll("s-bottom-sheet, s-dialog").forEach((el) => {
+    el.showed = false;
+  });
+}
+
+/** 打开「加入游戏」对话框 */
+function openPlayDialog() {
+  closeAllDialogs();
+  DOM.dialog.play.showed = true;
+}
+
+/** 打开加群底栏 */
+function qqunlink() {
+  closeAllDialogs();
+  DOM.sheet.qun.showed = true;
+}
+
+/** 打开好评底栏 */
+function commentlink() {
+  closeAllDialogs();
+  DOM.sheet.comment.showed = true;
+}
+
+/** 赞助倒计时锁状态（-1=空闲, false=暂停, true=已解锁, >0=倒计时） */
+let donateLockCounter = -1;
+const DONATE_CHECKBOX_HTML =
+  '我已认真阅读并同意<a href="./doc/policy/donate">赞助方针</a>。';
+
+/** 打开赞助底栏 */
+function donatelink(from = "first") {
+  if (from.toLowerCase() === "then") {
+    DOM.donate.thk.textContent = "谢谢。";
+    donateLockCounter = true;
+  } else {
+    DOM.donate.thk.textContent = "赞助";
+    donateLockCounter = 10;
+  }
+  closeAllDialogs();
+  DOM.sheet.donate.showed = true;
+}
+
+/** 打开反馈底栏 */
+function issuelink() {
+  closeAllDialogs();
+  DOM.sheet.issue.showed = true;
+}
+
+
+// ============================================================
+//  五、滚动分栏系统
+//    关键重构：calcWhereOfWhichSlot 不再写入 window.location.hash
+//    仅由 scrollToSlot 在返回首屏时通过 replaceState 同步 URL
+// ============================================================
+
+const SlotScroll = {
+  currentIndex: 0,
+  total: DOM.slots.length,
+  touchStartY: 0,
+};
+
+/** 定位当前可见分栏（仅更新内部状态，不操作 URL/hash） */
+function updateCurrentSlot() {
+  let closest = 0;
+  let minDist = Infinity;
+  DOM.slots.forEach((el, i) => {
+    const rect = el.getBoundingClientRect();
+    const dist = Math.abs(rect.top - 0);
+    if (rect.top <= 0 && dist < minDist) {
+      minDist = dist;
+      closest = i;
+    }
+  });
+  // 首屏浮层未消失时仍视为 slot 0
+  if (closest === 1 && DOM.slot0Float.classList.contains("show")) {
+    closest = 0;
+  }
+  SlotScroll.currentIndex = closest;
+}
+
+/** 滚动到指定分栏 */
+function scrollToSlot(slotIndex) {
+  const target = DOM.slots[slotIndex];
+  if (!target) {
+    msg("不存在的分栏……", "好", true);
+    console.error("scrollToSlot：分栏不存在", slotIndex);
+    return;
+  }
+
+  const wasOnSlot0 = SlotScroll.currentIndex === 0;
+  const goingToSlot0 = slotIndex === 0;
+
+  // 离开首屏：上移首屏并隐藏浮层
+  if (wasOnSlot0 && !goingToSlot0) {
+    DOM.slots[0].style.top = "-100vh";
+    DOM.slot0Float.classList.remove("show");
+  }
+
+  // 返回首屏：重置位置，延迟显示浮层
+  if (!wasOnSlot0 && goingToSlot0) {
+    DOM.slots[0].style.top = "0";
+    DOM.main.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => DOM.slot0Float.classList.add("show"), 500);
+    SlotScroll.currentIndex = 0;
+    // replaceState 不产生新历史条目
+    history.replaceState(null, "", "#0");
+    return;
+  }
+
+  DOM.main.scrollTo({ top: target.offsetTop, behavior: "smooth" });
+  SlotScroll.currentIndex = slotIndex;
+}
+
+/** 统一滚动事件处理 */
+function handleScroll(e) {
+  updateCurrentSlot();
+
+  let delta;
+  const THRESHOLD = 5;
+  if (e.type === "wheel") {
+    delta = e.deltaY;
+  } else if (e.type === "touchmove") {
+    delta = SlotScroll.touchStartY - e.touches[0].clientY;
+  } else {
+    return;
+  }
+
+  // 首屏 ↔ 内容区切换
+  if (delta > THRESHOLD && SlotScroll.currentIndex === 0) {
+    e.preventDefault();
+    scrollToSlot(1);
+  } else if (delta < -THRESHOLD && DOM.main.scrollTop === 0) {
+    e.preventDefault();
+    scrollToSlot(0);
+  }
+}
+
+DOM.main.addEventListener("wheel", handleScroll, { passive: false });
+DOM.main.addEventListener(
+  "touchstart",
+  (e) => { SlotScroll.touchStartY = e.touches[0].clientY; },
+  { passive: true }
+);
+DOM.main.addEventListener("touchmove", handleScroll, { passive: false });
+
+
+// ============================================================
+//  六、哈希路由（仅用于深层链接 & 浏览器回退/前进）
+//    说明：此处只被动响应 hashchange，不再主动写入 hash
+// ============================================================
+
+function handleHashChange(rawHash) {
+  const h = (rawHash || location.hash.replace("#", "")).toLowerCase();
+
+  switch (h) {
+    case "play":
+      openPlayDialog();
+      break;
+    case "donate":
+      donatelink("first");
+      break;
+    case "donate_done":
+      donatelink("then");
+      break;
+    case "qqun":
+    case "qqun_done":
+      qqunlink();
+      break;
+    case "comment":
+    case "comment_done":
+      commentlink();
+      break;
+    case "issue":
+    case "issue_done":
+      issuelink();
+      break;
+    default: {
+      const idx = parseInt(h, 10);
+      if (
+        !isNaN(idx) &&
+        idx >= 0 &&
+        idx < SlotScroll.total &&
+        idx !== SlotScroll.currentIndex
+      ) {
+        scrollToSlot(idx);
+      }
+      break;
+    }
+  }
+}
+
+window.addEventListener("hashchange", () => handleHashChange());
+
+
+// ============================================================
+//  七、运营计时器
+// ============================================================
+
+function refreshCountup(year, month, day) {
+  const now = new Date();
+  const yearStart = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
+  const elapsed = now - new Date(year, month - 1, day);
+  const days = Math.floor(elapsed / 86400000);
+  const hours = Math.floor((elapsed % 86400000) / 3600000);
+  const minutes = Math.floor((elapsed % 3600000) / 60000);
+  const seconds = Math.floor((elapsed % 60000) / 1000);
+
+  // ISO-8601 周数
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+  const weekNum = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+
+  DOM.counting.innerHTML = `；今天是${now.getFullYear()}年的第${weekNum}周，迄今为止我们已运营${days}天${hours}小时${minutes}分钟${seconds}秒（${window.timezone.offsetStrMin}）`;
+}
+
+
+// ============================================================
+//  八、事件绑定
+// ============================================================
+
+// 禁止 Safari 双指缩放
+document.addEventListener("gesturestart", (e) => e.preventDefault());
+
+// --- Issue 链接选择器 ---
+DOM.issue.selector.addEventListener("change", (event) => {
+  const idx = DOM.issue.values.indexOf(event.target.value);
+  if (idx < 0 || idx >= DOM.issue.links.length) {
+    msg("不存在的工单链接标识", "好", true);
+    event.target.value = "";
+    return;
+  }
+  const link = DOM.issue.links[idx];
+  if (link) {
+    openURL(link, true);
+  } else if (event.target.value === "qq") {
+    // QQ 特殊处理：直接调用函数而非 javascript: URI
+    qqunlink();
+  }
+  event.target.value = "";
+});
+
+// --- 赞助面板 ---
+DOM.donate.selector.addEventListener("change", (event) => {
+  // 直接跳转支付链接，不再设置 hash 避免污染历史
+  if (event.target.value) {
+    openURL(event.target.value, true);
+  }
+  event.target.value = "";
+});
+
+// 赞助倒计时循环
+setInterval(() => {
+  const cb = DOM.donate.checkbox;
+  if (donateLockCounter === false) {
+    // 暂停状态
+    return;
+  }
+  if (donateLockCounter === true) {
+    // 已解锁
+    cb.disabled = false;
+    DOM.donate.fold.folded = true;
+    donateLockCounter = -1;
+  } else if (donateLockCounter <= 0) {
+    // 倒计时结束，解锁
+    cb.disabled = false;
+    cb.innerHTML = DONATE_CHECKBOX_HTML;
+    donateLockCounter = false;
+  } else {
+    // 倒计时中
+    cb.disabled = true;
+    DOM.donate.fold.folded = true;
+    cb.checked = false;
+    cb.innerHTML = DONATE_CHECKBOX_HTML + `(${donateLockCounter})`;
+    donateLockCounter -= 1;
+  }
+}, 1000);
+
+DOM.donate.checkbox.addEventListener("click", () => {
+  if (DOM.donate.checkbox.disabled) {
+    DOM.donate.checkbox.checked = false;
+    return;
+  }
+  DOM.donate.fold.folded = !DOM.donate.checkbox.checked;
+});
+
+
+// ============================================================
+//  九、初始化
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+  // 移除非脚本提示
+  if (DOM.noScript) DOM.noScript.remove();
+
+  // 处理初始 hash（深层链接）
+  const initialHash = location.hash.replace("#", "");
+  if (initialHash) {
+    handleHashChange(initialHash);
+  }
+
+  // 首屏浮层
+  if (SlotScroll.currentIndex === 0) {
+    DOM.slot0Float.classList.add("show");
+  }
+
+  // 启动计时器
+  if (window.conf && window.conf.info && window.conf.info.time && window.conf.info.time[0]) {
+    const [, y, m, d] = window.conf.info.time;
+    setInterval(() => refreshCountup(y, m, d), 1000);
+  } else if (DOM.counting) {
+    DOM.counting.remove();
+  }
+});
