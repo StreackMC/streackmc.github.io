@@ -223,6 +223,7 @@ function openPlayDialog() {
 /** 打开加群底栏 */
 function qqunlink() {
   closeAllDialogs();
+  openURL("https://qun.qq.com/universal-share/share?ac=1&authKey=s5cU0BgRmCgh7IpO6euWb%2BNfJ0eMAROSmpk2oYHMQPqDBu6gQZ65SZTpv2%2BKV0xb&busi_data=eyJncm91cENvZGUiOiI5Mzk2NTgzMDUiLCJ0b2tlbiI6IlBSbFZsb3M0bHZRZEs5aHBzMnQ0SWFxMTJETWY5M1IzUEU4aThodC9Ja1VNSTAzWXJ5TnFkdWtSeWtlZWM0L1kiLCJ1aW4iOiIxMjkxNjQ2NDAxIn0%3D&data=BklO_dMaEAelBXAEjYa83iYMU5Y2qC7bIrkA2ZtrFWz3HbIkwVvT4IE5_xBP1Wlj4OKod-VVTle9TL8nDGZjig&svctype=4&tempid=h5_group_info", false);
   DOM.sheet.qun.showed = true;
 }
 
@@ -234,8 +235,7 @@ function commentlink() {
 
 /** 赞助倒计时锁状态（-1=空闲, false=暂停, true=已解锁, >0=倒计时） */
 let donateLockCounter = -1;
-const DONATE_CHECKBOX_HTML =
-  '我已认真阅读并同意<a href="./doc/policy/donate">赞助方针</a>。';
+const DONATE_CHECKBOX_HTML = '我已认真阅读并同意赞助方针。';
 
 /** 打开赞助底栏 */
 function donatelink(from = "first") {
@@ -244,7 +244,7 @@ function donatelink(from = "first") {
     donateLockCounter = true;
   } else {
     DOM.donate.thk.textContent = "赞助";
-    donateLockCounter = 10;
+    if (donateLockCounter !== true) donateLockCounter = 10;
   }
   closeAllDialogs();
   DOM.sheet.donate.showed = true;
@@ -284,11 +284,9 @@ function openState(name) {
       qqunlink();
       break;
     case "comment":
-    case "comment_done":
       commentlink();
       break;
     case "issue":
-    case "issue_done":
       issuelink();
       break;
     default:
