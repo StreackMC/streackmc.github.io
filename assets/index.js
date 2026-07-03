@@ -438,23 +438,19 @@ DOM.donate.checkbox.addEventListener("click", () => {
 });
 
 // --- Toolbar按钮 ---
+/** 切换Toolbar状态 */
+const switchToolbar = () => { switchToolbar.status = !switchToolbar.status; if (switchToolbar.status) { expandToolbar(); } else { shrinkToolbar(); }; };
+/** 关闭Toolbar */
+const shrinkToolbar = () => { DOM.toolbar.root.classList.remove('expanded'); switchToolbar.status = false; };
+/** 展开Toolbar */
+const expandToolbar = () => { DOM.toolbar.root.classList.add('expanded'); switchToolbar.status = true; };
 
 // 区域外移动鼠标侧关闭 Toolbar
-const shrinkToolbar = () => { DOM.toolbar.root.classList.remove('expanded'); };
-const expandToolbar = () => { DOM.toolbar.root.classList.add('expanded'); };
 DOM.toolbar.closeArea.addEventListener('click', shrinkToolbar);
 DOM.toolbar.closeArea.addEventListener('mousemove', shrinkToolbar);
 DOM.toolbar.closeArea.addEventListener('touchstart', shrinkToolbar);
 
-let a=false;
-DOM.toolbar.btns.search.addEventListener('click', () => {
-  if (!a) {
-    DOM.toolbar.root.classList.add('expanded');
-  } else {
-    DOM.toolbar.root.classList.remove('expanded');
-  }
-  a = !a;
-});
+DOM.toolbar.btns.search.addEventListener('click', switchToolbar);
 
 // ============================================================
 //  八、初始化
