@@ -1,0 +1,87 @@
+[
+  {
+    "link": "/doc/rule",
+    "keywords": ["规则", "规定", "守则", "管理", "处罚", "封禁", "ban"],
+    "title": "服务器规则"
+  },
+  {
+    "link": "/doc/policy/privacy",
+    "keywords": ["隐私", "政策", "协议", "个人", "信息", "数据"],
+    "title": "隐私政策"
+  },
+  {
+    "link": "/doc/policy/user",
+    "keywords": ["用户", "协议", "条款", "服务", "使用"],
+    "title": "用户协议"
+  },
+  {
+    "link": "/doc/policy/donate",
+    "keywords": ["赞助", "捐赠", "支持", "打赏", "付款", "赞助方针"],
+    "title": "赞助方针"
+  },
+  {
+    "link": "/doc/help/linkaccount",
+    "keywords": ["绑定", "账号", "关联", "链接", "账户"],
+    "title": "账号绑定帮助"
+  },
+  {
+    "link": "/doc/help/qbot",
+    "keywords": ["QQ", "机器人", "Bot", "群聊", "自动"],
+    "title": "QQ机器人帮助"
+  },
+  {
+    "link": "/doc/help/slimefun",
+    "keywords": ["粘液", "科技", "Slimefun", "插件", "玩法"],
+    "title": "Slimefun 玩法指南"
+  },
+  {
+    "link": "/doc/help/solution",
+    "keywords": ["解决", "问题", "故障", "报错", "无法", "进服", "常见问题"],
+    "title": "常见问题解决"
+  },
+  {
+    "link": "/doc/updata/s1p1",
+    "keywords": ["更新", "日志", "版本", "S1P1", "历史"],
+    "title": "S1P1 更新日志"
+  },
+  {
+    "link": "/doc/updata/s1p2",
+    "keywords": ["更新", "日志", "版本", "S1P2", "樱飘雪霁月"],
+    "title": "S1P2「樱飘雪霁月」更新日志"
+  },
+  {
+    "link": "/doc/updata/s2p1",
+    "keywords": ["更新", "日志", "版本", "S2P1", "岭回双壑风"],
+    "title": "S2P1「岭回双壑风」更新日志"
+  },
+  {
+    "link": "/doc/event/2025/0125",
+    "keywords": ["活动", "事件", "2025", "春节", "新年"],
+    "title": "2025 春节活动"
+  },
+  {
+    "link": "/doc/event/2025/0401a",
+    "keywords": ["活动", "愚人节", "2025", "娱乐"],
+    "title": "2025 愚人节活动"
+  },
+  {
+    "link": "/doc/info/ban",
+    "keywords": ["封禁", "申诉", "解封", "处罚", "名单"],
+    "title": "封禁申诉"
+  },
+  {
+    "link": "/doc/info/feature",
+    "keywords": ["功能", "特性", "介绍", "服务器", "特色"],
+    "title": "服务器功能"
+  },
+  {
+    "link": "/webtool/status.html",
+    "keywords": ["状态", "在线", "监控", "服务器", "检测", "存活"],
+    "title": "服务器在线状态"
+  },
+  {
+    "link": "/webtool/uuid.html",
+    "keywords": ["UUID", "查询", "玩家", "正版", "皮肤"],
+    "title": "UUID 查询工具"
+  }
+]

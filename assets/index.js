@@ -437,20 +437,287 @@ DOM.donate.checkbox.addEventListener("click", () => {
   DOM.donate.fold.folded = !DOM.donate.checkbox.checked;
 });
 
-// --- Toolbar按钮 ---
-/** 切换Toolbar状态 */
-const switchToolbar = () => { switchToolbar.status = !switchToolbar.status; if (switchToolbar.status) { expandToolbar(); } else { shrinkToolbar(); }; };
-/** 关闭Toolbar */
-const shrinkToolbar = () => { DOM.toolbar.root.classList.remove('expanded'); switchToolbar.status = false; };
-/** 展开Toolbar */
-const expandToolbar = () => { DOM.toolbar.root.classList.add('expanded'); switchToolbar.status = true; };
+// ============================================================
+//  七-B、Toolbar 插槽管理器
+// ============================================================
 
-// 区域外移动鼠标侧关闭 Toolbar
+/** 缓存所有 toolbar2 插槽 { slotName: HTMLElement } */
+const toolbarSlots = {};
+
+/** 缓存插槽引用 */
+function cacheToolbarSlots() {
+  document.querySelectorAll('[data-toolbar-slot]').forEach((el) => {
+    toolbarSlots[el.dataset.toolbarSlot] = el;
+  });
+}
+
+/** Toolbar 展开状态 */
+let toolbarExpanded = false;
+
+/** 关闭Toolbar（带出场动画） */
+function shrinkToolbar() {
+  DOM.toolbar.root.classList.remove('expanded');
+  toolbarExpanded = false;
+  // 给所有激活的插槽添加 leaving 类播放出场动画
+  Object.values(toolbarSlots).forEach((s) => {
+    if (s.classList.contains('active')) {
+      s.classList.remove('active');
+      s.classList.add('leaving');
+      // 动画结束后清理 leaving
+      s.addEventListener('animationend', function onLeave() {
+        s.classList.remove('leaving');
+        s.removeEventListener('animationend', onLeave);
+      }, { once: true });
+    }
+  });
+}
+
+/**
+ * 展开Toolbar并激活指定插槽
+ * @param {string} [slotName] - 插槽名称，不传则 toolbar2 内容为空
+ */
+function expandToolbar(slotName) {
+  DOM.toolbar.root.classList.add('expanded');
+  toolbarExpanded = true;
+  // 隐藏所有插槽，仅激活指定插槽
+  Object.values(toolbarSlots).forEach((s) => s.classList.remove('active'));
+  if (slotName && toolbarSlots[slotName]) {
+    toolbarSlots[slotName].classList.add('active');
+  }
+}
+
+/** 切换Toolbar（兼容旧调用） */
+function switchToolbar(slotName) {
+  if (toolbarExpanded) {
+    shrinkToolbar();
+  } else {
+    expandToolbar(slotName);
+  }
+}
+
+// 区域外事件关闭 Toolbar
 DOM.toolbar.closeArea.addEventListener('click', shrinkToolbar);
 DOM.toolbar.closeArea.addEventListener('mousemove', shrinkToolbar);
 DOM.toolbar.closeArea.addEventListener('touchstart', shrinkToolbar);
 
-DOM.toolbar.btns.search.addEventListener('click', switchToolbar);
+
+// ============================================================
+//  七-C、搜索功能
+// ============================================================
+
+const searchInput = document.getElementById('toolbar-search-input');
+const searchSuggestions = document.getElementById('toolbar-search-suggestions');
+
+/** 搜索建议数据 */
+let searchSuggestionData = [];
+
+/** 加载搜索建议 JSON */
+async function loadSearchSuggestions() {
+  try {
+    const res = await fetch('./assets/search-suggestion.json');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    searchSuggestionData = await res.json();
+  } catch (err) {
+    console.warn('搜索建议加载失败:', err);
+  }
+}
+
+/**
+ * 高效关键词匹配
+ * 返回按匹配度排序的建议列表
+ */
+function filterSuggestions(query) {
+  if (!query || !searchSuggestionData.length) return [];
+  const q = query.toLowerCase();
+  const scored = [];
+
+  for (const item of searchSuggestionData) {
+    let score = 0;
+    // 检查每个关键词
+    for (const kw of item.keywords) {
+      const kwLower = kw.toLowerCase();
+      if (kwLower === q) {
+        score += 100; // 完全匹配权重最高
+      } else if (kwLower.startsWith(q)) {
+        score += 50;  // 前缀匹配
+      } else if (kwLower.includes(q)) {
+        score += 20;  // 子串匹配
+      }
+    }
+    // 标题匹配加分
+    if (item.title.toLowerCase().includes(q)) {
+      score += 10;
+    }
+    if (score > 0) {
+      scored.push({ item, score });
+    }
+  }
+
+  // 按匹配度降序
+  scored.sort((a, b) => b.score - a.score);
+  return scored.map((s) => s.item);
+}
+
+/**
+ * 计算在不出现滚动条的前提下最多显示多少条建议
+ */
+function calcMaxSuggestionItems() {
+  const container = DOM.toolbar.actions.root;
+  if (!container || !searchSuggestions) return 5;
+  const containerRect = container.getBoundingClientRect();
+  // 留出 padding + 搜索框高度 + 底部间隙
+  const searchBox = document.getElementById('toolbar-search-box');
+  const searchBoxHeight = searchBox ? searchBox.offsetHeight : 48;
+  const reserved = searchBoxHeight + 20; // 搜索框 + padding
+  const available = containerRect.height - reserved;
+  if (available <= 0) return 0;
+  // 每条建议约 36px（padding + line-height）
+  return Math.max(1, Math.floor(available / 36));
+}
+
+/** 当前高亮索引 */
+let highlightIndex = -1;
+
+/** 当前渲染的建议项数据（用于键盘查找） */
+let currentSuggestionItems = [];
+
+/** 清除高亮 */
+function clearHighlight() {
+  searchSuggestions.querySelectorAll('.ts-suggestion-item.highlighted')
+    .forEach((el) => el.classList.remove('highlighted'));
+  highlightIndex = -1;
+}
+
+/** 设置高亮到指定索引 */
+function setHighlight(index) {
+  const items = searchSuggestions.querySelectorAll('.ts-suggestion-item');
+  clearHighlight();
+  if (index < 0 || index >= items.length) return;
+  items[index].classList.add('highlighted');
+  highlightIndex = index;
+  items[index].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+/** 渲染搜索建议 */
+function renderSuggestions(items) {
+  searchSuggestions.innerHTML = '';
+  currentSuggestionItems = items;
+
+  if (!items.length) {
+    searchSuggestions.classList.remove('has-items');
+    clearHighlight();
+    return;
+  }
+
+  const maxItems = calcMaxSuggestionItems();
+  const limited = items.slice(0, maxItems);
+
+  limited.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'ts-suggestion-item';
+    el.style.animationDelay = `${i * 40}ms`;
+    el.innerHTML = `
+      <span class="ts-suggestion-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
+          <path fill="#888" d="M14.298,27.202l-3.87-3.87c0.701-0.929,1.122-2.081,1.122-3.332c0-3.06-2.489-5.55-5.55-5.55c-3.06,0-5.55,2.49-5.55,5.55 c0,3.061,2.49,5.55,5.55,5.55c1.251,0,2.403-0.421,3.332-1.122l3.87,3.87c0.151,0.151,0.35,0.228,0.548,0.228 s0.396-0.076,0.548-0.228C14.601,27.995,14.601,27.505,14.298,27.202z M1.55,20c0-2.454,1.997-4.45,4.45-4.45 c2.454,0,4.45,1.997,4.45,4.45S8.454,24.45,6,24.45C3.546,24.45,1.55,22.454,1.55,20z" transform="translate(0, -9)"/>
+        </svg>
+      </span>
+      <span class="ts-suggestion-title">${escapeHtml(item.title)}</span>
+    `;
+    el.addEventListener('click', () => {
+      openURL(item.link, true);
+      searchInput.value = '';
+      shrinkToolbar();
+    });
+    el.addEventListener('mousemove', () => setHighlight(i));
+    searchSuggestions.appendChild(el);
+  });
+  searchSuggestions.classList.add('has-items');
+  // 默认高亮第一个
+  setHighlight(0);
+}
+
+/** 简单的 HTML 转义 */
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/** 防抖工具 */
+function debounce(fn, delay) {
+  let timer = null;
+  return function (...args) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+/** 输入处理（防抖 200ms） */
+const handleSearchInput = debounce(function () {
+  const query = searchInput.value.trim();
+  const items = filterSuggestions(query);
+  renderSuggestions(items);
+}, 200);
+
+// --- 搜索按钮：展开search插槽 ---
+DOM.toolbar.btns.search.addEventListener('click', () => {
+  if (toolbarExpanded) {
+    shrinkToolbar();
+  } else {
+    expandToolbar('search');
+    searchInput.value = "";
+    requestAnimationFrame(() => {
+      searchInput.focus();
+    });
+  }
+});
+
+// --- 搜索输入事件 ---
+searchInput.addEventListener('input', handleSearchInput);
+
+// --- 搜索键盘导航 ---
+searchInput.addEventListener('keydown', (e) => {
+  const suggestionItems = searchSuggestions.querySelectorAll('.ts-suggestion-item');
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (!suggestionItems.length) return;
+    const next = highlightIndex < suggestionItems.length - 1 ? highlightIndex + 1 : 0;
+    setHighlight(next);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (!suggestionItems.length) return;
+    const prev = highlightIndex > 0 ? highlightIndex - 1 : suggestionItems.length - 1;
+    setHighlight(prev);
+  } else if (e.key === 'Tab' && suggestionItems.length > 0) {
+    e.preventDefault();
+    if (highlightIndex >= 0 && highlightIndex < currentSuggestionItems.length) {
+      const item = currentSuggestionItems[highlightIndex];
+      openURL(item.link, true);
+      searchInput.value = '';
+      shrinkToolbar();
+    }
+  } else if (e.key === 'Enter') {
+    // 有高亮建议时优先跳转建议
+    if (highlightIndex >= 0 && highlightIndex < currentSuggestionItems.length) {
+      e.preventDefault();
+      const item = currentSuggestionItems[highlightIndex];
+      openURL(item.link, true);
+      searchInput.value = '';
+      shrinkToolbar();
+      return;
+    }
+    // 无建议时直接 Bing 搜索
+    const query = searchInput.value.trim();
+    if (!query) return;
+    const url = 'https://cn.bing.com/search?q=' +
+      encodeURIComponent(query + ' (site:streack.top OR site:mc.kdxiaoyi.top)');
+    window.open(url, '_blank');
+    searchInput.value = '';
+    shrinkToolbar();
+  }
+});
 
 // ============================================================
 //  八、初始化
@@ -475,8 +742,11 @@ async function init() {
   // 修正页面滚动位置
   // limitScroll();
 
-  // 修正工具栏状态
-  DOM.toolbar.actions.root.style = "";
+  // 缓存 toolbar2 插槽
+  cacheToolbarSlots();
+
+  // 加载搜索建议
+  loadSearchSuggestions();
 
   // 初始化视频背景
   initVideoBg();
