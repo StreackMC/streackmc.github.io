@@ -24,7 +24,6 @@ const DOM = {
     root: document.getElementById("toolbar-area"),
     btns: {
       root: document.getElementById("toolbar1"),
-      index: document.getElementById("toolbar1-index"),
       search: document.getElementById("toolbar1-search"),
     },
     actions: {
@@ -437,9 +436,6 @@ DOM.donate.checkbox.addEventListener("click", () => {
 });
 
 // --- Toolbar按钮 ---
-DOM.toolbar.btns.index.addEventListener('click', () => {
-  openURL('./', true);
-});
 
 let a=false;
 DOM.toolbar.btns.search.addEventListener('click', () => {

@@ -34,6 +34,30 @@ body {
   display: none;
 }
 
+path {
+  fill: currentColor;
+}
+
+/* --- 一些预设标记 --- */
+*[clickable] {
+  cursor: pointer;
+}
+
+* [mobile-only] {
+  display: none;
+}
+* [pc-only] {
+  display: unset;
+}
+@media screen and (max-width: 833px) {
+  * [mobile-only] {
+    display: unset;
+  }
+  * [pc-only] {
+    display: none;
+  }
+}
+
 /* ============================================================
    Layout —— 页面层级与布局
    ============================================================ */
@@ -150,6 +174,9 @@ s-dialog div.dialog {
   display: grid;
   grid-template-rows: var(--toolbar-height) 1fr;
   transition:
+    padding-right 300ms ease-in-out,
+    padding-left 300ms ease-in-out,
+    width 300ms ease-in-out,
     height 600ms cubic-bezier(0.4, 0, 0.2, 1),
     padding-bottom 600ms cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -160,17 +187,27 @@ s-dialog div.dialog {
   padding-bottom: calc(var(--toolbar-padding-h) + 0.5rem);
 }
 
+/* 在宽度过大时调整显示 */
+@media screen and (min-width: 834px) {
+  #toolbar-area {
+    width: calc(100% - var(--toolbar-padding-v) * 2 - 10% * 2);
+    padding: var(--toolbar-padding-h) calc(var(--toolbar-padding-v) + 10%);
+  }
+}
+
 /* --- 第一行：固定高度，始终可见 --- */
 #toolbar1 {
   height: var(--toolbar-height);
   min-height: 0;
   display: flex;
   flex-direction: row;
-  gap: 1%;
+  gap: 2%;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
   align-content: center;
-  flex-shrink: 0;
+}
+#toolbar1>*:first-child {
+  margin-right: auto;
 }
 
 /* --- 第二行：抽屉内容 --- */
@@ -254,7 +291,7 @@ span#counting_msg {
   position: relative;
   background-image: url("https://s41.ax1x.com/2026/07/03/pmwT7x1.png");
   background-repeat: no-repeat;
-  background-position: 0;
+  background-position: center;
 }
 .content[slot="0"] * {
   margin-top: 0;
