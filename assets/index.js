@@ -212,6 +212,7 @@ function closeAllDialogs() {
   document.querySelectorAll("s-bottom-sheet, s-dialog").forEach((el) => {
     el.showed = false;
   });
+  shrinkToolbar();
 }
 
 /** 打开「加入游戏」对话框 */
@@ -233,18 +234,21 @@ function commentlink() {
   DOM.sheet.comment.showed = true;
 }
 
-/** 赞助倒计时锁状态（-1=空闲, false=暂停, true=已解锁, >0=倒计时） */
+/** 赞助倒计时（>0 倒计时中，-1 空闲） */
 let donateLockCounter = -1;
+
 const DONATE_CHECKBOX_HTML = '我已认真阅读并同意赞助方针。';
 
 /** 打开赞助底栏 */
 function donatelink(from = "first") {
   if (from.toLowerCase() === "then") {
     DOM.donate.thk.textContent = "谢谢。";
-    donateLockCounter = true;
+    // 立即解锁
+    donateLockCounter = 0;
   } else {
     DOM.donate.thk.textContent = "赞助";
-    if (donateLockCounter !== true) donateLockCounter = 10;
+    // 如果已解锁，那么将没有逻辑处理倒计时，也就是自动忽略
+    donateLockCounter = 15;
   }
   closeAllDialogs();
   DOM.sheet.donate.showed = true;
@@ -332,11 +336,6 @@ function refreshCountup(year, month, day) {
 // 禁止 Safari 双指缩放
 document.addEventListener("gesturestart", (e) => e.preventDefault());
 
-// 点击区域外侧关闭 Toolbar
-DOM.toolbar.closeArea.addEventListener('click', () => {
-  DOM.toolbar.root.classList.remove('expanded');
-});
-
 // 页面滚动位置限制，最小更新为 30fps
 // let scrollLimiterRafId = null;
 // let scrollLimiterTimeoutId = null;
@@ -404,31 +403,30 @@ DOM.donate.selector.addEventListener("change", (event) => {
   event.target.value = "";
 });
 
-// 赞助倒计时循环
-setInterval(() => {
+// 赞助倒计时循环（每秒执行一次）
+let donateUnlockingInterval = setInterval(() => {
   const cb = DOM.donate.checkbox;
-  if (donateLockCounter === false) {
-    // 暂停状态
-    return;
-  }
-  if (donateLockCounter === true) {
-    // 已解锁
-    cb.disabled = false;
-    DOM.donate.fold.folded = true;
-    donateLockCounter = -1;
-  } else if (donateLockCounter <= 0) {
-    // 倒计时结束，解锁
-    cb.disabled = false;
-    cb.innerHTML = DONATE_CHECKBOX_HTML;
-    donateLockCounter = false;
-  } else {
-    // 倒计时中
+
+  // 倒计时中：锁定 checkbox，折叠面板关闭，显示剩余秒数
+  if (donateLockCounter > 0) {
     cb.disabled = true;
     DOM.donate.fold.folded = true;
     cb.checked = false;
-    cb.innerHTML = DONATE_CHECKBOX_HTML + `(${donateLockCounter})`;
+    cb.innerHTML = DONATE_CHECKBOX_HTML + `（${donateLockCounter}秒）`;
     donateLockCounter -= 1;
+
+    // 归零时永久解锁
+    if (donateLockCounter <= 0) {
+      donateLockCounter = -1;
+      cb.disabled = false;
+      cb.innerHTML = DONATE_CHECKBOX_HTML;
+      DOM.donate.fold.folded = true;
+      clearInterval(donateUnlockingInterval);
+    }
+    return;
   }
+
+  // 空闲状态（未触发过首次倒计时），不做任何事
 }, 1000);
 
 DOM.donate.checkbox.addEventListener("click", () => {
@@ -440,6 +438,13 @@ DOM.donate.checkbox.addEventListener("click", () => {
 });
 
 // --- Toolbar按钮 ---
+
+// 区域外移动鼠标侧关闭 Toolbar
+const shrinkToolbar = () => { DOM.toolbar.root.classList.remove('expanded'); };
+const expandToolbar = () => { DOM.toolbar.root.classList.add('expanded'); };
+DOM.toolbar.closeArea.addEventListener('click', shrinkToolbar);
+DOM.toolbar.closeArea.addEventListener('mousemove', shrinkToolbar);
+DOM.toolbar.closeArea.addEventListener('touchstart', shrinkToolbar);
 
 let a=false;
 DOM.toolbar.btns.search.addEventListener('click', () => {
