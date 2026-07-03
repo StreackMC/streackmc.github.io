@@ -17,7 +17,7 @@
   /* 以下为自动计算区域，无需修改 */
   --h: 100vh;
   --w: 100vw;
-  --h-clean: calc(var(--h) - var(--toolbar-height));/* 不计入工具栏的高度 */
+  --h-clean: calc(var(--h) - var(--toolbar-height) - var(--toolbar-padding-h) - var(--toolbar-padding-h));/* 不计入工具栏的高度 */
 }
 @supports (height: 100dvh) {
   :root {
