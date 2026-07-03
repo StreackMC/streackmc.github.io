@@ -260,6 +260,20 @@ span#counting_msg {
   border: 1px solid rgba(22, 22, 22, 0.2);
 }
 
+/* 正文栏中带视频的背景 */
+div.slotBg-V {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  height: var(--h);
+  width: var(--w);
+}
+video.slotBg-V {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
 /* ============================================================
    Contents —— 主内容
    ============================================================ */
@@ -282,6 +296,7 @@ span#counting_msg {
 
 /* 首栏 */
 .content[slot="0"] {
+  width: var(--w);
   height: var(--h);
   text-align: center;
   display: flex;
@@ -289,11 +304,15 @@ span#counting_msg {
   align-items: center;
   justify-content: center;
   position: relative;
-  background-image: url("https://s41.ax1x.com/2026/07/03/pmwT7x1.png");
-  background-repeat: no-repeat;
-  background-position: center;
+  overflow: hidden;
 }
-.content[slot="0"] * {
+.content[slot="0"] > * {
+  top: var(--t, unset);
+  right: var(--r, unset);
+  left: var(--l, unset);
+  bottom: var(--b, unset);
+  position: absolute;
   margin-top: 0;
   margin-bottom: 0;
+  z-index: 1;
 }

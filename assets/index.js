@@ -457,6 +457,7 @@ if (document.readyState === 'loading') {
   init();
 }
 
+/** 立即完成页面框架初始化 */
 async function init() {
   // 移除非脚本提示
   if (DOM.noScript) DOM.noScript.remove();
@@ -471,9 +472,41 @@ async function init() {
 
   // 修正工具栏状态
   DOM.toolbar.actions.root.style = "";
+
+  // 初始化视频背景
+  initVideoBg();
 }
 
+/** 立即初始化视频背景 */
+function initVideoBg() {
+  const videos = document.querySelectorAll('video.slotBg-V');
+  videos.forEach((video) => {
+    // 获取对应的video元素
+    const token = `img.slotBg-V[data-ivpair="${video?.dataset?.ivpair}"]`;
 
+    // 计划播放视频并隐藏图片
+    video.currentTime = 0;
+    video.addEventListener('loadeddata', function onBackgroundVideoReady() {
+      // 为了防止长 GOP 在 0 秒处未完全渲染，用 rAF 保证下一帧绘制完成
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => { // 双重 rAF 确保浏览器合成线程已经拿到画面
+          // 先播放（因为loop必须播放才能循环）
+          video.play().then(function onVideoStartPlay() {
+          }).catch(err => {
+            console.warn('自动播放被拦截，需要用户手势');
+            video.addEventListener('click', function onImgClick() {
+              onBackgroundVideoReady();
+              video.removeEventListener('click', onImgClick);
+            });
+          });
+        });
+      });
+
+      // 移除监听，防止重复触发
+      video.removeEventListener('loadeddata', onBackgroundVideoReady);
+    });
+  });
+}
 
 // ============================================================
 //  九、导出（ES Module 接口）
