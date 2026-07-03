@@ -21,8 +21,15 @@ const DOM = {
   noScript: document.getElementById("no_script"),
 
   toolbar: {
-    root: document.getElementById("toolbar"),
-    index: document.getElementById("toolbar-index"),
+    root: document.getElementById("toolbar-area"),
+    btns: {
+      root: document.getElementById("toolbar1"),
+      index: document.getElementById("toolbar1-index"),
+      search: document.getElementById("toolbar1-search"),
+    },
+    actions: {
+      root: document.getElementById("toolbar2"),
+    },
   },
 
   dialog: {
@@ -328,44 +335,44 @@ function refreshCountup(year, month, day) {
 document.addEventListener("gesturestart", (e) => e.preventDefault());
 
 // 页面滚动位置限制，最小更新为 30fps
-let scrollLimiterRafId = null;
-let scrollLimiterTimeoutId = null;
-function limitScroll() {
-  const toolbarHeight = DOM.toolbar.root.offsetHeight;
-  if (DOM.main.scrollTop < toolbarHeight) {
-    DOM.main.scrollTop = toolbarHeight;
-  }
-}
-DOM.main.addEventListener('scroll', function () {
-  // 如果已经有待处理的更新，则不再重复调度
-  if (scrollLimiterRafId !== null || scrollLimiterTimeoutId !== null) {
-    return;
-  }
+// let scrollLimiterRafId = null;
+// let scrollLimiterTimeoutId = null;
+// function limitScroll() {
+//   const toolbarHeight = DOM.toolbar.root.offsetHeight - DOM.toolbar.actions.root.offsetHeight;
+//   if (DOM.main.scrollTop < toolbarHeight) {
+//     DOM.main.scrollTop = toolbarHeight;
+//   }
+// }
+// DOM.main.addEventListener('scroll', function () {
+//   // 如果已经有待处理的更新，则不再重复调度
+//   if (scrollLimiterRafId !== null || scrollLimiterTimeoutId !== null) {
+//     return;
+//   }
 
-  // 1. 调度 requestAnimationFrame（优先）
-  scrollLimiterRafId = requestAnimationFrame(() => {
-    // 如果 setTimeout 尚未触发，则清除它
-    if (scrollLimiterTimeoutId !== null) {
-      clearTimeout(scrollLimiterTimeoutId);
-      scrollLimiterTimeoutId = null;
-    }
-    // 执行更新
-    limitScroll();
-    scrollLimiterRafId = null;
-  });
+//   // 1. 调度 requestAnimationFrame（优先）
+//   scrollLimiterRafId = requestAnimationFrame(() => {
+//     // 如果 setTimeout 尚未触发，则清除它
+//     if (scrollLimiterTimeoutId !== null) {
+//       clearTimeout(scrollLimiterTimeoutId);
+//       scrollLimiterTimeoutId = null;
+//     }
+//     // 执行更新
+//     limitScroll();
+//     scrollLimiterRafId = null;
+//   });
 
-  // 2. 调度 setTimeout 后备（约 30 FPS）
-  scrollLimiterTimeoutId = setTimeout(() => {
-    // 如果 rAF 尚未执行，则取消它
-    if (scrollLimiterRafId !== null) {
-      cancelAnimationFrame(scrollLimiterRafId);
-      scrollLimiterRafId = null;
-    }
-    // 执行更新
-    limitScroll();
-    scrollLimiterTimeoutId = null;
-  }, 33); // 33ms ≈ 30 FPS
-});
+//   // 2. 调度 setTimeout 后备（约 30 FPS）
+//   scrollLimiterTimeoutId = setTimeout(() => {
+//     // 如果 rAF 尚未执行，则取消它
+//     if (scrollLimiterRafId !== null) {
+//       cancelAnimationFrame(scrollLimiterRafId);
+//       scrollLimiterRafId = null;
+//     }
+//     // 执行更新
+//     limitScroll();
+//     scrollLimiterTimeoutId = null;
+//   }, 33); // 33ms ≈ 30 FPS
+// });
 
 // --- Issue 链接选择器 ---
 DOM.issue.selector.addEventListener("change", (event) => {
@@ -430,9 +437,19 @@ DOM.donate.checkbox.addEventListener("click", () => {
 });
 
 // --- Toolbar按钮 ---
-DOM.toolbar.index.addEventListener('click', () => {
+DOM.toolbar.btns.index.addEventListener('click', () => {
   openURL('./', true);
-})
+});
+
+let a=false;
+DOM.toolbar.btns.search.addEventListener('click', () => {
+  if (!a) {
+    DOM.toolbar.root.classList.add('expanded');
+  } else {
+    DOM.toolbar.root.classList.remove('expanded');
+  }
+  a = !a;
+});
 
 // ============================================================
 //  八、初始化
@@ -454,7 +471,10 @@ async function init() {
   if (action) openState(action);
 
   // 修正页面滚动位置
-  DOM.main.scrollTop = DOM.toolbar.root.offsetHeight;
+  // limitScroll();
+
+  // 修正工具栏状态
+  DOM.toolbar.actions.root.style = "";
 }
 
 

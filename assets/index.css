@@ -1,19 +1,10 @@
 /* ============================================================
-   Streack 主页 · 全局样式
-   组织结构：
-     1. Reset & Base
-     2. Layout（页面容器、背景、主区域）
-     3. Components（浮动按钮、弹窗、底栏）
-     4. Utilities（工具类）
-   ============================================================ */
-
-/* ============================================================
-   1. Reset & Base —— 基础重置与全局规则
+   Reset & Base —— 基础重置与全局规则
    ============================================================ */
 :root {
   --toolbar-padding-v: 1rem;/* 工具栏内容距离左侧距离 */
   --toolbar-padding-h: .7rem;/* 工具栏内容距离顶部距离 */
-  --toolbar-height: 2.2em;/* 工具栏高度 */
+  --toolbar-height: 2.2rem;/* 工具栏高度 */
   /* 以下为自动计算区域，无需修改 */
   --h: 100vh;
   --w: 100vw;
@@ -44,7 +35,7 @@ body {
 }
 
 /* ============================================================
-   2. Layout —— 页面层级与布局
+   Layout —— 页面层级与布局
    ============================================================ */
 
 /* --- s-page 容器 --- */
@@ -120,7 +111,7 @@ s-page[dark] .bg-filter {
 }
 
 /* ============================================================
-   3. Components —— 组件样式
+   Components —— 组件样式
    ============================================================ */
 
 /* --- 浮动按钮（Liquid Glass 容器） --- */
@@ -146,25 +137,64 @@ s-dialog div.dialog {
   user-select: none;
 }
 
-/* --- 最上方工具栏 --- */
-#toolbar {
-  position: sticky;
-  top: 0px;
-  width: calc(100% - var(--toolbar-padding-v) - var(--toolbar-padding-v));
-  height: var(--toolbar-height);
+/* --- 上方Toolbar --- */
+#toolbar-area {
   z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% - var(--toolbar-padding-v) * 2);
+  height: var(--toolbar-height);
+  overflow: hidden;
+  padding: var(--toolbar-padding-h) var(--toolbar-padding-v);
+  display: grid;
+  grid-template-rows: var(--toolbar-height) 1fr;
+  transition:
+    height 600ms cubic-bezier(0.4, 0, 0.2, 1),
+    padding-bottom 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 展开：第二行铺满内容 */
+#toolbar-area.expanded {
+  height: calc(var(--h) * 0.382);
+  padding-bottom: calc(var(--toolbar-padding-h) + 0.5rem);
+}
+
+/* --- 第一行：固定高度，始终可见 --- */
+#toolbar1 {
+  height: var(--toolbar-height);
+  min-height: 0;
   display: flex;
   flex-direction: row;
   gap: 1%;
   align-items: center;
-  padding: var(--toolbar-padding-h) var(--toolbar-padding-v) var(--toolbar-padding-h) var(--toolbar-padding-v);
+  justify-content: center;
+  align-content: center;
+  flex-shrink: 0;
 }
-#toolbar > * {
-  cursor: pointer;
+
+/* --- 第二行：抽屉内容 --- */
+#toolbar2 {
+  min-height: 100%;
+  overflow: auto;
+  opacity: 0;
+  transition: opacity 1000ms cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 0.5rem;
+  gap: 0.3rem;
+  border-radius: 12px;
+}
+
+/* 展开：抽屉滑出同时内容渐显（延迟至动画后半段） */
+#toolbar-area.expanded #toolbar2 {
+  opacity: 1;
 }
 
 /* ============================================================
-   4. Utilities —— 工具类
+   Utilities —— 工具类
    ============================================================ */
 
 span#counting_msg {
@@ -194,7 +224,7 @@ span#counting_msg {
 }
 
 /* ============================================================
-   5. Contents —— 主内容
+   Contents —— 主内容
    ============================================================ */
 .contents {
   width: 100%;
@@ -221,7 +251,6 @@ span#counting_msg {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: aqua;
   position: relative;
   background-image: url("https://s41.ax1x.com/2026/07/03/pmwT7x1.png");
   background-repeat: no-repeat;

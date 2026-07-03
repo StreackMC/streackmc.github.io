@@ -19,17 +19,38 @@
     <div class="unselectable" style="position: absolute;" id="no_script">
       <h1>您似乎没有启用JavaScript，而这是此网站正常运行所必须的。<br>此外，该页面不支持过老的浏览器内核。</h1>
     </div>
+    <!-- 显示区域 -->
     <div id="main" class="main">
+      <!-- 背景 -->
       <div class="bg"></div>
       <div class="bg-filter"></div>
-      <div class="glass" id="toolbar">
-        <div id="toolbar-index"><span class="WenQuanWeiMiHei">栈流</span><span class="MiSans" style="color:var(--s-color-primary);">Streack</span></div>
+      <!-- 工具栏 -->
+      <div id="toolbar-area" class="glass">
+        <!-- 展示按钮 -->
+        <div id="toolbar1">
+          <!-- 品牌logo -->
+          <div id="toolbar1-index"><span class="WenQuanWeiMiHei">栈流</span><span class="MiSans"
+              style="color:var(--s-color-primary);">Streack</span></div>
+          <!-- 搜索按钮 -->
+          <s-tooltip id="toolbar1-search">
+            <svg slot="trigger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+              <path
+                d="M14.298,27.202l-3.87-3.87c0.701-0.929,1.122-2.081,1.122-3.332c0-3.06-2.489-5.55-5.55-5.55c-3.06,0-5.55,2.49-5.55,5.55 c0,3.061,2.49,5.55,5.55,5.55c1.251,0,2.403-0.421,3.332-1.122l3.87,3.87c0.151,0.151,0.35,0.228,0.548,0.228 s0.396-0.076,0.548-0.228C14.601,27.995,14.601,27.505,14.298,27.202z M1.55,20c0-2.454,1.997-4.45,4.45-4.45 c2.454,0,4.45,1.997,4.45,4.45S8.454,24.45,6,24.45C3.546,24.45,1.55,22.454,1.55,20z"
+                transform="translate(0, -9)" />
+            </svg>
+            搜索 Streack
+          </s-tooltip>
+        </div>
+        <!-- 操作区域 -->
+        <div id="toolbar2" style="display: none;"></div>
       </div>
+      <!-- 正文 -->
       <div class="contents">
         <div class="content" slot="0">
           <h1>栈流Streack</h1>
         </div>
       </div>
+      <!-- 悬浮按钮 -->
       <div class="glass" clickable id="floating" style="--lg-radius:24px;"
         onclick='javascript:window.streack.openState("play")'>
         <s-tooltip>
@@ -51,6 +72,7 @@
         </s-tooltip>
       </div>
     </div>
+    <!-- 弹出框 -->
     <s-dialog id="go-play">
       <div class="unselectable" slot="headline">加入<span class="WenQuanWeiMiHei">栈流</span><span class="MiSans" style="color:var(--s-color-primary);">Streack</span></div>
       <div class="dialog unselectable">
