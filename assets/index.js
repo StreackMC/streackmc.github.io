@@ -20,6 +20,11 @@ const DOM = {
   slot0Float: document.getElementById("slot0-bg-floatingText"),
   noScript: document.getElementById("no_script"),
 
+  toolbar: {
+    root: document.getElementById("toolbar"),
+    index: document.getElementById("toolbar-index"),
+  },
+
   dialog: {
     play: document.getElementById("go-play"),
   },
@@ -322,6 +327,46 @@ function refreshCountup(year, month, day) {
 // 禁止 Safari 双指缩放
 document.addEventListener("gesturestart", (e) => e.preventDefault());
 
+// 页面滚动位置限制，最小更新为 30fps
+let scrollLimiterRafId = null;
+let scrollLimiterTimeoutId = null;
+function limitScroll() {
+  const toolbarHeight = DOM.toolbar.root.offsetHeight;
+  if (DOM.main.scrollTop < toolbarHeight) {
+    DOM.main.scrollTop = toolbarHeight;
+  }
+}
+DOM.main.addEventListener('scroll', function () {
+  // 如果已经有待处理的更新，则不再重复调度
+  if (scrollLimiterRafId !== null || scrollLimiterTimeoutId !== null) {
+    return;
+  }
+
+  // 1. 调度 requestAnimationFrame（优先）
+  scrollLimiterRafId = requestAnimationFrame(() => {
+    // 如果 setTimeout 尚未触发，则清除它
+    if (scrollLimiterTimeoutId !== null) {
+      clearTimeout(scrollLimiterTimeoutId);
+      scrollLimiterTimeoutId = null;
+    }
+    // 执行更新
+    limitScroll();
+    scrollLimiterRafId = null;
+  });
+
+  // 2. 调度 setTimeout 后备（约 30 FPS）
+  scrollLimiterTimeoutId = setTimeout(() => {
+    // 如果 rAF 尚未执行，则取消它
+    if (scrollLimiterRafId !== null) {
+      cancelAnimationFrame(scrollLimiterRafId);
+      scrollLimiterRafId = null;
+    }
+    // 执行更新
+    limitScroll();
+    scrollLimiterTimeoutId = null;
+  }, 33); // 33ms ≈ 30 FPS
+});
+
 // --- Issue 链接选择器 ---
 DOM.issue.selector.addEventListener("change", (event) => {
   const idx = DOM.issue.values.indexOf(event.target.value);
@@ -384,6 +429,11 @@ DOM.donate.checkbox.addEventListener("click", () => {
   DOM.donate.fold.folded = !DOM.donate.checkbox.checked;
 });
 
+// --- Toolbar按钮 ---
+DOM.toolbar.index.addEventListener('click', () => {
+  openURL('./', true);
+})
+
 // ============================================================
 //  八、初始化
 // ============================================================
@@ -402,6 +452,9 @@ async function init() {
   const params = new URLSearchParams(window.location.search);
   const action = params.get("action");
   if (action) openState(action);
+
+  // 修正页面滚动位置
+  DOM.main.scrollTop = DOM.toolbar.root.offsetHeight;
 }
 
 

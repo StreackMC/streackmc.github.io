@@ -159,6 +159,9 @@ s-dialog div.dialog {
   align-items: center;
   padding: var(--toolbar-padding-h) var(--toolbar-padding-v) var(--toolbar-padding-h) var(--toolbar-padding-v);
 }
+#toolbar > * {
+  cursor: pointer;
+}
 
 /* ============================================================
    4. Utilities —— 工具类
@@ -212,7 +215,7 @@ span#counting_msg {
 
 /* 首栏 */
 .content[slot="0"] {
-  height: var(--h-clean);
+  height: var(--h);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -220,6 +223,9 @@ span#counting_msg {
   justify-content: center;
   color: aqua;
   position: relative;
+  background-image: url("https://s41.ax1x.com/2026/07/03/pmwT7x1.png");
+  background-repeat: no-repeat;
+  background-position: 0;
 }
 .content[slot="0"] * {
   margin-top: 0;
