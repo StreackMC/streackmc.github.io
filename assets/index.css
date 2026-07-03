@@ -163,7 +163,7 @@ s-dialog div.dialog {
 
 /* --- 上方Toolbar --- */
 #toolbar-area {
-  z-index: 10;
+  z-index: 100;
   position: absolute;
   top: 0;
   left: 0;
@@ -180,11 +180,25 @@ s-dialog div.dialog {
     height 600ms cubic-bezier(0.4, 0, 0.2, 1),
     padding-bottom 600ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+#toolbar-outline {
+  z-index: 101;
+  position: absolute;
+  top: calc(var(--h) * 0.382 + var(--toolbar-padding-h) * 2 + 0.5rem);
+  left: 0;
+  width: var(--w);
+  height: calc(var(--h) - (var(--toolbar-padding-h) * 2 + 0.5rem + calc(var(--h) * 0.382)));
+  display: none;
+  cursor: default;
+}
 
 /* 展开：第二行铺满内容 */
 #toolbar-area.expanded {
   height: calc(var(--h) * 0.382);
   padding-bottom: calc(var(--toolbar-padding-h) + 0.5rem);
+}
+/* 外部区域，点击就关 */
+#toolbar-area.expanded + #toolbar-outline {
+  display: block;
 }
 
 /* 在宽度过大时调整显示 */
@@ -263,7 +277,6 @@ span#counting_msg {
 /* 正文栏中带视频的背景 */
 div.slotBg-V {
   position: absolute;
-  z-index: 0;
   top: 0;
   height: var(--h);
   width: var(--w);

@@ -22,6 +22,7 @@ const DOM = {
 
   toolbar: {
     root: document.getElementById("toolbar-area"),
+    closeArea: document.getElementById("toolbar-outline"),
     btns: {
       root: document.getElementById("toolbar1"),
       search: document.getElementById("toolbar1-search"),
@@ -332,6 +333,11 @@ function refreshCountup(year, month, day) {
 
 // 禁止 Safari 双指缩放
 document.addEventListener("gesturestart", (e) => e.preventDefault());
+
+// 点击区域外侧关闭 Toolbar
+DOM.toolbar.closeArea.addEventListener('click', () => {
+  DOM.toolbar.root.classList.remove('expanded');
+});
 
 // 页面滚动位置限制，最小更新为 30fps
 // let scrollLimiterRafId = null;
