@@ -8,6 +8,7 @@
  *   - 使用清晰的语义化命名，分模块组织
  *   - 转换为 ES Module，集成 LiquidGlass
  */
+import { initSearch } from './search.js';
 
 // ============================================================
 //  一、DOM 元素引用
@@ -506,298 +507,7 @@ DOM.toolbar.closeArea.addEventListener('mousemove', shrinkToolbar);
 DOM.toolbar.closeArea.addEventListener('touchstart', shrinkToolbar);
 
 
-// ============================================================
-//  七-C、搜索功能
-// ============================================================
-
-const searchInput = document.getElementById('toolbar-search-input');
-const searchSuggestions = document.getElementById('toolbar-search-suggestions');
-
-/** 搜索建议数据 */
-let searchSuggestionData = [];
-
-/** 加载搜索建议 JSON */
-async function loadSearchSuggestions() {
-  try {
-    const res = await fetch('./assets/search-suggestion.json');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    searchSuggestionData = await res.json();
-    // 数据加载完成后，如果搜索插槽已激活则重新渲染
-    if (toolbarSlots.search?.classList.contains('active')) {
-      renderSuggestions(filterSuggestions(searchInput.value.trim()));
-    }
-  } catch (err) {
-    console.warn('搜索建议加载失败:', err);
-  }
-}
-
-/**
- * 高效关键词匹配
- * 返回按匹配度排序的建议列表
- * 无搜索词时按原始顺序返回全部
- */
-function filterSuggestions(query = '') {
-  if (!searchSuggestionData.length) return [];
-
-  // 无搜索词时按原始顺序返回全部
-  if (!query) return searchSuggestionData.slice();
-
-  const q = query.toLowerCase();
-  const scored = [];
-
-  for (const item of searchSuggestionData) {
-    let score = 0;
-
-    // 关键词匹配
-    for (const kw of item.keywords) {
-      const kwLower = kw.toLowerCase();
-      if (kwLower === q) {
-        score += 100;
-      } else if (kwLower.startsWith(q)) {
-        score += 50;
-      } else if (kwLower.includes(q)) {
-        score += 20;
-      }
-    }
-
-    // 标题匹配
-    if (item.title.toLowerCase().includes(q)) {
-      score += 10;
-    }
-
-    // 链接匹配
-    if (item.link.toLowerCase().includes(q)) {
-      score += 8;
-    }
-
-    if (score > 0) {
-      scored.push({ item, score });
-    }
-  }
-
-  // 按匹配度降序
-  scored.sort((a, b) => b.score - a.score);
-  return scored.map((s) => s.item);
-}
-
-/**
- * 计算在不出现滚动条的前提下最多显示多少条建议
- */
-function calcMaxSuggestionItems() {
-  const container = DOM.toolbar.actions.root;
-  if (!container || !searchSuggestions) return 5;
-  const containerRect = container.getBoundingClientRect();
-  // 留出 padding + 搜索框高度 + 底部间隙
-  const searchBox = document.getElementById('toolbar-search-box');
-  const searchBoxHeight = searchBox ? searchBox.offsetHeight : 48;
-  const reserved = searchBoxHeight + 20; // 搜索框 + padding
-  const available = containerRect.height - reserved;
-  // 容器尚在展开动画中（高度未就绪）时使用默认值
-  if (available <= 8) return 5;
-  // 每条建议约 36px（padding + line-height）
-  return Math.max(1, Math.floor(available / 36));
-}
-
-/** 当前高亮索引 */
-let highlightIndex = -1;
-
-/** 当前渲染的建议项数据（用于键盘查找） */
-let currentSuggestionItems = [];
-
-/** 清除高亮 */
-function clearHighlight() {
-  searchSuggestions.querySelectorAll('.ts-suggestion-item.highlighted')
-    .forEach((el) => el.classList.remove('highlighted'));
-  highlightIndex = -1;
-}
-
-/** 设置高亮到指定索引 */
-function setHighlight(index) {
-  const items = searchSuggestions.querySelectorAll('.ts-suggestion-item');
-  clearHighlight();
-  if (index < 0 || index >= items.length) return;
-  items[index].classList.add('highlighted');
-  highlightIndex = index;
-  items[index].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-}
-
-/** 渲染搜索建议（有查询时末尾追加「在 Bing 上查找」） */
-function renderSuggestions(items) {
-  searchSuggestions.innerHTML = '';
-  currentSuggestionItems = [];
-
-  const currentQuery = searchInput.value.trim();
-  const hasQuery = !!currentQuery;
-
-  // 有查询时需为 Bing 项预留 1 个位置
-  const maxItems = calcMaxSuggestionItems();
-  const bingReserved = hasQuery ? 1 : 0;
-  const limited = items.slice(0, Math.max(0, maxItems - bingReserved));
-
-  limited.forEach((item, i) => {
-    const el = document.createElement('div');
-    el.className = 'ts-suggestion-item';
-    el.style.animationDelay = `${i * 40}ms`;
-    el.innerHTML = `
-      <span class="ts-suggestion-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
-          <path fill="#888" d="M14.298,27.202l-3.87-3.87c0.701-0.929,1.122-2.081,1.122-3.332c0-3.06-2.489-5.55-5.55-5.55c-3.06,0-5.55,2.49-5.55,5.55 c0,3.061,2.49,5.55,5.55,5.55c1.251,0,2.403-0.421,3.332-1.122l3.87,3.87c0.151,0.151,0.35,0.228,0.548,0.228 s0.396-0.076,0.548-0.228C14.601,27.995,14.601,27.505,14.298,27.202z M1.55,20c0-2.454,1.997-4.45,4.45-4.45 c2.454,0,4.45,1.997,4.45,4.45S8.454,24.45,6,24.45C3.546,24.45,1.55,22.454,1.55,20z" transform="translate(0, -9)"/>
-        </svg>
-      </span>
-      <span class="ts-suggestion-title">${escapeHtml(item.title)}</span>
-    `;
-    el.addEventListener('click', () => {
-      openURL(item.link, true);
-      searchInput.value = '';
-      shrinkToolbar();
-    });
-    el.addEventListener('mousemove', () => setHighlight(i));
-    searchSuggestions.appendChild(el);
-    currentSuggestionItems.push(item);
-  });
-
-  // 有查询时在末尾追加「在 Bing 上查找」
-  if (hasQuery) {
-    const bingIdx = limited.length;
-    const bingEl = document.createElement('div');
-    bingEl.className = 'ts-suggestion-item ts-suggestion-bing';
-    bingEl.style.animationDelay = `${bingIdx * 40}ms`;
-    bingEl.innerHTML = `
-      <span class="ts-suggestion-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
-          <path fill="#888" d="M14.298,27.202l-3.87-3.87c0.701-0.929,1.122-2.081,1.122-3.332c0-3.06-2.489-5.55-5.55-5.55c-3.06,0-5.55,2.49-5.55,5.55 c0,3.061,2.49,5.55,5.55,5.55c1.251,0,2.403-0.421,3.332-1.122l3.87,3.87c0.151,0.151,0.35,0.228,0.548,0.228 s0.396-0.076,0.548-0.228C14.601,27.995,14.601,27.505,14.298,27.202z M1.55,20c0-2.454,1.997-4.45,4.45-4.45 c2.454,0,4.45,1.997,4.45,4.45S8.454,24.45,6,24.45C3.546,24.45,1.55,22.454,1.55,20z" transform="translate(0, -9)"/>
-        </svg>
-      </span>
-      <span class="ts-suggestion-title">在 Bing 上查找「${escapeHtml(currentQuery)}」</span>
-    `;
-    bingEl.addEventListener('click', () => {
-      const q = searchInput.value.trim();
-      if (!q) return;
-      const url = 'https://cn.bing.com/search?q=' +
-        encodeURIComponent(q + ' (site:streack.top OR site:mc.kdxiaoyi.top)');
-      window.open(url, '_blank');
-      searchInput.value = '';
-      shrinkToolbar();
-    });
-    bingEl.addEventListener('mousemove', () => setHighlight(bingIdx));
-    searchSuggestions.appendChild(bingEl);
-    currentSuggestionItems.push({ link: null, title: '在 Bing 上查找', bing: true });
-  }
-
-  if (!limited.length && !hasQuery) {
-    // 无数据也无查询 → 不显示列表
-    searchSuggestions.classList.remove('has-items');
-    clearHighlight();
-    searchSuggestions.innerHTML = '';
-    currentSuggestionItems = [];
-    return;
-  }
-
-  searchSuggestions.classList.add('has-items');
-  // 默认高亮第一个
-  setHighlight(0);
-}
-
-/** 简单的 HTML 转义 */
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-/** 防抖工具 */
-function debounce(fn, delay) {
-  let timer = null;
-  return function (...args) {
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(() => fn.apply(this, args), delay);
-  };
-}
-
-/** 输入处理（防抖 200ms） */
-const handleSearchInput = debounce(function () {
-  const query = searchInput.value.trim();
-  const items = filterSuggestions(query);
-  renderSuggestions(items);
-}, 200);
-
-// --- 搜索按钮：展开search插槽 ---
-DOM.toolbar.btns.search.addEventListener('click', () => {
-  if (toolbarExpanded) {
-    shrinkToolbar();
-  } else {
-    expandToolbar('search');
-    searchInput.value = "";
-    requestAnimationFrame(() => {
-      searchInput.focus();
-      // 展开后立即显示默认建议列表
-      renderSuggestions(filterSuggestions());
-    });
-  }
-});
-
-// --- 搜索输入事件 ---
-searchInput.addEventListener('input', handleSearchInput);
-
-// --- 搜索键盘导航 ---
-searchInput.addEventListener('keydown', (e) => {
-  const suggestionItems = searchSuggestions.querySelectorAll('.ts-suggestion-item');
-
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    if (!suggestionItems.length) return;
-    const next = highlightIndex < suggestionItems.length - 1 ? highlightIndex + 1 : 0;
-    setHighlight(next);
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    if (!suggestionItems.length) return;
-    const prev = highlightIndex > 0 ? highlightIndex - 1 : suggestionItems.length - 1;
-    setHighlight(prev);
-  } else if (e.key === 'Tab' && suggestionItems.length > 0) {
-    e.preventDefault();
-    if (highlightIndex >= 0 && highlightIndex < currentSuggestionItems.length) {
-      const item = currentSuggestionItems[highlightIndex];
-      if (item.bing) {
-        const q = searchInput.value.trim();
-        if (!q) return;
-        const url = 'https://cn.bing.com/search?q=' +
-          encodeURIComponent(q + ' (site:streack.top OR site:mc.kdxiaoyi.top)');
-        window.open(url, '_blank');
-      } else {
-        openURL(item.link, true);
-      }
-      searchInput.value = '';
-      shrinkToolbar();
-    }
-  } else if (e.key === 'Enter') {
-    // 有高亮建议时优先跳转建议
-    if (highlightIndex >= 0 && highlightIndex < currentSuggestionItems.length) {
-      e.preventDefault();
-      const item = currentSuggestionItems[highlightIndex];
-      if (item.bing) {
-        // Bing 查找项
-        const q = searchInput.value.trim();
-        if (!q) return;
-        const url = 'https://cn.bing.com/search?q=' +
-          encodeURIComponent(q + ' (site:streack.top OR site:mc.kdxiaoyi.top)');
-        window.open(url, '_blank');
-      } else {
-        openURL(item.link, true);
-      }
-      searchInput.value = '';
-      shrinkToolbar();
-      return;
-    }
-    // 无建议时直接 Bing 搜索
-    const query = searchInput.value.trim();
-    if (!query) return;
-    const url = 'https://cn.bing.com/search?q=' +
-      encodeURIComponent(query + ' (site:streack.top OR site:mc.kdxiaoyi.top)');
-    window.open(url, '_blank');
-    searchInput.value = '';
-    shrinkToolbar();
-  }
-});
+// 搜索模块初始化由 init() 中调用
 
 // ============================================================
 //  八、初始化
@@ -825,8 +535,8 @@ async function init() {
   // 缓存 toolbar2 插槽
   cacheToolbarSlots();
 
-  // 加载搜索建议
-  loadSearchSuggestions();
+  // 初始化搜索模块
+  initSearch();
 
   // 初始化视频背景
   initVideoBg();
@@ -882,6 +592,10 @@ export {
   issuelink,
   openState,
   getCurrentTimeZone,
+  toolbarSlots,
+  toolbarExpanded,
+  expandToolbar,
+  shrinkToolbar,
 };
 
 // 暴露给 HTML 内联事件处理器（onclick 等）
