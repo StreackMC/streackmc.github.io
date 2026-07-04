@@ -65,14 +65,23 @@
       <div id="toolbar-outline"></div>
       <!-- 正文 -->
       <div class="contents">
-        <div class="content" slot="0">
+        <div class="content" slot="0" data-cmd="slot:1" clickable="⎋">
           <div class="slotBg-V">
             <video poster="https://s41.ax1x.com/2026/07/03/pm0mSYD.png" class="slotBg-V" muted playsinline preload="auto" loop>
               <source src="./assets/video/cover.webm" type="video/webm">
               <source src="./assets/video/cover.mp4" type="video/mp4">
             </video>
           </div>
-          <h1 class="glass" style="padding: 1em;">正在监修……<br><small>团队成员 正在游玩《微软大战代码》</small></h1>
+          <div class="MiSans" style="--b: 4rem;--l: 3rem">
+            <h1 style="--fs:2.5rem;--fva:10vw;--fl:150px;">一个世界，<wbr>一群梦想。</h1>
+            <p style="--fs:1.8rem;--fav:5vw;--fl:72px;">了解更多⇓</p>
+          </div>
+        </div>
+        <div class="content" slot="1">
+          <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0YSts.png');"></div>
+          <div style="--t: 3rem; --r:2rem">
+            <h1 style="--fz: clamp(2.5rem, 7vw, 120px);">S2P1已开启</h1>
+          </div>
         </div>
       </div>
       <!-- 悬浮按钮 -->

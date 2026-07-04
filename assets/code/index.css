@@ -2,9 +2,11 @@
    Reset & Base —— 基础重置与全局规则
    ============================================================ */
 :root {
-  --toolbar-padding-v: 1rem;/* 工具栏内容距离左侧距离 */
-  --toolbar-padding-h: .7rem;/* 工具栏内容距离顶部距离 */
-  --toolbar-height: 2.2rem;/* 工具栏高度 */
+  --toolbar-padding-v: 1rem;  /* 工具栏内容距离左侧距离 */
+  --toolbar-padding-h: .7rem;  /* 工具栏内容距离顶部距离 */
+  --toolbar-height: 2.2rem;  /* 工具栏高度 */
+  --min-width: 320px;  /* 最小字号生效的视口宽度下限 */
+  --max-width: 1920px;  /* 最大字号生效的视口宽度上限 */
   /* 以下为自动计算区域，无需修改 */
   --h: 100vh;
   --w: 100vw;
@@ -39,7 +41,7 @@ path {
 }
 
 /* --- 一些预设标记 --- */
-*[clickable] {
+* [clickable] {
   cursor: pointer;
 }
 
@@ -141,8 +143,8 @@ s-page[dark] .bg-filter {
 /* --- 浮动按钮（Liquid Glass 容器） --- */
 #floating {
   position: fixed;
-  right: 5vw;
-  bottom: 5rem;
+  right: max(clamp(16px, 4vw, 40px), env(safe-area-inset-right));
+  bottom: max(clamp(16px, 4vw, 40px), env(safe-area-inset-bottom));
   z-index: 10;
   width: 3em;
   height: 3em;
@@ -410,8 +412,8 @@ span#counting_msg {
 div.slotBg-V {
   position: absolute;
   top: 0;
-  height: var(--h);
-  width: var(--w);
+  height: 100%;
+  width: 100%;
 }
 video.slotBg-V {
   width: 100%;
@@ -419,8 +421,23 @@ video.slotBg-V {
   object-fit: cover;
 }
 
+/* 正文栏中带图片的背景 */
+div.slotBg-I {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: var(--u, transparent) center no-repeat;
+}
+
 /* ============================================================
    Contents —— 主内容
+   可使用的变量：
+   --t --r --b --l 控制元素的绝对位置
+   --a 控制字体对齐方式（text-align）
+   --fz 控制字体大小，会覆盖clamp结果
+   --fs --fl --fv 使用clamp控制字体大小，分别是最小、最大、斜率。斜率不存在可以自动计算。
+   --mx --my 控制水平、垂直方向上与其他元素的间隔
    ============================================================ */
 .contents {
   width: 100%;
@@ -439,10 +456,27 @@ video.slotBg-V {
   width: 100%;
 }
 
+.content * {
+  white-space: normal;
+  word-break: keep-all;
+}
+
+.content *[nowrap] {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 /* 首栏 */
 .content[slot="0"] {
   width: var(--w);
   height: var(--h);
+}
+
+/* 每栏 */
+.content {
+  width: var(--w);
+  height: calc(var(--h) * 0.8639);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -451,7 +485,7 @@ video.slotBg-V {
   position: relative;
   overflow: hidden;
 }
-.content[slot="0"] > * {
+.content > * {
   top: var(--t, unset);
   right: var(--r, unset);
   left: var(--l, unset);
@@ -460,4 +494,12 @@ video.slotBg-V {
   margin-top: 0;
   margin-bottom: 0;
   z-index: 1;
+  text-align: var(--a, left);
+}
+.content * {
+  width: fit-content;
+  font-size: var(--fz, clamp(var(--fs),
+          var(--fv, calc(var(--fs) + (var(--fl) - var(--fs)) * (var(--w) - var(--min-width)) / (var(--max-width) - var(--min-width)))),
+          var(--fl)));
+  margin: var(--my, 0) var(--mx, 0);
 }

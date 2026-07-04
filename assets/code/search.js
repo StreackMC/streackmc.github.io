@@ -53,7 +53,7 @@ async function loadSearchSuggestions() {
       renderSuggestions(filterSuggestions(searchInput.value.trim()));
     }
   } catch (err) {
-    console.warn('搜索建议加载失败:', err);
+    console.warn('[search] 搜索建议加载失败:', err);
   }
 }
 

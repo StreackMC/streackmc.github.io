@@ -253,11 +253,12 @@ function issuelink() {
 
 
 // ============================================================
-//  五、伪参数路由（使用 pushState 替代 hash）
+//  五、伪参数路由与命令
 // ============================================================
 
 /**
  * 通过 pushState 打开弹窗，不污染 URL hash
+ * @returns 是否成功执行
  * @param {string} name - 动作标识：play/donate/qqun/comment/issue
  */
 function openState(name) {
@@ -285,11 +286,48 @@ function openState(name) {
       issuelink();
       break;
     default:
-      console.warn('未知的动作：' + h);
-      return; // 未知动作，不 pushState
+      console.warn('[state] 未知的动作：' + h);
+      return false; // 未知动作，不 pushState
   }
 
   history.pushState({ action: h }, "", window.location.pathname + window.location.search);
+  return true;
+}
+
+/**
+ * 执行命令
+ * @returns 是否成功执行
+ * @param {'url'|'state'|'slot'} type 命令类型
+ * @param {string} param 命令参数
+ */
+function executeCommand(type, param) {
+  if (!(type && param)) return false;
+  switch (type.toLowerCase()) {
+    case 'url':
+      openURL(...param.split("|", 2));
+      break;
+    case 'state':
+      openState(param);
+      break;
+    case 'slot':
+      param = parseInt(param);
+      const slot = document.querySelector(`div[slot="${param}"]`);
+      try {
+        slot.scrollIntoView({
+          behavior: 'smooth',
+          container: 'nearest',
+          block: 'center',
+        });
+      } catch (error) {
+        console.warn('[cmd/slot] 无法滚动目标元素', param, '至视口：', error);
+        msg('无法查找目标锚点：' + error.message, '好', true);
+      }
+      break;
+  
+    default:
+      return false;
+  };
+  return true;
 }
 
 // 浏览器后退/前进时关闭弹窗
@@ -298,9 +336,14 @@ window.addEventListener("popstate", () => {
 });
 
 // 兼容以前的Hash路由
-window.addEventListener('hashchange', () => {
-  openState(location.hash.slice(1));
-});
+window.addEventListener('hashchange', onHashChangeEvent);
+function onHashChangeEvent() {
+  if (!openState(location.hash.slice(1))) {
+    // 如果没有成功执行改为执行命令
+    const [t, p] = location.hash.slice(1).split(':', 2);
+    executeCommand(t, p);
+  }
+}
 
 // ============================================================
 //  六、运营计时器
@@ -327,6 +370,13 @@ function refreshCountup(year, month, day) {
 // ============================================================
 //  七、事件绑定
 // ============================================================
+
+// 声明式绑定功能
+document.querySelectorAll('*[data-cmd]').forEach((ele) => {
+  const [t, p] = new String(ele.dataset.cmd).split(':', 2);
+  ele.addEventListener('click', (event) => { executeCommand(t, p); });
+  delete ele.dataset.cmd;
+});
 
 // 禁止 Safari 双指缩放
 document.addEventListener("gesturestart", (e) => e.preventDefault());
@@ -537,7 +587,7 @@ async function init() {
   initVideoBg();
 
   // 兼容Hash路由
-  openState(location.hash.split(1));
+  onHashChangeEvent();
 }
 
 /** 立即初始化视频背景 */
@@ -556,7 +606,7 @@ function initVideoBg() {
           // 先播放（因为loop必须播放才能循环）
           video.play().then(function onVideoStartPlay() {
           }).catch(err => {
-            console.warn('自动播放被拦截，需要用户手势');
+            console.warn('[slotBg-V] 自动播放被拦截，需要用户手势');
             video.addEventListener('click', function onImgClick() {
               onBackgroundVideoReady();
               video.removeEventListener('click', onImgClick);
