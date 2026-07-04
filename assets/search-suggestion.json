@@ -1,72 +1,77 @@
 [
   {
     "link": "/doc/rule",
-    "keywords": ["规则", "方针", "规定", "守则", "管理", "处罚", "封禁", "ban"],
+    "keywords": ["规则","方针","规定","守则","管理","处罚","封禁","ban"],
     "title": "基本方针 / 服务器守则"
   },
   {
     "link": "/doc/policy/privacy",
-    "keywords": ["隐私", "政策", "协议", "个人", "信息", "数据"],
+    "keywords": ["隐私","政策","协议","个人","信息","数据"],
     "title": "隐私政策"
   },
   {
     "link": "/doc/policy/user",
-    "keywords": ["用户", "协议", "条款", "服务", "使用"],
+    "keywords": ["用户","协议","条款","服务","使用"],
     "title": "用户协议"
   },
   {
     "link": "/doc/policy/donate",
-    "keywords": ["赞助", "捐赠", "支持", "打赏", "付款", "support","sponsor","pay","contribute"],
+    "keywords": ["赞助","捐赠","支持","打赏","付款","support","sponsor","pay","contribute"],
     "title": "赞助方针"
   },
   {
     "link": "/doc/help/qbot",
-    "keywords": ["QQ", "机器人", "Bot", "群聊", "自动","小可"],
+    "keywords": ["QQ","机器人","Bot","群聊","自动","小可"],
     "title": "QQ机器人帮助"
   },
   {
     "link": "/doc/help/solution",
-    "keywords": ["解决", "问题", "故障", "报错", "无法", "进服", "常见问题"],
+    "keywords": ["解决","问题","故障","报错","无法","进服","常见问题"],
     "title": "常见无法进服问题"
   },
   {
     "link": "/doc/updata/s1p1",
-    "keywords": ["更新", "日志", "版本", "S1P1", "历史"],
+    "keywords": ["更新","日志","版本","S1P1","历史"],
     "title": "S1P1「樱飘雪霁月」更新日志"
   },
   {
     "link": "/doc/updata/s1p2",
-    "keywords": ["更新", "日志", "版本", "S1P2", "樱飘雪霁月"],
+    "keywords": ["更新","日志","版本","S1P2","樱飘雪霁月"],
     "title": "S1P2「樱飘雪霁月」更新日志"
   },
   {
     "link": "/doc/updata/s2p1",
-    "keywords": ["更新", "日志", "版本", "S2P1", "岭回双壑风"],
+    "keywords": ["更新","日志","版本","S2P1","岭回双壑风"],
     "title": "S2P1「岭回双壑风」更新日志"
   },
   {
     "link": "/doc/event/2025/0125",
-    "keywords": ["活动", "事件", "2025", "春节", "新年"],
+    "keywords": ["活动","事件","2025","春节","新年"],
     "title": "2025 春节活动"
   },
   {
     "link": "/doc/event/2025/0401a",
-    "keywords": ["活动", "愚人节", "2025", "娱乐"],
+    "keywords": ["活动","愚人节","2025","娱乐"],
     "title": "2025 愚人节活动"
   },
   {
     "link": "/doc/info/feature",
-    "keywords": ["功能", "特性", "介绍", "服务器", "特色"],
+    "keywords": ["功能","特性","介绍","服务器","特色","featuring"],
     "title": "服务器功能"
   },
   {
     "link": "/webtool/status.html",
-    "keywords": ["状态", "在线", "监控", "服务器", "检测", "存活"],
+    "keywords": ["状态","在线","监控","服务器","检测","存活","online","offline","state","status","monitor"],
     "title": "在线状态"
   },
   {
     "link": "/webtool/uuid.html",
-    "keywords": ["UUID", "unique", "universal", "universe", "id", "生成","随机"],
+    "keywords": ["UUID","unique","universal","universe","id","生成","随机"],
     "title": "UUID 工具"
+  },
+  {
+    "link": "#NeoNai",
+    "keywords": ["\u25A1","\uFFFD"],
+    "title": "\uFFFD"
   }
 ]

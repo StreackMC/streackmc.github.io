@@ -260,6 +260,9 @@ function initSearchUI() {
   // 输入事件
   searchInput.addEventListener('input', handleSearchInput);
 
+  // placeholder覆写
+  searchInput.setAttribute('placeholder', `搜索 ${location.hostname}……`);
+
   // 键盘导航
   searchInput.addEventListener('keydown', (e) => {
     const items = searchSuggestions.querySelectorAll('.ts-suggestion-item');
