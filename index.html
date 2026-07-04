@@ -1,13 +1,13 @@
 <!DOCTYPE HTML><html lang="zh-cn">
 <head>
-  <title>栈流Streack：S2P1「岭回双壑风」版本</title>
+  <title>栈流 (Streack) — 全新「岭回双壑风」版本</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
   <meta name="mobile-web-app-capable" content="yes" />
   <script src="/pmd.js"></script>
   <script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script>
   <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/css/sober-theme-turquoise.css" />
-  <link rel="stylesheet" href="/assets/code/index.css" />
+  <link rel="stylesheet" href="/assets/code/app.css" />
   <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/predefs.css" />
   <link rel="shortcut icon" type="image/x-icon" href="https://streack.top/assets/img/favicon_2.ico">
   <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/font.css" />
@@ -16,6 +16,7 @@
 </head>
 <body>
   <s-page id="page" theme="dark">
+
     <div class="unselectable" style="position: absolute;" id="no_script">
       <h1>您似乎没有启用JavaScript，而这是此网站正常运行所必须的。<br>此外，该页面不支持过老的浏览器内核。</h1>
     </div>
@@ -73,17 +74,23 @@
             </video>
           </div>
           <div class="MiSans" style="--b: 4rem;--l: 3rem; color:#ffffffe0">
-            <h1 style="--fs:50px;--fl:120px;">一个世界,<wbr>一群梦想。</h1>
-            <p style="--fs:35px;--fl:72px;">了解更多⇓</p>
+            <h1 style="--fs:50px;--fl:114px;">有限世界，<wbr>无限可能。</h1>
+            <p style="--fs:35px;--fl:72px;">进一步了解⇓</p>
+          </div>
+          <div light style="--b: 1rem; --l: 1rem; --a: start; opacity: .25;">
+            <p class="text" style="--fs:12px;--fl:16px;">
+              摄于服务器内<sup data-note="sakura"></sup><sup data-note="media"></sup>
+            </p>
           </div>
         </div>
         <div class="content half" slot="1" clickable data-cmd="state:play">
           <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0YSts.png');"></div>
-          <div style="--t: 3rem; --r:2rem; --a: end;">
-            <h1 style="--fs:35px;--fl:60px;">S2P1<wbr>「岭回双壑风」<wbr>已开启</h1>
-            <p style="--fs:20px;--fl:36px;">更新了什么，<wbr>要不现在体验。<wbr>⎋</p>
+          <div style="--t: 3rem; --l:2rem; --a: start;">
+            <h1 style="--fs:35px;--fl:60px;">全新版本<wbr>「岭回双壑风」</h1>
+            <p style="--fs:20px;--fl:36px;">新篇章，新冒险。</p>
+            <s-button>即刻体验</s-button>
           </div>
-          <div class="loop-cards" style="--b: 2rem;--l: 0;height: calc(var(--h) * .382);" data-speed="0.5">
+          <!-- <div class="loop-cards" style="--b: 2rem;--l: 0;height: calc(var(--h) * .382);" data-speed="0.5">
             <div class="glass">
               <h1 style="--fs:24px; --fl:30px; margin-bottom: .5em;">重构体验</h1>
               <p style="--fs:16px; --fl:20px;">借助自主开发的插件集群，为冒险家提供更加多样的体验。</p>
@@ -94,19 +101,38 @@
               <p style="--fs:16px; --fl:20px;">完全移除精英怪与粘液科技系统，此后不再硬核。</p>
               <img src="https://s41.ax1x.com/2026/07/04/pm0N47F.png" style="width: 100%; object-fit: contain; margin: auto 0;">
             </div>
+          </div> -->
+        </div>
+        <div class="content half" slot="2" style="background: #fff;">
+          <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0d9yt.png');"></div>
+          <div mobile-only class="glass" light style="--b: 3.1rem; --r:auto; --l: auto; --a: center; padding: 1rem; color: #000000;">
+            <p class="text" style="--fs:20px;--fl:36px;">由 Apple M4 驱动<sup data-note="apple"></sup></p>
+            <h1 class="text" style="--fs:35px;--fl:60px;">强劲性能<br>超乎想象</h1>
+          </div>
+          <div pc-only class="glass" light style="--b: 3.1rem; --r:1rem; --a: end; padding: 1rem; color: #000000;">
+            <p class="text" style="--fs:20px;--fl:36px;">由 Apple M4 驱动<sup data-note="apple"></sup></p>
+            <h1 class="text" style="--fs:35px;--fl:60px; width:/* 动态判断宽度，需要根据字符数量修改参数 */ calc(5em + 5em * clamp(0, (100vw - 1299px) / 1px, 1));">强劲性能，<wbr>超乎想象。</span></h1>
           </div>
         </div>
-        <div class="content half" slot="1" style="background: #fff;">
-          <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0d9yt.png');"></div>
-          <div class="glass" light style="--b: 3.1rem; --l:1rem; --a: start; padding: 1rem; color: #000000;">
-            <p class="text" style="--fs:20px;--fl:36px;">来自Apple M4<sup data-note="apple"></sup></p>
-            <h1 class="text" style="--fs:35px;--fl:60px;">强势动力与性能</h1>
+        <div class="content" slot="3" style="background: #fff;">
+          <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0RSpV.png');"></div>
+          <div light style="--t: 3rem; --r:auto; --l: auto; --a: center; color: #000000;">
+            <h1 class="text" style="--fs:35px;--fl:60px;">源于<span class="WenQuanWeiMiHei">栈流</span></h1>
+            <p class="text" style="--fs:20px;--fl:36px;">我们不断前行</p>
+            <s-button>进一步了解</s-button>
+          </div>
+          <div light style="--b: 1rem; --l: 1rem; --a: start; opacity: .25;">
+            <p class="text" style="--fs:12px;--fl:16px;">
+              左起：<wbr>@darkmattermax<wbr> @Lighting_bug<wbr> @hzcyq_Crazy<br>
+              摄于服务器内<sup data-note="media"></sup>
+            </p>
           </div>
         </div>
         <div class="content" slot="footer">
           <div>
             <ol id="notes">
-              <li>首栏的樱花林中粉色复式建筑由<a href="https://www.bilibili.com/video/BV1Nb421H7NF/">@雪島べま</a>设计，由服内成员建造。</li>
+              <li data-note="sakura">首栏的樱花林中粉色复式建筑由<a href="https://www.bilibili.com/video/BV1Nb421H7NF/" target="_blank">@雪島べま</a>设计，由服内成员建造。</li>
+              <li data-note="media">图片或视频摄制使用了光影 ComplementaryUnbound(EuphoriaPatches)与共计16倍采样抗锯齿技术，并为在线查看而压缩优化。实际效果受限于冒险家客户端与设备性能，仅供参考。</li>
               <li data-note="apple">Apple Inc. 与本服务器、本站点的运营没有任何关联，后者的相关数据亦不经过 Apple Inc. 传输、保存或运算。</li>
             </ol>
           </div>
@@ -163,17 +189,16 @@
                     l144,85.962c1.031,0.586,1.641,1.718,1.641,2.89C352.703,257.187,352.094,258.297,351.062,258.898z" />
             </g>
           </svg>
-          开始游玩
+          开始游戏
         </s-tooltip>
       </div>
     </div>
     <!-- 弹出框 -->
     <s-dialog id="go-play">
-      <div class="unselectable" slot="headline">加入<span class="WenQuanWeiMiHei">栈流</span><span class="MiSans" style="color:var(--s-color-primary);">Streack</span></div>
+      <div class="unselectable" slot="headline">欢迎加入<span class="WenQuanWeiMiHei">栈流</span><span class="MiSans" style="color:var(--s-color-primary);">Streack</span></div>
       <div class="dialog unselectable">
-        <p>欢迎加入我们！您可以使用<b>Java版1.10～1.21.5</b>或<b>基岩版1.21.50+</b>即刻开始游玩。
-          <br>以下地址分为不同线路，均可使用：
-        </p>
+        <p>支持<b>Java版 1.10～1.21.5</b>与<b>基岩版 1.21.50+</b>，即刻开始冒险。
+          <br>多线路可选，任您连接：</p>
         <s-chip onclick="CopyText('play.streack.top');" type="outlined" clickable="true" style="width:100%">
           <s-icon slot="start"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"></path></svg></s-icon>
           play.streack.top
@@ -183,7 +208,7 @@
           streack.kdxiaoyi.top
         </s-chip><br>
         <p>若需端口号，请填写：<b onclick="CopyText('25882');" class="selectable">25882</b>。</p>
-        <p>请给我们<a href="javascript:commentlink()">五星好评</a>，谢谢。</p>
+        <p>喜欢我们？请<a href="javascript:commentlink()">留下五星好评</a>，感谢支持。</p>
       </div>
     </s-dialog>
     <s-bottom-sheet id="donate_message">
@@ -208,8 +233,8 @@
     <s-bottom-sheet id="qun_message">
       <div slot="text" class="unselectable">
         <p>
-          <h2>欢迎加入我们。</h2>
-          <big>如果您没有跳转，请点击<a id="qqunid" target="_blank" href="https://qun.qq.com/universal-share/share?ac=1&authKey=s5cU0BgRmCgh7IpO6euWb%2BNfJ0eMAROSmpk2oYHMQPqDBu6gQZ65SZTpv2%2BKV0xb&busi_data=eyJncm91cENvZGUiOiI5Mzk2NTgzMDUiLCJ0b2tlbiI6IlBSbFZsb3M0bHZRZEs5aHBzMnQ0SWFxMTJETWY5M1IzUEU4aThodC9Ja1VNSTAzWXJ5TnFkdWtSeWtlZWM0L1kiLCJ1aW4iOiIxMjkxNjQ2NDAxIn0%3D&data=BklO_dMaEAelBXAEjYa83iYMU5Y2qC7bIrkA2ZtrFWz3HbIkwVvT4IE5_xBP1Wlj4OKod-VVTle9TL8nDGZjig&svctype=4&tempid=h5_group_info">此处</a>。<br></big>
+          <h2>欢迎加入。</h2>
+          <big>未自动跳转？请点击<a id="qqunid" target="_blank" href="https://qun.qq.com/universal-share/share?ac=1&authKey=s5cU0BgRmCgh7IpO6euWb%2BNfJ0eMAROSmpk2oYHMQPqDBu6gQZ65SZTpv2%2BKV0xb&busi_data=eyJncm91cENvZGUiOiI5Mzk2NTgzMDUiLCJ0b2tlbiI6IlBSbFZsb3M0bHZRZEs5aHBzMnQ0SWFxMTJETWY5M1IzUEU4aThodC9Ja1VNSTAzWXJ5TnFkdWtSeWtlZWM0L1kiLCJ1aW4iOiIxMjkxNjQ2NDAxIn0%3D&data=BklO_dMaEAelBXAEjYa83iYMU5Y2qC7bIrkA2ZtrFWz3HbIkwVvT4IE5_xBP1Wlj4OKod-VVTle9TL8nDGZjig&svctype=4&tempid=h5_group_info">此处</a>。<br></big>
           <small class="MiSans">若仍无法跳转，请检查是否安装最新版QQ，或手动搜索群号<b class="selectable MiSans">939658305</b>。</small>
           <small class="MiSans">我们会于每日22:30前后统一审核入群。</small>
         </p>
@@ -219,7 +244,7 @@
       <div slot="text" class="unselectable">
         <p>
           <h2>反馈与申诉</h2>
-          <p>如果您有任何建议、诉求或是其它留言，请通过以下<b>官方渠道</b>进行。</p>
+          <p>如有任何建议或诉求，请通过以下<b>官方渠道</b>联系我们。</p>
           <s-segmented-button id="issue_link_selector" style="width:100%;">
             <s-segmented-button-item value="github">Github</s-segmented-button-item>
             <s-segmented-button-item value="gitee">Gitee</s-segmented-button-item>
@@ -227,8 +252,8 @@
             <s-segmented-button-item value="email">邮件</s-segmented-button-item>
           </s-segmented-button>
           <p>
-            对于申诉相关内容，我们会在收到工单后的14个工作日内给予回复。
-            <br>在Github/Gitee上发起的Issue可被其他人浏览。
+            申诉相关，我们将在收到后 14 个工作日内回复。
+            <br>在 GitHub / Gitee 上发起的 Issue 可被公开浏览。
           </p>
         </p>
       </div>
@@ -236,10 +261,10 @@
     <s-bottom-sheet id="comment_message">
       <div slot="text" class="unselectable">
         <p>
-          <h2>感谢留下好评。</h2>
+          <h2>感谢你的好评。</h2>
           <p>
-            您的五星好评有助于我们发展，也会极大鼓舞正在修复Bug的Staff们。
-            <br>如果您没有跳转，请点击<a id="commentid" _target="_blank" href="https://play.mcmod.cn/sv20188495.html">此处</a>。
+            你的每一份好评，都是我们前进的动力。
+            <br>未自动跳转？请点击<a id="commentid" _target="_blank" href="https://play.mcmod.cn/sv20188495.html">此处</a>。
           </p>
         </p>
       </div>

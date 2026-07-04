@@ -52,26 +52,6 @@ path {
   fill: currentColor;
 }
 
-/* --- 一些预设标记 --- */
-* [clickable] {
-  cursor: pointer;
-}
-
-* [mobile-only] {
-  display: none;
-}
-* [pc-only] {
-  display: unset;
-}
-@media screen and (max-width: 833px) {
-  * [mobile-only] {
-    display: unset;
-  }
-  * [pc-only] {
-    display: none;
-  }
-}
-
 img, video {
   -webkit-user-drag: none;
   -webkit-touch-callout: none;
@@ -407,6 +387,25 @@ s-dialog div.dialog {
    Utilities —— 工具类
    ============================================================ */
 
+* [clickable] {
+  cursor: pointer;
+}
+
+* [mobile-only] {
+  display: none !important;
+}
+* [pc-only] {
+  display: inherit !important;
+}
+@media screen and (max-width: 833px) {
+  * [mobile-only] {
+    display: inherit !important;
+  }
+  * [pc-only] {
+    display: none !important;
+  }
+}
+
 span#counting_msg {
   width: fit-content;
   height: fit-content;
@@ -508,7 +507,7 @@ sup[data-note] a {
   overflow: visible;
 }
 
-.contents > * {
+.contents > .content {
   width: auto;
   height: calc(var(--h) * 0.8639);
   position: relative;/* 创建层叠上下文 */
@@ -523,13 +522,20 @@ sup[data-note] a {
   position: relative;
   overflow: hidden;
 }
-.contents > *.half {
+
+.contents > .content.half {
   grid-column: span 1;/* 有标记只能占一列 */
 }
 
+/* 每栏内部 */
 .content * {
   white-space: normal;
   word-break: keep-all;
+  text-align: var(--a, left);
+  font-size: var(--fz, clamp(var(--fs),
+    var(--fv, calc(var(--fs) + (var(--fl) - var(--fs)) * (var(--w) - var(--min-width)) / (var(--max-width) - var(--min-width)))),
+    var(--fl)));
+  margin: var(--my, 0) var(--mx, 0);
 }
 
 .content *[nowrap] {
@@ -538,28 +544,27 @@ sup[data-note] a {
   overflow: hidden;
 }
 
-/* 每栏 */
-.content>*, .content>div {
-  top: var(--t, unset);
-  right: var(--r, unset);
-  left: var(--l, unset);
-  bottom: var(--b, unset);
+.content>* {
+  width: fit-content;
   position: absolute;
   margin-top: 0;
   margin-bottom: 0;
   z-index: 1;
-  text-align: var(--a, left);
   display: flex;
   flex-direction: column;
+  top: var(--t, unset);
+  right: var(--r, unset);
+  left: var(--l, unset);
+  bottom: var(--b, unset);
   align-items: var(--a, left);
 }
 
-.content * {
-  width: fit-content;
-  font-size: var(--fz, clamp(var(--fs),
-        var(--fv, calc(var(--fs) + (var(--fl) - var(--fs)) * (var(--w) - var(--min-width)) / (var(--max-width) - var(--min-width)))),
-        var(--fl)));
-  margin: var(--my, 0) var(--mx, 0);
+.content>*>* {
+  width: auto;
+}
+
+.content s-button {
+  --my: .4em;
 }
 
 /* 首栏 */
@@ -653,7 +658,7 @@ sup[data-note] a {
 
 /* 针对小屏幕的优化 */
 @media screen and (max-width: 833px) {
-  .contents > *.half {
+  .contents > .content.half {
     grid-column: span 2;
   }
   .contents {
