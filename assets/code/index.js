@@ -261,7 +261,7 @@ function issuelink() {
  * @param {string} name - 动作标识：play/donate/qqun/comment/issue
  */
 function openState(name) {
-  const h = String(name).toLowerCase();
+  const h = String(name).trim().toLowerCase();
   closeAllDialogs();
 
   switch (h) {
@@ -297,6 +297,10 @@ window.addEventListener("popstate", () => {
   closeAllDialogs();
 });
 
+// 兼容以前的Hash路由
+window.addEventListener('hashchange', () => {
+  openState(location.hash.slice(1));
+});
 
 // ============================================================
 //  六、运营计时器
@@ -530,6 +534,9 @@ async function init() {
 
   // 初始化视频背景
   initVideoBg();
+
+  // 兼容Hash路由
+  openState(location.hash.split(1));
 }
 
 /** 立即初始化视频背景 */
