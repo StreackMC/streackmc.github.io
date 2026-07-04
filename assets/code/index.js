@@ -456,7 +456,8 @@ function shrinkToolbar() {
   // 给所有激活的插槽添加 leaving 类播放出场动画
   Object.values(toolbarSlots).forEach((s) => {
     if (s.classList.contains('active')) {
-      s.classList.remove('active');
+      // 此处不移除 active 标记，后续打开时自动移除，这是为了保证收起动画流畅
+      // 简单来说由于 active 没了，元素不占空间了， toolbar2 的高度会突变导致动画卡顿
       s.classList.add('leaving');
       // 动画结束后清理 leaving
       s.addEventListener('animationend', function onLeave() {
