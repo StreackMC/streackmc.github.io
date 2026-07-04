@@ -1,13 +1,3 @@
-/**
- * Streack 主页 · 主逻辑（ES Module）
- * 重构目标：消除历史记录污染，功能语义清晰化
- * 变更说明：
- *   - 移除所有滚动/弹窗操作对 window.location.hash 的写入，根源上消除历史污染
- *   - 弹窗不再通过 hash 导航触发，直接调用函数；hash 仅用于深层链接和浏览器回退
- *   - 修复 dc/dC 大小写 Bug；移除 ChangeColorTheme 等死代码
- *   - 使用清晰的语义化命名，分模块组织
- *   - 转换为 ES Module，集成 LiquidGlass
- */
 import { initSearch } from './search.js';
 
 // ============================================================
