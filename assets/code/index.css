@@ -93,6 +93,7 @@ s-page .bg-filter {
   width: var(--w);
   height: var(--h);
   position: absolute;
+  pointer-events: none;
 }
 s-page[dark] .bg-filter {
   background-color: rgba(22, 22, 22, 0.4);
@@ -126,6 +127,7 @@ s-page[dark] .bg-filter {
   width: var(--w);
   height: var(--h);
   position: absolute;
+  pointer-events: none;
 }
 
 /* --- 主内容区域 --- */
@@ -680,6 +682,7 @@ sup[data-note] a {
   padding: 0 0.5rem;
   will-change: transform;
   height: 100%;
+  pointer-events: none;
 }
 .loop-cards-track > div {
   flex-shrink: 0;
