@@ -244,7 +244,7 @@ const handleSearchInput = debounce(function () {
 
 function initSearchUI() {
   // 搜索按钮
-  DOM.toolbar.btns.search.addEventListener('click', () => {
+  function onSearchBtnClick() {
     if (toolbarExpanded) {
       shrinkToolbar();
     } else {
@@ -255,13 +255,23 @@ function initSearchUI() {
         renderSuggestions(filterSuggestions());
       });
     }
-  });
+  }
+  DOM.toolbar.btns.search.addEventListener('click', onSearchBtnClick);
 
   // 输入事件
   searchInput.addEventListener('input', handleSearchInput);
 
   // placeholder覆写
   searchInput.setAttribute('placeholder', `搜索 ${location.hostname}……`);
+
+  // 页面按键监听
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+      e.preventDefault();
+      onSearchBtnClick();
+      console.log(e)
+    };
+  });
 
   // 键盘导航
   searchInput.addEventListener('keydown', (e) => {
