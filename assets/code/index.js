@@ -1,7 +1,7 @@
 import { initSearch } from './search.js';
 
 // ============================================================
-//  一、DOM 元素引用
+// DOM 元素引用
 // ============================================================
 
 const DOM = {
@@ -58,7 +58,7 @@ const DOM = {
 
 
 // ============================================================
-//  二、工具函数
+// 工具函数
 // ============================================================
 
 /** 获取当前时区信息 */
@@ -127,7 +127,7 @@ function CopyText(text) {
 
 
 // ============================================================
-//  三、存储 API（来自 pmd）
+// 存储 API（来自 pmd）
 // ============================================================
 
 const pmdStorage = {
@@ -195,7 +195,7 @@ const pmdStorage = {
 
 
 // ============================================================
-//  四、对话框 / 底栏管理（不操作 hash，不污染历史）
+// 对话框 / 底栏管理（不操作 hash，不污染历史）
 // ============================================================
 
 /** 关闭所有弹窗 */
@@ -253,7 +253,7 @@ function issuelink() {
 
 
 // ============================================================
-//  五、伪参数路由与命令
+// 伪参数路由与命令
 // ============================================================
 
 /**
@@ -346,7 +346,7 @@ function onHashChangeEvent() {
 }
 
 // ============================================================
-//  六、运营计时器
+// 运营计时器
 // ============================================================
 
 function refreshCountup(year, month, day) {
@@ -368,7 +368,7 @@ function refreshCountup(year, month, day) {
 
 
 // ============================================================
-//  七、事件绑定
+// 事件绑定
 // ============================================================
 
 // 声明式绑定功能
@@ -483,7 +483,7 @@ DOM.donate.checkbox.addEventListener("click", () => {
 });
 
 // ============================================================
-//  七-B、Toolbar 插槽管理器
+// Toolbar 插槽管理器
 // ============================================================
 
 /** 缓存所有 toolbar2 插槽 { slotName: HTMLElement } */
@@ -586,11 +586,86 @@ async function init() {
   // 初始化视频背景
   initVideoBg();
 
+  // 初始化循环卡片
+  initLoopCards();
+
   // 兼容Hash路由
   onHashChangeEvent();
 }
 
-/** 立即初始化视频背景 */
+/** ============================================================
+ *  loop-cards —— 水平卡片循环滚动
+ *  容器宽度足够容纳所有卡片 → 静态展示
+ *  容器宽度不足 → rAF 驱动向左缓慢循环滚动
+ *  data-speed 属性控制每帧偏移量（px）
+ *  ============================================================ */
+function initLoopCards() {
+  document.querySelectorAll('.loop-cards').forEach((container) => {
+    const speed = 1.2 * (parseFloat(container.dataset.speed) || 1.0);
+    const cards = [...container.children];
+    if (cards.length === 0) return;
+
+    // 清空容器，创建滚动轨道
+    container.innerHTML = '';
+    const track = document.createElement('div');
+    track.className = 'loop-cards-track';
+    container.appendChild(track);
+
+    // 将卡片移入轨道
+    cards.forEach((c) => track.appendChild(c));
+
+    // 等待布局就绪后判断是否需要滚动
+    requestAnimationFrame(() => {
+      const containerW = container.getBoundingClientRect().width;
+      let trackW = track.scrollWidth;
+
+      // 卡片总宽度 ≤ 容器宽度 → 静态居中展示
+      if (trackW <= containerW + 1) {
+        track.style.justifyContent = 'center';
+        track.style.padding = '0';
+        return;
+      }
+
+      // 需要滚动：克隆全部卡片实现无缝循环
+      cards.forEach((c) => {
+        const clone = c.cloneNode(true);
+        track.appendChild(clone);
+      });
+
+      // 重新测量（克隆后宽度翻倍）
+      trackW = track.scrollWidth / 2;
+
+      let offset = 0;
+      let running = true;
+
+      function scrollLoop() {
+        if (!running) return;
+        offset -= speed;
+
+        // 已滚过一整组卡片宽度 → 无缝复位
+        if (Math.abs(offset) >= trackW) {
+          offset += trackW;
+        }
+
+        track.style.transform = `translateX(${offset}px)`;
+        requestAnimationFrame(scrollLoop);
+      }
+
+      // 页面不可见时暂停以节省性能
+      const visibilityHandler = () => {
+        running = !document.hidden;
+        if (running) requestAnimationFrame(scrollLoop);
+      };
+      document.addEventListener('visibilitychange', visibilityHandler);
+
+      requestAnimationFrame(scrollLoop);
+    });
+  });
+}
+
+/** ============================================================
+ *  slotBg-V —— 视频循环背景
+ *  ============================================================ */
 function initVideoBg() {
   const videos = document.querySelectorAll('video.slotBg-V');
   videos.forEach((video) => {
@@ -622,7 +697,7 @@ function initVideoBg() {
 }
 
 // ============================================================
-//  九、导出（ES Module 接口）
+// 导出（ES Module 接口）
 // ============================================================
 
 // 导出内部 API 以供其他模块使用

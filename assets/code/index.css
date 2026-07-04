@@ -6,7 +6,7 @@
   --toolbar-padding-h: .7rem;  /* 工具栏内容距离顶部距离 */
   --toolbar-height: 2.2rem;  /* 工具栏高度 */
   --min-width: 320px;  /* 最小字号生效的视口宽度下限 */
-  --max-width: 1920px;  /* 最大字号生效的视口宽度上限 */
+  --max-width: 1352px;  /* 最大字号生效的视口宽度上限 */
   /* 以下为自动计算区域，无需修改 */
   --h: 100vh;
   --w: 100vw;
@@ -428,6 +428,7 @@ div.slotBg-I {
   height: 100%;
   width: 100%;
   background: var(--u, transparent) center no-repeat;
+  background-size: cover;
 }
 
 /* ============================================================
@@ -485,7 +486,7 @@ div.slotBg-I {
   position: relative;
   overflow: hidden;
 }
-.content > * {
+.content > *, .content > div {
   top: var(--t, unset);
   right: var(--r, unset);
   left: var(--l, unset);
@@ -495,6 +496,9 @@ div.slotBg-I {
   margin-bottom: 0;
   z-index: 1;
   text-align: var(--a, left);
+  display: flex;
+  flex-direction: column;
+  align-items: var(--a, left);
 }
 .content * {
   width: fit-content;
@@ -502,4 +506,40 @@ div.slotBg-I {
           var(--fv, calc(var(--fs) + (var(--fl) - var(--fs)) * (var(--w) - var(--min-width)) / (var(--max-width) - var(--min-width)))),
           var(--fl)));
   margin: var(--my, 0) var(--mx, 0);
+}
+
+/* ============================================================
+   loop-cards —— 水平卡片循环滚动
+   ============================================================ */
+.loop-cards {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 1rem 0;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+  min-height: fit-content;
+  height: max-content;
+  justify-content: space-around;
+}
+.loop-cards-track {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 0.5rem;
+  will-change: transform;
+  height: 100%;
+}
+.loop-cards-track > div {
+  flex-shrink: 0;
+  padding: 0.8rem 1.6rem;
+  white-space: nowrap;
+  font-size: 0.95rem;
+  color: #ddd;
+  height: 100%;
+  width: fit-content;
 }
