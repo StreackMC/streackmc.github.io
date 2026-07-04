@@ -591,6 +591,18 @@ async function init() {
 
   // 兼容Hash路由
   onHashChangeEvent();
+
+  // 处理img与video
+  document.querySelectorAll('img').forEach((i) => {
+    i.draggable = false;
+    i.addEventListener('contextmenu', (e) => e.preventDefault());
+    i.addEventListener('dragstart', (e) => e.preventDefault());
+  });
+  document.querySelectorAll('video').forEach((i) => {
+    i.draggable = false;
+    i.addEventListener('contextmenu', (e) => e.preventDefault());
+    i.addEventListener('dragstart', (e) => e.preventDefault());
+  });
 }
 
 /** ============================================================
@@ -602,16 +614,21 @@ async function init() {
 function initLoopCards() {
   document.querySelectorAll('.loop-cards').forEach((container) => {
     const speed = 1.2 * (parseFloat(container.dataset.speed) || 1.0);
-    const cards = [...container.children];
+
+    // 首次初始化时缓存原始卡片引用（含事件监听）
+    if (!container._loopCards) {
+      container._loopCards = [...container.children];
+    }
+    const cards = container._loopCards;
     if (cards.length === 0) return;
 
-    // 清空容器，创建滚动轨道
+    // 清空容器但保留原始卡片 DOM 引用
     container.innerHTML = '';
     const track = document.createElement('div');
     track.className = 'loop-cards-track';
     container.appendChild(track);
 
-    // 将卡片移入轨道
+    // 将原始卡片移入轨道（保持事件监听完好）
     cards.forEach((c) => track.appendChild(c));
 
     // 等待布局就绪后判断是否需要滚动
@@ -632,6 +649,16 @@ function initLoopCards() {
         track.appendChild(clone);
       });
 
+      // 事件委托：点击任何卡片（包括克隆副本）都转发到原始卡片触发
+      track.addEventListener('click', (e) => {
+        const card = e.target.closest('.loop-cards-track > *');
+        if (!card) return;
+        const idx = [...track.children].indexOf(card);
+        if (idx < 0) return;
+        const origIdx = idx % cards.length;
+        cards[origIdx].click();
+      });
+
       // 重新测量（克隆后宽度翻倍）
       trackW = track.scrollWidth / 2;
 
@@ -639,6 +666,11 @@ function initLoopCards() {
       let running = true;
 
       function scrollLoop() {
+        if (window?.streack?.flag?.noAnimation) {
+          // 停止动画时不进行动画计算，只保持动画循环进行
+          requestAnimationFrame(scrollLoop);
+          return;
+        };
         if (!running) return;
         offset -= speed;
 
@@ -656,12 +688,27 @@ function initLoopCards() {
         running = !document.hidden;
         if (running) requestAnimationFrame(scrollLoop);
       };
+      // 移除旧监听避免重复
+      if (container._loopVisHandler) {
+        document.removeEventListener('visibilitychange', container._loopVisHandler);
+      }
+      container._loopVisHandler = visibilityHandler;
       document.addEventListener('visibilitychange', visibilityHandler);
 
       requestAnimationFrame(scrollLoop);
     });
   });
 }
+
+// resize 时重新计算卡片布局（防抖）
+let _loopResizeTimer = null;
+window.addEventListener('resize', () => {
+  if (_loopResizeTimer) clearTimeout(_loopResizeTimer);
+  _loopResizeTimer = setTimeout(() => {
+    _loopResizeTimer = null;
+    initLoopCards();
+  }, 300);
+});
 
 /** ============================================================
  *  slotBg-V —— 视频循环背景
@@ -740,4 +787,5 @@ window.streack = {
   switchToolbar: switchToolbar,
   expandToolbar: expandToolbar,
   shrinkToolbar: shrinkToolbar,
+  stopAnimation: (status = true) => { if (!window.streack.flag) window.streack.flag = {}; window.streack.flag.noAnimation = !!status; },
 };
