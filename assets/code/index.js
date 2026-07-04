@@ -54,6 +54,10 @@ const DOM = {
 
   qun: { link: document.getElementById("qqunid") },
   comment: { link: document.getElementById("commentid") },
+  notes: (() => {
+    const root = document.getElementById('notes');
+    return root ? { root, comments: root.querySelectorAll('li') } : null;
+  })(),
 };
 
 
@@ -297,7 +301,7 @@ function openState(name) {
 /**
  * 执行命令
  * @returns 是否成功执行
- * @param {'url'|'state'|'slot'} type 命令类型
+ * @param {'url'|'state'|'slot'|'note'} type 命令类型
  * @param {string} param 命令参数
  */
 function executeCommand(type, param) {
@@ -308,6 +312,24 @@ function executeCommand(type, param) {
       break;
     case 'state':
       openState(param);
+      break;
+    case 'note':
+      param = parseInt(param);
+      if (!DOM.notes) {
+        console.error('[cmd/note] 页面不存在注释区域');
+        msg('页面中未定义注释区域', '好', true);
+        break;
+      }
+      try {
+        if (param <= 0 || param > DOM.notes.comments.length) throw new ReferenceError(param + '超出可接受的范围');
+        DOM.notes.comments[param - 1].scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      } catch (error) {
+        console.warn('[cmd/note] 无法滚动目标注释', param, '至视口：', error);
+        msg('无法查找目标注释：' + error.message, '好', true);
+      }
       break;
     case 'slot':
       param = parseInt(param);
@@ -363,7 +385,7 @@ function refreshCountup(year, month, day) {
   d.setDate(d.getDate() + 4 - (d.getDay() || 7));
   const weekNum = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
 
-  DOM.counting.innerHTML = `；今天是${now.getFullYear()}年的第${weekNum}周，迄今为止我们已运营${days}天${hours}小时${minutes}分钟${seconds}秒（${window.timezone.offsetStrMin}）`;
+  DOM.counting.innerHTML = `今天是${now.getFullYear()}年的第${weekNum}周，迄今为止我们已运营${days}天${hours}小时${minutes}分钟${seconds}秒。`;
 }
 
 
@@ -583,6 +605,10 @@ async function init() {
   // 初始化搜索模块
   initSearch();
 
+  // 启动运营计时器
+  refreshCountup(2024, 12, 25);
+  setInterval(() => refreshCountup(2024, 12, 25), 1000);
+
   // 初始化视频背景
   initVideoBg();
 
@@ -603,6 +629,39 @@ async function init() {
     i.addEventListener('contextmenu', (e) => e.preventDefault());
     i.addEventListener('dragstart', (e) => e.preventDefault());
   });
+
+  // body不允许Scroll
+  document.body.addEventListener('scroll', () => { document.body.scrollTop = 0; document.body.scrollLeft = 0; });
+
+  // 动态插值正文的注释链接
+  if (DOM.notes) {
+    document.querySelectorAll('sup[data-note]').forEach((eleOfColumn) => {
+      const bindToken = eleOfColumn.dataset.note;
+      const eleOfFooter = DOM.notes.root.querySelector(`li[data-note="${bindToken}"]`);
+      if (!eleOfFooter) return;
+
+      const index = [...DOM.notes.comments].indexOf(eleOfFooter) + 1;
+      if (index <= 0) return;
+
+      // 正文 → 脚注链接
+      const link2Footer = document.createElement('a');
+      link2Footer.textContent = index;
+      link2Footer.style.cssText = 'font-size: .6em;';
+      link2Footer.addEventListener('click', (e) => e.preventDefault());
+      eleOfColumn.addEventListener('click', () => executeCommand('note', index));
+      eleOfColumn.appendChild(link2Footer);
+
+      // 脚注 → 正文返回链接
+      const link2Column = document.createElement('a');
+      link2Column.textContent = '↩';
+      link2Column.style.cssText = 'font-size: .85em;';
+      link2Column.addEventListener('click', () => eleOfColumn.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      }));
+      eleOfFooter.appendChild(link2Column);
+    });
+  }
 }
 
 /** ============================================================

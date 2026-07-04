@@ -72,37 +72,81 @@
               <source src="./assets/video/cover.mp4" type="video/mp4">
             </video>
           </div>
-          <div class="MiSans" style="--b: 4rem;--l: 3rem">
+          <div class="MiSans" style="--b: 4rem;--l: 3rem; color:#ffffffe0">
             <h1 style="--fs:50px;--fl:120px;">一个世界,<wbr>一群梦想。</h1>
             <p style="--fs:35px;--fl:72px;">了解更多⇓</p>
           </div>
         </div>
-        <div class="content" slot="1">
+        <div class="content half" slot="1" clickable data-cmd="state:play">
           <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0YSts.png');"></div>
           <div style="--t: 3rem; --r:2rem; --a: end;">
-            <h1 style="--fs:35px; --fl:60px;">S2P1<wbr>「岭回双壑风」<wbr>已开启</h1>
+            <h1 style="--fs:35px;--fl:60px;">S2P1<wbr>「岭回双壑风」<wbr>已开启</h1>
+            <p style="--fs:20px;--fl:36px;">更新了什么，<wbr>要不现在体验。<wbr>⎋</p>
           </div>
-          <div class="loop-cards" data-speed="1">
-            <div class="glass">Cards1</div>
-            <div class="glass">Cards2</div>
-            <div class="glass">Cards3</div>
-            <div class="glass">Cards4</div>
-            <div class="glass">Cards5</div>
-            <div class="glass">Cards6</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">Cards7</div>
-            <div class="glass">CardsEND</div>
-
+          <div class="loop-cards" style="--b: 2rem;--l: 0;height: calc(var(--h) * .382);" data-speed="0.5">
+            <div class="glass">
+              <h1 style="--fs:24px; --fl:30px; margin-bottom: .5em;">重构体验</h1>
+              <p style="--fs:16px; --fl:20px;">借助自主开发的插件集群，为冒险家提供更加多样的体验。</p>
+              <img src="https://s41.ax1x.com/2026/07/04/pm0NZWR.png" style="width: 100%; object-fit: contain; margin: auto 0;">
+            </div>
+            <div class="glass">
+              <h1 style="--fs:24px; --fl:30px; margin-bottom: .5em;">削减难度</h1>
+              <p style="--fs:16px; --fl:20px;">完全移除精英怪与粘液科技系统，此后不再硬核。</p>
+              <img src="https://s41.ax1x.com/2026/07/04/pm0N47F.png" style="width: 100%; object-fit: contain; margin: auto 0;">
+            </div>
+          </div>
+        </div>
+        <div class="content half" slot="1" style="background: #fff;">
+          <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0d9yt.png');"></div>
+          <div class="glass" light style="--b: 3.1rem; --l:1rem; --a: start; padding: 1rem; color: #000000;">
+            <p class="text" style="--fs:20px;--fl:36px;">来自Apple M4<sup data-note="apple"></sup></p>
+            <h1 class="text" style="--fs:35px;--fl:60px;">强势动力与性能</h1>
+          </div>
+        </div>
+        <div class="content" slot="footer">
+          <div>
+            <ol id="notes">
+              <li>首栏的樱花林中粉色复式建筑由<a href="https://www.bilibili.com/video/BV1Nb421H7NF/">@雪島べま</a>设计，由服内成员建造。</li>
+              <li data-note="apple">Apple Inc. 与本服务器、本站点的运营没有任何关联，后者的相关数据亦不经过 Apple Inc. 传输、保存或运算。</li>
+            </ol>
+          </div>
+          <div style="flex:2;">
+            <h1 style="--fz:1.3rem;"><span class="WenQuanWeiMiHei">栈流</span><span class="MiSans" style="color:var(--s-color-primary);">Streack</span></h1>
+            <p>
+              创立于2024年12月25日的《Minecraft》第三方服务器。<br>
+              <span id="counting"></span>
+            </p>
+          </div>
+          <ul>
+            <li><b>事务及了解</b></li>
+            <li><a href="./doc/" target="_blank">文档</a></li>
+            <li><a href="./doc/news/" target="_blank">新闻博客</a></li>
+            <li><a href="./doc/event/" target="_blank">活动一览</a></li>
+            <li><a href="./webtool/status_next.html" target="_blank">在线状态</a></li>
+          </ul>
+          <ul>
+            <li><b>政策与方针</b></li>
+            <li><a href="./doc/policy/rule" target="_blank">基本方针</a></li>
+            <li><a href="./doc/policy/donate" target="_blank">赞助方针</a></li>
+            <li><a href="./doc/policy/backup_and_restore" target="_blank">备份与恢复方针</a></li>
+            <li><a href="./doc/policy/entroprix" target="_blank">「熵流」概率公示</a></li>
+          </ul>
+          <ul>
+            <li><b>联系与支持</b></li>
+            <li><a href="#state:qqun">QQ群</a></li>
+            <li><a href="mailto:streack@kdxiaoyi.top">电子邮箱</a></li>
+            <li><a href="https://github.com/StreackMC" target="_blank">Github</a></li>
+          </ul>
+          <div>
+            <p>
+              Copyright © 2026,<wbr> kdxiaoyi &amp; Streack.<wbr> 保留所有权利。
+              <span style="margin-left: 2em;">
+                <a href="https://streack.top/our_license" target="_blank">版权许可</a> |
+                <a href="./doc/policy/user" target="_blank">用户协议</a> |
+                <a href="./doc/policy/privacy" target="_blank">隐私政策</a>
+              </span><br>
+              此站点与Mojang Studio、<wbr>Microsoft<wbr>或<wbr>网易Netease<wbr>没有任何关联。
+            </p>
           </div>
         </div>
       </div>

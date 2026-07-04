@@ -31,6 +31,18 @@ body {
   height: 100vh;
 }
 
+a {
+  color: #89b4fa;
+  text-decoration: underline dotted;
+  transition: color 200ms;
+  cursor: pointer;
+}
+
+a:hover {
+  color: var(--s-color-primary, #00687b);
+  text-decoration: underline;
+}
+
 /* 隐藏尚未加载的自定义元素 */
 :not(:defined) {
   display: none;
@@ -60,6 +72,11 @@ path {
   }
 }
 
+img, video {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
 /* ============================================================
    Layout —— 页面层级与布局
    ============================================================ */
@@ -83,7 +100,7 @@ s-page[dark] .bg-filter {
 
 /* --- 彩色渐变背景 --- */
 .bg {
-  background-image:
+  /* background-image:
     radial-gradient(closest-side, rgba(226, 126, 198, 1), rgba(226, 126, 198, 0)),
     radial-gradient(closest-side, rgba(195, 166, 202, 1), rgba(195, 166, 202, 0)),
     radial-gradient(closest-side, rgba(145, 226, 141, 1), rgba(145, 226, 141, 0)),
@@ -104,7 +121,8 @@ s-page[dark] .bg-filter {
     -30vmax -10vmax,
     -30vmax 20vmax,
     50vmax 50vmax;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
+  background-color: var(--s-color-surface-container, #eceeed);
   width: var(--w);
   height: var(--h);
   position: absolute;
@@ -140,7 +158,7 @@ s-page[dark] .bg-filter {
    Components —— 组件样式
    ============================================================ */
 
-/* --- 浮动按钮（Liquid Glass 容器） --- */
+/* --- 浮动按钮 --- */
 #floating {
   position: fixed;
   right: max(clamp(16px, 4vw, 40px), env(safe-area-inset-right));
@@ -165,6 +183,7 @@ s-dialog div.dialog {
 
 /* --- 上方Toolbar --- */
 #toolbar-area {
+  --glass-dark-opacity: .5;
   z-index: 100;
   position: absolute;
   top: 0;
@@ -221,6 +240,7 @@ s-dialog div.dialog {
   flex-wrap: wrap;
   align-items: center;
   align-content: center;
+  font-size: 1.15rem;
 }
 #toolbar1>*:first-child {
   margin-right: auto;
@@ -387,13 +407,13 @@ span#counting_msg {
   height: fit-content;
 }
 
-/* 毛玻璃效果 */
+/* 毛玻璃效果，light/dark标记覆写配色模式，否则遵循页面配色 */
 .glass {
-  background-color: rgba(22, 22, 22, 0.2);
+  background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+  border: 1px solid rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
   border-radius: var(--lg-radius, 16px);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
   transition:
     border 200ms,
     background-color 200ms;
@@ -404,8 +424,34 @@ span#counting_msg {
     background-color 200ms;
 }
 .glass[clickable]:hover {
-  background-color: rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(22, 22, 22, 0.2);
+  background-color: rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
+  border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+}
+.glass[dark] {
+  background-color: rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
+  border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+}
+.glass[dark][clickable]:hover {
+  background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+  border: 1px solid rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
+}
+s-page[dark] {
+  .glass[clickable]:hover {
+    background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+    border: 1px solid rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
+  }
+  .glass {
+    background-color: rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
+    border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+  }
+  .glass[light] {
+    background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+    border: 1px solid rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
+  }
+  .glass[clickable][light]:hover {
+    background-color: rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
+    border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+  }
 }
 
 /* 正文栏中带视频的背景 */
@@ -431,6 +477,14 @@ div.slotBg-I {
   background-size: cover;
 }
 
+/* 正文中跳转注释的链接 */
+sup[data-note] a:not(:hover) {
+  color: inherit;
+}
+sup[data-note] a {
+  font-family: "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
+}
+
 /* ============================================================
    Contents —— 主内容
    可使用的变量：
@@ -443,18 +497,29 @@ div.slotBg-I {
 .contents {
   width: 100%;
   height: max-content;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
   overflow: visible;
 }
 
 .contents > * {
-  width: 100%;
-  height: fit-content;
+  width: auto;
+  height: calc(var(--h) * 0.8639);
   position: relative;/* 创建层叠上下文 */
   z-index: 1;/* 防止背景遮蔽 */
   min-height: 100%;
-  width: 100%;
+  grid-column: span 2;/* 默认独占一列 */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.contents > *.half {
+  grid-column: span 1;/* 有标记只能占一列 */
 }
 
 .content * {
@@ -468,25 +533,8 @@ div.slotBg-I {
   overflow: hidden;
 }
 
-/* 首栏 */
-.content[slot="0"] {
-  width: var(--w);
-  height: var(--h);
-}
-
 /* 每栏 */
-.content {
-  width: var(--w);
-  height: calc(var(--h) * 0.8639);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-.content > *, .content > div {
+.content>*, .content>div {
   top: var(--t, unset);
   right: var(--r, unset);
   left: var(--l, unset);
@@ -500,12 +548,112 @@ div.slotBg-I {
   flex-direction: column;
   align-items: var(--a, left);
 }
+
 .content * {
   width: fit-content;
   font-size: var(--fz, clamp(var(--fs),
-          var(--fv, calc(var(--fs) + (var(--fl) - var(--fs)) * (var(--w) - var(--min-width)) / (var(--max-width) - var(--min-width)))),
-          var(--fl)));
+        var(--fv, calc(var(--fs) + (var(--fl) - var(--fs)) * (var(--w) - var(--min-width)) / (var(--max-width) - var(--min-width)))),
+        var(--fl)));
   margin: var(--my, 0) var(--mx, 0);
+}
+
+/* 首栏 */
+.content[slot="0"] {
+  height: var(--h);
+}
+
+/* 页尾 */
+.content[slot="footer"] {
+  padding: 70px 5% 0;
+  height: fit-content;
+  width: fit-content;
+  min-width: 40%;
+  max-width: 61.8%;
+  background-color: #222;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0 40px;
+  margin: 0 auto 0 auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  --fz: 1rem;
+}
+.content[slot="footer"] > * {
+  flex: 1;
+  min-width: 123px;
+  height: fit-content;
+  position: static;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.content[slot="footer"] h1 {
+  margin: 0 0 0.2rem;
+  font-size: 1.15rem;
+  color: #eee;
+}
+.content[slot="footer"] p {
+  margin: 0;
+  color: #999;
+}
+.content[slot="footer"] a:not(:hover) {
+  color: #999;
+}
+.content[slot="footer"] ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.content[slot="footer"] ul li:first-child {
+  font-size: 0.95rem;
+  color: #ddd;
+  margin-bottom: 0.2rem;
+}
+.content[slot="footer"] ol {
+  margin: 0;
+  padding-left: 1.2em;
+  color: #888;
+  font-size: 0.88rem;
+}
+.content[slot="footer"] ol li {
+  padding-left: 0.3em;
+}
+.content[slot="footer"] .footer-brand {
+  font-size: 1.2rem;
+  color: #ccc;
+  letter-spacing: 0.02em;
+}
+.content[slot="footer"] > *:first-child {
+  --fz: .9rem;
+  flex: 0 0 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 1.5rem;
+}
+.content[slot="footer"] * {
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+.content[slot="footer"] > *:last-child {
+  --fz: .9rem;
+  flex: 0 0 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 1rem;
+}
+
+/* 针对小屏幕的优化 */
+@media screen and (max-width: 833px) {
+  .contents > *.half {
+    grid-column: span 2;
+  }
+  .contents {
+    gap: 6px;
+  }
 }
 
 /* ============================================================
@@ -529,7 +677,6 @@ div.slotBg-I {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 1rem;
   padding: 0 0.5rem;
   will-change: transform;
   height: 100%;
@@ -537,9 +684,19 @@ div.slotBg-I {
 .loop-cards-track > div {
   flex-shrink: 0;
   padding: 0.8rem 1.6rem;
-  white-space: nowrap;
+  margin-left: 1.5rem;
   font-size: 0.95rem;
   color: #ddd;
-  height: 100%;
+  min-height: 100%;
   width: fit-content;
+  max-width: max(calc(var(--w) * 0.16), 160px);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+.loop-cards-track > div, .loop-cards-track > div * {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  text-overflow: ellipsis;
 }
