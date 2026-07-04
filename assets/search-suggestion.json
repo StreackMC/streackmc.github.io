@@ -1,8 +1,8 @@
 [
   {
     "link": "/doc/rule",
-    "keywords": ["规则", "规定", "守则", "管理", "处罚", "封禁", "ban"],
-    "title": "服务器规则"
+    "keywords": ["规则", "方针", "规定", "守则", "管理", "处罚", "封禁", "ban"],
+    "title": "基本方针 / 服务器守则"
   },
   {
     "link": "/doc/policy/privacy",
@@ -16,33 +16,23 @@
   },
   {
     "link": "/doc/policy/donate",
-    "keywords": ["赞助", "捐赠", "支持", "打赏", "付款", "赞助方针"],
+    "keywords": ["赞助", "捐赠", "支持", "打赏", "付款", "support","sponsor","pay","contribute"],
     "title": "赞助方针"
   },
   {
-    "link": "/doc/help/linkaccount",
-    "keywords": ["绑定", "账号", "关联", "链接", "账户"],
-    "title": "账号绑定帮助"
-  },
-  {
     "link": "/doc/help/qbot",
-    "keywords": ["QQ", "机器人", "Bot", "群聊", "自动"],
+    "keywords": ["QQ", "机器人", "Bot", "群聊", "自动","小可"],
     "title": "QQ机器人帮助"
-  },
-  {
-    "link": "/doc/help/slimefun",
-    "keywords": ["粘液", "科技", "Slimefun", "插件", "玩法"],
-    "title": "Slimefun 玩法指南"
   },
   {
     "link": "/doc/help/solution",
     "keywords": ["解决", "问题", "故障", "报错", "无法", "进服", "常见问题"],
-    "title": "常见问题解决"
+    "title": "常见无法进服问题"
   },
   {
     "link": "/doc/updata/s1p1",
     "keywords": ["更新", "日志", "版本", "S1P1", "历史"],
-    "title": "S1P1 更新日志"
+    "title": "S1P1「樱飘雪霁月」更新日志"
   },
   {
     "link": "/doc/updata/s1p2",
@@ -65,11 +55,6 @@
     "title": "2025 愚人节活动"
   },
   {
-    "link": "/doc/info/ban",
-    "keywords": ["封禁", "申诉", "解封", "处罚", "名单"],
-    "title": "封禁申诉"
-  },
-  {
     "link": "/doc/info/feature",
     "keywords": ["功能", "特性", "介绍", "服务器", "特色"],
     "title": "服务器功能"
@@ -77,11 +62,11 @@
   {
     "link": "/webtool/status.html",
     "keywords": ["状态", "在线", "监控", "服务器", "检测", "存活"],
-    "title": "服务器在线状态"
+    "title": "在线状态"
   },
   {
     "link": "/webtool/uuid.html",
-    "keywords": ["UUID", "查询", "玩家", "正版", "皮肤"],
-    "title": "UUID 查询工具"
+    "keywords": ["UUID", "unique", "universal", "universe", "id", "生成","随机"],
+    "title": "UUID 工具"
   }
 ]
