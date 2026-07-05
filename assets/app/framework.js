@@ -582,6 +582,9 @@ export async function initFramework() {
       if (!DOM.toolbar.root.contains(e.target)) {
         shrinkToolbar();
       }
+      // TODO: 点击范围外不应触发事件；此处由于事件已经冒泡到 document 了所以无效
+      e.stopImmediatePropagation();
+      e.preventDefault();
     });
   }
 
