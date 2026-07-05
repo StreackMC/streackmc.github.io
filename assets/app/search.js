@@ -136,18 +136,20 @@ function filterSuggestions(query = '') {
  * 计算建议列表最多可显示的条目数
  * 通过 Toolbar 可用高度 ÷ 每条建议高度(36px) 得出
  * 需预留搜索框本身的高度和底部 padding
+ * @apiNote 最小返回5个
  * @returns {number} 最多可显示的建议条目数
  */
 function calcMaxSuggestionItems() {
-  if (!DOM.toolbar) return 0;
+  const MIN = 3;
+  if (!DOM.toolbar) return MIN;
   const container = DOM.toolbar.actions.root;
-  if (!container || !searchSuggestions) return 5;
+  if (!container || !searchSuggestions) return MIN;
   const rect = container.getBoundingClientRect();
   const searchBox = document.getElementById('toolbar-search-box');
   const searchBoxHeight = searchBox ? searchBox.offsetHeight : 48;
   const available = rect.height - searchBoxHeight - 20;  // 可用高度 = 总高 - 搜索框 - 底部间距
-  if (available <= 8) return 5;                           // 高度不足时返回默认值
-  return Math.max(1, Math.floor(available / 36));         // 每条建议高度约 36px
+  if (available <= 8) return MIN;                           // 高度不足时返回默认值
+  return Math.max(MIN, Math.floor(available / 36));         // 每条建议高度约 36px
 }
 
 
@@ -261,9 +263,10 @@ function renderSuggestions(items) {
     return;
   }
 
-  // 有内容时默认高亮第一项
+  // 有内容时默认高亮第一项，并滚动至首项
   searchSuggestions.classList.add('has-items');
   setHighlight(0);
+  if (DOM?.toolbar?.actions?.root instanceof HTMLElement) DOM.toolbar.actions.root.scrollTop = 0;
 }
 
 /**

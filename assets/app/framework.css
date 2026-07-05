@@ -174,14 +174,15 @@ s-dialog div.dialog {
   top: calc(var(--h) * 0.382 + var(--toolbar-padding-h) * 2 + 0.5rem);
   left: 0;
   width: var(--w);
-  height: calc(var(--h) - (var(--toolbar-padding-h) * 2 + 0.5rem + calc(var(--h) * 0.382)));
+  height: calc(var(--h) - (var(--toolbar-padding-h) * 2 + 0.5rem + var(--toolbar-expanded-height)));
   display: none;
   cursor: default;
 }
 
 /* 展开 */
 #toolbar-area.expanded {
-  max-height: calc(var(--h) * 0.382);
+  --toolbar-expanded-height: calc((var(--h) * 0.382));
+  max-height: var(--toolbar-expanded-height);
   padding-bottom: calc(var(--toolbar-padding-h) + 0.5rem);
 }
 /* 外部区域，点击就关 */
@@ -194,6 +195,17 @@ s-dialog div.dialog {
   #toolbar-area {
     width: calc(100% - var(--toolbar-padding-v) * 2 - 10% * 2);
     padding: var(--toolbar-padding-h) calc(var(--toolbar-padding-v) + 10%);
+  }
+}
+/* 高度过小 */
+@media screen and (max-height: 628px) {
+  #toolbar-area.expanded {
+    --toolbar-expanded-height: calc((var(--h) * 0.618));
+  }
+}
+@media screen and (max-height: 388px) {
+  #toolbar-area.expanded {
+    --toolbar-expanded-height: calc((var(--h) * 1));
   }
 }
 
@@ -231,7 +243,7 @@ s-dialog div.dialog {
 /* --- 第二行：抽屉内容（max-height 滑出 + 渐显） --- */
 #toolbar2 {
   max-height: 0;
-  overflow: hidden;
+  overflow: auto;
   min-height: 0;
   opacity: 0;
   transition:
@@ -249,12 +261,14 @@ s-dialog div.dialog {
 
 /* 展开：抽屉滑出 + 内容渐显（延迟至动画后半段） */
 #toolbar-area.expanded #toolbar2 {
-  max-height: calc((var(--h) * 0.382 - var(--toolbar-height) - var(--toolbar-padding-h) * 2 - 0.5rem));
-  height: calc((var(--h) * 0.382 - var(--toolbar-height) - var(--toolbar-padding-h) * 2 - 0.5rem));
+  --toolbar-expanded-height-of-2: calc(var(--toolbar-expanded-height) - var(--toolbar-height) - var(--toolbar-padding-h) * 2 - 0.5rem);
+  max-height: var(--toolbar-expanded-height-of-2);
+  height: var(--toolbar-expanded-height-of-2);
   opacity: 1;
   padding-top: 0.5rem;
   transition:
     padding-top 500ms,
+    height 300ms,
     max-height 600ms cubic-bezier(0.4, 0, 0.2, 1),
     opacity 400ms cubic-bezier(0.4, 0, 0.2, 1) 300ms;
 }

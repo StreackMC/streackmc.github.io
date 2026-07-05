@@ -466,7 +466,7 @@ export function registerToolbarSlot(name, html, opts = {}) {
   div.dataset.toolbarSlot = name;
   div.className = 'toolbar2-slot';
   if (opts.noscroll !== false) div.dataset.noscroll = 'true';
-  div.style.overflow = 'hidden';
+  // div.style.overflow = 'hidden';
   div.innerHTML = html;
   toolbar2.appendChild(div);
   toolbarSlots[name] = div;
