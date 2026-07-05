@@ -112,6 +112,9 @@ s-page[dark] .bg-filter {
   background: rgba(0, 0, 0, 0.5);
   border-radius: 2px;
 }
+s-page[dark] .main::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+}
 
 /* --- Slot 布局 --- */
 .slot {
@@ -127,7 +130,7 @@ s-page[dark] .bg-filter {
    Components —— 组件样式
    ============================================================ */
 
-/* --- 浮动按钮 --- */
+/* --- 浮动按钮（已弃用，保留样式兼容） --- */
 #floating {
   position: fixed;
   right: max(clamp(16px, 4vw, 40px), env(safe-area-inset-right));
@@ -258,7 +261,7 @@ s-dialog div.dialog {
     opacity 400ms cubic-bezier(0.4, 0, 0.2, 1) 300ms;
 }
 
-/* Toolbar2 滚动条（暗色薄条风格） */
+/* Toolbar2 滚动条 */
 #toolbar2::-webkit-scrollbar {
   width: 4px;
 }
@@ -271,6 +274,13 @@ s-dialog div.dialog {
 }
 #toolbar2::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
+}
+/* 亮色模式 toolbar2 滚动条 */
+s-page:not([dark]) #toolbar2::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+}
+s-page:not([dark]) #toolbar2::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
 }
 
 /* --- toolbar2 声明式插槽（渐显+上移入出场） --- */
@@ -320,6 +330,13 @@ s-dialog div.dialog {
 .toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"])::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
+/* 亮色模式非搜索插槽滚动条 */
+s-page:not([dark]) .toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"])::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+}
+s-page:not([dark]) .toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"])::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
 .toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"]) > * {
   padding: 0.6rem 0.8rem;
   border-radius: calc(var(--lg-radius, 16px) / 3);
@@ -334,6 +351,14 @@ s-dialog div.dialog {
 .toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"]) > *[clickable]:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
+}
+/* 亮色模式非搜索插槽 */
+s-page:not([dark]) .toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"]) > * {
+  color: #555;
+}
+s-page:not([dark]) .toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"]) > *[clickable]:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #000;
 }
 
 /* --- 搜索框（高对比度） --- */
@@ -377,6 +402,24 @@ s-dialog div.dialog {
 #toolbar-search-icon path {
   fill: #ccc;
 }
+/* 亮色模式搜索框 */
+s-page:not([dark]) #toolbar-search-box {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+s-page:not([dark]) #toolbar-search-box:focus-within {
+  border-color: var(--s-color-primary, #00687b);
+  background: rgba(255, 255, 255, 0.95);
+}
+s-page:not([dark]) #toolbar-search-input {
+  color: #222;
+}
+s-page:not([dark]) #toolbar-search-input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+s-page:not([dark]) #toolbar-search-icon path {
+  fill: #666;
+}
 
 /* --- 搜索建议列表 --- */
 #toolbar-search-suggestions {
@@ -406,6 +449,15 @@ s-dialog div.dialog {
 .ts-suggestion-item.highlighted {
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
+}
+/* 亮色模式搜索建议 */
+s-page:not([dark]) .ts-suggestion-item {
+  color: #444;
+}
+s-page:not([dark]) .ts-suggestion-item:hover,
+s-page:not([dark]) .ts-suggestion-item.highlighted {
+  background: rgba(0, 0, 0, 0.06);
+  color: #000;
 }
 @keyframes suggestionIn {
   from { opacity: 0; transform: translateY(-6px); }
@@ -633,6 +685,32 @@ sup[data-note] a {
   margin: 0 auto 0 auto;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   --fz: calc(var(--footer-font-basic-size) * 1);
+}
+/* 亮色模式页尾 */
+s-page:not([dark]) .content[slot="footer"] {
+  background-color: #f5f5f5;
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+s-page:not([dark]) .content[slot="footer"] h1 {
+  color: #333;
+}
+s-page:not([dark]) .content[slot="footer"] p,
+s-page:not([dark]) .content[slot="footer"] ul li,
+s-page:not([dark]) .content[slot="footer"] a:not(:hover) {
+  color: #666;
+}
+s-page:not([dark]) .content[slot="footer"] ul li:first-child {
+  color: #444;
+}
+s-page:not([dark]) .content[slot="footer"] .footer-brand {
+  color: #555;
+}
+s-page:not([dark]) .content[slot="footer"] ol {
+  color: #888;
+}
+s-page:not([dark]) .content[slot="footer"] > *:first-child,
+s-page:not([dark]) .content[slot="footer"] > *:last-child {
+  border-color: rgba(0, 0, 0, 0.08);
 }
 .content[slot="footer"] > * {
   flex: 1;
