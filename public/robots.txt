@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /v1/
 Disallow: /404.html
 
-Sitemap: https://streack.top/sitemap-index.xml
+Sitemap: https://streack.top/sitemap.xml

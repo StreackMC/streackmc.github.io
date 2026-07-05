@@ -1,5 +1,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 // https://astro.build/config
 export default defineConfig({
@@ -30,5 +32,29 @@ export default defineConfig({
         'https://streack.top/webtool/credits.html',
       ],
     }),
+    // @astrojs/sitemap 默认输出 sitemap-index.xml + sitemap-0.xml
+    // 此内联集成在构建完成后将其合并为单个 /sitemap.xml
+    {
+      name: 'sitemap-to-single-file',
+      hooks: {
+        'astro:build:done': ({ dir }) => {
+          const distDir = fileURLToPath(dir);
+          const indexFile = distDir + 'sitemap-index.xml';
+          const dataFile = distDir + 'sitemap-0.xml';
+          const targetFile = distDir + 'sitemap.xml';
+
+          if (existsSync(dataFile)) {
+            // 将 sitemap-0.xml 内容写入 sitemap.xml
+            writeFileSync(targetFile, readFileSync(dataFile, 'utf-8'));
+            // 清理原始分片文件和索引文件
+            unlinkSync(dataFile);
+            if (existsSync(indexFile)) {
+              unlinkSync(indexFile);
+            }
+            console.log('\x1b[32m[sitemap]\x1b[0m sitemap-index.xml + sitemap-0.xml → sitemap.xml');
+          }
+        },
+      },
+    },
   ],
 });
