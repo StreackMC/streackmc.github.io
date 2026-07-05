@@ -31,7 +31,6 @@
       <!-- 工具栏（由 framework.js 动态注入） -->
       <div id="toolbar-mount"></div>
       <template data-toolbar-nav>
-        <div onclick='window.streack.openURL("./doc/news/2026/0704",true)' clickable>「岭回双壑风」</div>
         <div onclick="window.open('/qqun','_self')" clickable>QQ群</div>
         <div onclick="window.open('/donate','_self')" clickable>赞助</div>
       </template>
@@ -85,7 +84,7 @@
             <h1 class="text" style="--fs:35px;--fl:60px; width:/* 动态判断宽度，需要根据字符数量修改参数 */ calc(5em + 5em * clamp(0, (100vw - 1299px) / 1px, 1));">强劲性能，<wbr>超乎想象。</span></h1>
           </div>
         </div>
-        <div class="content" slot="3" style="background: #fff;">
+        <div class="content" slot="3" style="background: #fff;" clickable data-cmd="url:/about/leadership">
           <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0RSpV.png');"></div>
           <div light style="--t: 3rem; --r:auto; --l: auto; --a: center; color: #000000;">
             <h1 class="text" style="--fs:35px;--fl:60px;">源于<span class="WenQuanWeiMiHei">栈流</span></h1>

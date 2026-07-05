@@ -33,17 +33,17 @@ function migrateState(name) {
       return executeCommand('bst', 'play_message');
     case "donate":
     case "donate_done":
-      window.open('/donate', '_self');
+      window.open('/about/donate', '_self');
       return true;
     case "qqun":
     case "qqun_done":
-      window.open('/qqun', '_self');
+      window.open('/about/contact', '_self');
       return true;
     case "comment":
-      window.open('/comment', '_self');
+      window.open('/', '_self');
       return true;
     case "issue":
-      window.open('/issue', '_self');
+      window.open('/about/contact', '_self');
       return true;
     default:
       return false;
