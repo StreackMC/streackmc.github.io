@@ -301,13 +301,13 @@ export function closeAllDialogs() {
 
 /**
  * 执行命令
- * 状态类命令委托给 window.streack.openState（页面可覆写）
  * 支持的命令类型：
- *   - url：   打开链接，参数格式 "uri|stayInSameWindow"
- *   - state： 切换页面状态（委托给页面自定义的 openState）
- *   - note：  滚动到指定脚注注释
- *   - slot：  滚动到指定锚点元素
- * @param {'url'|'state'|'slot'|'note'} type 命令类型
+ *   - url：     打开链接，参数格式 "uri|stayInSameWindow"
+ *   - toolbar： 触发 Toolbar 动作（委托给页面自定义的 openToolbar）
+ *   - state：   [已弃用] 旧状态系统，现跳转到 /{param} 独立页面
+ *   - note：    滚动到指定脚注注释
+ *   - slot：    滚动到指定锚点元素
+ * @param {'url'|'toolbar'|'state'|'slot'|'note'} type 命令类型
  * @param {string} param 命令参数
  * @returns {boolean} 是否成功执行
  */
@@ -319,14 +319,19 @@ export function executeCommand(type, param) {
       openURL(...param.split("|", 2));
       break;
 
-    case 'state':
-      // 委托给页面自定义的状态切换函数
-      if (window.streack && typeof window.streack.openState === 'function') {
-        window.streack.openState(param);
+    case 'toolbar':
+      // 调用页面注册的 Toolbar 动作
+      if (typeof window?.streack?.openToolbar === 'function') {
+        window.streack.openToolbar(param);
       } else {
-        console.warn('[cmd] 页面未定义 openState');
+        console.warn('[cmd] 页面未定义 openToolbar');
         return false;
       }
+      break;
+
+    case 'state':
+      // [已弃用] 旧 state 系统，保留兼容跳转到独立页面
+      window.open(`/${encodeURIComponent(param)}`, '_self');
       break;
 
     case 'note':

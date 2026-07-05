@@ -34,46 +34,29 @@
 -->
 <html lang="zh-cn">
 <head>
-  <title>页面标题 — 栈流 (Streack)</title>
+  <title>页面标题 — 栈流Streack</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="description" content="页面描述" />
   <meta name="keywords" content="关键词1,关键词2" />
-
-  <!-- ============================================================
-       Sober UI 框架（必需）
-       ============================================================ -->
   <script src="/pmd.js"></script>
   <script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script>
   <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/css/sober-theme-turquoise.css" />
   <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/predefs.css" />
-
-  <!-- ============================================================
-       Streack 通用框架样式（必需）
-       ============================================================ -->
-  <link rel="stylesheet" href="/assets/app/framework.css" />
+  <link rel="stylesheet" href="/assets/app/framework.css" /><link rel="shortcut icon" type="image/x-icon" href="https://streack.top/assets/img/favicon_2.ico">
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/font.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/SourceHanSerifCN/result.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/WenQuanWeiMiHei/result.css" />
 
   <!-- ============================================================
        页面特定样式（可选）
        新建 assets/code/your-page.css 并在此引入
        ============================================================ -->
   <!-- <link rel="stylesheet" href="/assets/code/your-page.css" /> -->
-
-  <!-- ============================================================
-       字体与图标（必需）
-       ============================================================ -->
-  <link rel="shortcut icon" type="image/x-icon" href="https://streack.top/assets/img/favicon_2.ico">
-  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/font.css" />
-  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/SourceHanSerifCN/result.css" />
-  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/WenQuanWeiMiHei/result.css" />
 </head>
 <body>
   <s-page id="page" theme="dark">
-
-    <!-- ==========================================================
-         无脚本提示（建议保留）
-         ========================================================== -->
     <div class="unselectable" style="position: absolute;" id="no_script">
       <h1>您似乎没有启用JavaScript，而这是此网站正常运行所必须的。<br>此外，该页面不支持过老的浏览器内核。</h1>
     </div>
@@ -179,18 +162,8 @@
       </div>
     </div>
   </s-page>
-
-  <!-- ============================================================
-       全局对象初始化（必需，在框架脚本前定义）
-       ============================================================ -->
-  <script>
-    window.streack = {};
-  </script>
-
-  <!-- ============================================================
-       Streack 框架脚本（必需）
-       ============================================================ -->
-  <script type="module" src="./assets/app/framework.js"></script>
+  <script>window.streack = {};</script>
+  <script type="module" src="/assets/app/entry.js"></script>
 
   <!-- ============================================================
        页面特定逻辑（必需 - 处理模板注入）
@@ -205,12 +178,6 @@
        ============================================================ -->
   <script type="module">
     import { requestInitFunc, registerToolbarSlot } from './assets/app/framework.js';
-    import { initSearch } from './assets/app/search.js';
-
-    requestInitFunc(() => {
-      // 可选：初始化搜索模块
-      // initSearch();
-    });
 
     // 示例：以编程方式注册自定义 toolbar2 插槽
     // requestInitFunc(() => {

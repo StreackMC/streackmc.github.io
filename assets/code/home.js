@@ -103,15 +103,15 @@ function issuelink() {
 
 
 // ============================================================
-// 状态路由（覆写 window.streack.openState）
+// 新 Toolbar 动作路由
 // ============================================================
 
 /**
- * 通过 pushState 打开弹窗，不污染 URL hash
+ * 处理 toolbar 命令（由 framework executeCommand 调用）
  * @param {string} name - 动作标识
  * @returns {boolean} 是否成功执行
  */
-function openState(name) {
+function openToolbar(name) {
   const h = String(name).trim().toLowerCase();
   closeAllDialogs();
 
@@ -119,48 +119,69 @@ function openState(name) {
     case "play":
       homeDOM.dialog.play.showed = true;
       break;
-    case "donate":
-      donatelink("first");
-      break;
-    case "donate_done":
-      donatelink("then");
-      break;
-    case "qqun":
-    case "qqun_done":
-      qqunlink();
-      break;
-    case "comment":
-      commentlink();
-      break;
-    case "issue":
-      issuelink();
-      break;
     default:
-      console.warn('[state] 未知的动作：' + h);
+      console.warn('[toolbar] 未知的动作：' + h);
       return false;
   }
 
-  history.pushState({ action: h }, "", window.location.pathname + window.location.search);
+  history.pushState({ toolbar: h }, "", window.location.pathname + window.location.search);
   return true;
 }
 
-// 挂载到 window.streack 上供 HTML 和框架命令系统调用
 if (!window.streack) window.streack = {};
-window.streack.openState = openState;
+window.streack.openToolbar = openToolbar;
+
+
+// ============================================================
+// 旧 state 向后兼容 —— 处理地址栏 & hash 路由
+// ============================================================
+
+/** 将旧 state 动作转发到新 API（弹窗类→openToolbar，其他→独立页面） */
+function migrateState(name) {
+  const h = String(name).trim().toLowerCase();
+  switch (h) {
+    case "play":
+      return openToolbar('play');
+    case "donate":
+    case "donate_done":
+      window.open('/donate', '_self');
+      return true;
+    case "qqun":
+    case "qqun_done":
+      window.open('/qqun', '_self');
+      return true;
+    case "comment":
+      window.open('/comment', '_self');
+      return true;
+    case "issue":
+      window.open('/issue', '_self');
+      return true;
+    default:
+      return false;
+  }
+}
+
+// 保持 openState 挂载以防外部代码引用，内部转发到新 API
+window.streack.openState = migrateState;
 
 // 浏览器后退/前进时关闭弹窗
 window.addEventListener("popstate", () => {
   closeAllDialogs();
 });
 
-// 兼容Hash路由
-window.addEventListener('hashchange', onHashChangeEvent);
-function onHashChangeEvent() {
-  if (location.hash.slice(1) && !openState(location.hash.slice(1))) {
-    const [t, p] = location.hash.slice(1).split(':', 2);
+// 兼容 Hash 路由 → 转发到新 API
+window.addEventListener('hashchange', () => {
+  const hash = location.hash.slice(1);
+  if (!hash) return;
+  const [t, p] = hash.split(':', 2);
+  if (t === 'toolbar') {
+    openToolbar(p);
+  } else if (t === 'state') {
+    migrateState(p);
+  } else {
     executeCommand(t, p);
   }
-}
+});
 
 
 // ============================================================
@@ -254,10 +275,10 @@ requestInitFunc(() => {
   // 填充动态 DOM 引用（来自 footer include）
   homeDOM.counting = document.getElementById("counting");
 
-  // 处理初始深层链接
+  // 处理初始深层链接（旧 state 兼容 → 转发到新 API）
   const params = new URLSearchParams(window.location.search);
   const action = params.get("action");
-  if (action) openState(action);
+  if (action) migrateState(action);
 
   // 启动运营计时器
   refreshCountup(2024, 12, 25);
@@ -269,8 +290,6 @@ requestInitFunc(() => {
   // 初始化循环卡片
   initLoopCards();
 
-  // 兼容Hash路由
-  onHashChangeEvent();
 });
 
 
@@ -279,7 +298,8 @@ requestInitFunc(() => {
 // ============================================================
 
 window.streack.openURL = openURL;
-window.streack.openState = openState;
+window.streack.openToolbar = openToolbar;
+window.streack.openState = migrateState;
 window.streack.msg = msg;
 window.streack.CopyText = CopyText;
 // HTML onclick / javascript: 直接调用的函数需暴露到全局

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML><html lang="zh-cn">
 <head>
-  <title>栈流 (Streack) — 全新「岭回双壑风」版本</title>
+  <title>栈流Streack - 官方网站 -「岭回双壑风」</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -30,8 +30,8 @@
       <div id="toolbar-mount"></div>
       <template data-toolbar-nav>
         <div onclick='window.streack.openURL("./doc/news/2026/0704",true)' clickable>「岭回双壑风」</div>
-        <div onclick='window.streack.openState("qqun",true)' clickable>QQ群</div>
-        <div onclick='window.streack.openState("donate",true)' clickable>赞助</div>
+        <div onclick="window.open('/qqun','_self')" clickable>QQ群</div>
+        <div onclick="window.open('/donate','_self')" clickable>赞助</div>
       </template>
       <!-- 正文 -->
       <div class="contents">
@@ -52,7 +52,7 @@
             </p>
           </div>
         </div>
-        <div class="content half" slot="1" clickable data-cmd="state:play">
+        <div class="content half" slot="1" clickable data-cmd="toolbar:play">
           <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0YSts.png');"></div>
           <div style="--t: 3rem; --l:2rem; --a: start;">
             <h1 style="--fs:35px;--fl:60px;">全新版本<wbr>「岭回双壑风」</h1>
@@ -108,7 +108,7 @@
       </div>
       <!-- 悬浮按钮 -->
       <div class="glass" clickable id="floating" style="--lg-radius:24px;"
-        onclick='javascript:window.streack.openState("play")'>
+        onclick='javascript:window.streack.openToolbar("play")'>
         <s-tooltip>
           <svg slot="trigger" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
@@ -145,8 +145,8 @@
       <div slot="text" class="unselectable">
         <h2 id="donate_THK_message">Donate_Message</h2>
         <p>
-          赞助视为您知悉该行为<b>不会</b>使您获取除“赞助列表”外任何物品、权益或特权，详见<a href="./doc/policy/donate">赞助方针</a>。若需广告等商务合作，请<a href="javascript:window.streack.openState('issue')">发邮件</a>。<br>
-          若您愿于「赞助列表」上留名，请在赞助至少6.66人民币后携带支付单号<a href="javascript:window.streack.openState('issue')">联系我们</a>。<br>
+          赞助视为您知悉该行为<b>不会</b>使您获取除"赞助列表"外任何物品、权益或特权，详见<a href="./doc/policy/donate">赞助方针</a>。若需广告等商务合作，请<a href="mailto:streack@kdxiaoyi.top">发邮件</a>。<br>
+          若您愿于「赞助列表」上留名，请在赞助至少6.66人民币后携带支付单号<a href="mailto:streack@kdxiaoyi.top">联系我们</a>。<br>
         </p>
         <s-checkbox id="donate_checkbox" disabled="true">请稍后……</s-checkbox>
         <s-fold folded="true" id="donate_fold">
