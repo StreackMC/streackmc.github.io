@@ -325,7 +325,8 @@ export function registerCommand(type, handler) {
  * @returns {boolean} 是否成功执行
  */
 export function executeCommand(type, param) {
-  if (!(type && param)) return false;
+  if (!(type)) return false;
+  param = param ? param : "";
 
   const t = type.toLowerCase();
 
@@ -414,7 +415,9 @@ export function shrinkToolbar() {
   if (!DOM.toolbar) return;
   // 取消展开延迟计时器，防止动画期间快速操作
   clearTimeout(DOM.toolbar.actions.root._expandTimer);
-  // 在动画开始前隐藏滚动条
+  // 在动画开始前隐藏滚动条并清空事件
+  DOM.toolbar.root.removeEventListener('mouseleave', shrinkToolbar);
+  document.removeEventListener('click', onOutsideClick);
   DOM.toolbar.actions.root.style.overflow = '';
   DOM.toolbar.root.classList.remove('expanded');
   toolbarExpanded = false;
@@ -450,8 +453,11 @@ export function expandToolbar(slotName) {
   // 等 grid 展开动画（600ms）结束后再显示滚动条，避免动画过程中出现
   const toolbar2 = DOM.toolbar.actions.root;
   clearTimeout(toolbar2._expandTimer);
+  DOM.toolbar.root.addEventListener('mouseleave', shrinkToolbar);
   toolbar2._expandTimer = setTimeout(() => {
     if (!toolbarExpanded) return;  // 动画期间已被收起，不处理
+    // 注册事件并设置样式
+    document.addEventListener('click', onOutsideClick);
     if (slotName && toolbarSlots[slotName]?.dataset.noscroll) {
       toolbar2.style.overflow = 'hidden';
     } else {
@@ -469,6 +475,14 @@ export function switchToolbar(slotName) {
   }
 }
 
+function onOutsideClick(e) {
+  if (!DOM.toolbar.root.contains(e.target)) {
+    shrinkToolbar();
+  }
+  // TODO: 点击范围外不应触发事件；此处由于事件已经冒泡到 document 了所以无效
+  e.stopImmediatePropagation();
+  e.preventDefault();
+}
 
 // ============================================================
 // Toolbar2 插槽注册
@@ -594,21 +608,6 @@ export async function initFramework() {
 
   // 7. 禁止 Safari 双指缩放/缩放手势
   document.addEventListener("gesturestart", (e) => e.preventDefault());
-
-  // 8. 鼠标移出 Toolbar 区域或点击外部时自动收起（替代旧版辅助元素方案）
-  if (DOM.toolbar && DOM.toolbar.root) {
-    // 鼠标离开整个 Toolbar 区域时收起
-    DOM.toolbar.root.addEventListener('mouseleave', shrinkToolbar);
-    // 点击/触摸 Toolbar 外部区域时收起
-    document.addEventListener('click', function onOutsideClick(e) {
-      if (!DOM.toolbar.root.contains(e.target)) {
-        shrinkToolbar();
-      }
-      // TODO: 点击范围外不应触发事件；此处由于事件已经冒泡到 document 了所以无效
-      e.stopImmediatePropagation();
-      e.preventDefault();
-    });
-  }
 
   // 9. 保护图片与视频：禁止拖拽、禁止右键菜单
   document.querySelectorAll('img').forEach((i) => {

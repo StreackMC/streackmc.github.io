@@ -9,7 +9,7 @@ import {
   DOM, openURL,
   toolbarSlots, toolbarExpanded,
   expandToolbar, shrinkToolbar,
-  requestInitFunc,
+  requestInitFunc, registerCommand
 } from './framework.js';
 
 
@@ -351,19 +351,6 @@ const handleSearchInput = debounce(function () {
  * 键盘上下/Tab/Enter 导航、窗口 resize 重排
  */
 function initSearchUI() {
-  /** 搜索按钮点击处理：展开/收起切换 */
-  function onSearchBtnClick() {
-    if (toolbarExpanded) {
-      shrinkToolbar();
-    } else {
-      expandToolbar('search');           // 展开搜索面板
-      searchInput.value = '';            // 清空输入
-      requestAnimationFrame(() => {
-        searchInput.focus();              // 自动聚焦输入框
-        renderSuggestions(filterSuggestions());  // 渲染全部建议
-      });
-    }
-  }
 
   // 安全检查：搜索 DOM 元素必须全部存在
   if (!searchBtn || !searchInput || !searchSuggestions) {
@@ -377,7 +364,7 @@ function initSearchUI() {
   searchInput.addEventListener('input', handleSearchInput);
 
   // 动态占位符：显示当前站点的域名
-  searchInput.setAttribute('placeholder', `搜索 ${location.hostname}……`);
+  searchInput.setAttribute('placeholder', `搜索 ${location.hostname}`);
 
   // 全局快捷键 Ctrl/Cmd+F 打开搜索
   document.addEventListener('keydown', (e) => {
@@ -431,6 +418,20 @@ function initSearchUI() {
   loadSearchSuggestions();
 }
 
+/** 搜索按钮点击处理：展开/收起切换 */
+export function onSearchBtnClick(value = "") {
+  if (toolbarExpanded) {
+    shrinkToolbar();
+  } else {
+    expandToolbar('search');           // 展开搜索面板
+    searchInput.value = (typeof value === 'string') ? value : "";
+    requestAnimationFrame(() => {
+      searchInput.focus();              // 自动聚焦输入框
+      renderSuggestions(filterSuggestions());  // 渲染全部建议
+    });
+  }
+}
+registerCommand('search', onSearchBtnClick);
 
 // ============================================================
 //  导航辅助
