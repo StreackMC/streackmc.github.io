@@ -5,7 +5,7 @@
       "label": "Execute Astro Server",
       "promptOnClose": true,
       "type": "shell",
-      "command": "ASTRO_TELEMETRY_DISABLED=1 npx astro dev",
+      "command": "ASTRO_TELEMETRY_DISABLED=1 npx astro dev --host",
       "group": {
         "kind": "test",
         "isDefault": false
