@@ -22,7 +22,7 @@ import FrameworkLayout from '../layouts/FrameworkLayout.astro';
 
   <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
   <div style="display: contents">
-    <div class="content" slot="0" data-cmd="slot:1" clickable>
+    <div class="content" slot="0" style="height: var(--h);" data-cmd="slot:1" clickable>
       <div class="slotBg-V">
         <video poster="https://s41.ax1x.com/2026/07/03/pm0mSYD.png" class="slotBg-V" muted playsinline preload="auto" loop>
           <source src="/assets/video/cover.webm" type="video/webm">

@@ -327,11 +327,6 @@ sup[data-note] a {
   --my: .4em;
 }
 
-/* 首栏 */
-.content[slot="0"] {
-  height: var(--h);
-}
-
 /* 页尾 */
 .content[slot="footer"] {
   padding: 70px 5% 0;
