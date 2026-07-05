@@ -24,7 +24,6 @@ export const DOM = {
 export function refreshToolbarDOM() {
   DOM.toolbar = {
     root: document.getElementById("toolbar-area"),
-    closeArea: document.getElementById("toolbar-outline"),
     btns: {
       root: document.getElementById("toolbar1"),
       search: document.getElementById("toolbar1-search"),
@@ -399,6 +398,10 @@ export let toolbarExpanded = false;
  */
 export function shrinkToolbar() {
   if (!DOM.toolbar) return;
+  // 取消展开延迟计时器，防止动画期间快速操作
+  clearTimeout(DOM.toolbar.actions.root._expandTimer);
+  // 在动画开始前隐藏滚动条
+  DOM.toolbar.actions.root.style.overflow = '';
   DOM.toolbar.root.classList.remove('expanded');
   toolbarExpanded = false;
   Object.values(toolbarSlots).forEach((s) => {
@@ -427,14 +430,20 @@ export function expandToolbar(slotName) {
   Object.values(toolbarSlots).forEach((s) => s.classList.remove('active'));
   if (slotName && toolbarSlots[slotName]) {
     toolbarSlots[slotName].classList.add('active');
-    // 根据 noscroll 标记控制内容区是否可滚动
-    if (toolbarSlots[slotName].dataset.noscroll) {
-      DOM.toolbar.actions.root.style.overflow = 'hidden';
-    } else {
-      DOM.toolbar.actions.root.style.overflow = 'auto';
-    }
   }
   DOM.toolbar.root.classList.add('expanded');
+
+  // 等 grid 展开动画（600ms）结束后再显示滚动条，避免动画过程中出现
+  const toolbar2 = DOM.toolbar.actions.root;
+  clearTimeout(toolbar2._expandTimer);
+  toolbar2._expandTimer = setTimeout(() => {
+    if (!toolbarExpanded) return;  // 动画期间已被收起，不处理
+    if (slotName && toolbarSlots[slotName]?.dataset.noscroll) {
+      toolbar2.style.overflow = 'hidden';
+    } else {
+      toolbar2.style.overflow = 'auto';
+    }
+  }, 600);
 }
 
 /** 切换 Toolbar 的展开/收起状态 */
@@ -564,11 +573,16 @@ export async function initFramework() {
   // 6. 禁止 Safari 双指缩放/缩放手势
   document.addEventListener("gesturestart", (e) => e.preventDefault());
 
-  // 7. 点击/触摸 Toolbar 外部区域时自动收起
-  if (DOM.toolbar && DOM.toolbar.closeArea) {
-    DOM.toolbar.closeArea.addEventListener('click', shrinkToolbar);
-    DOM.toolbar.closeArea.addEventListener('mousemove', shrinkToolbar);
-    DOM.toolbar.closeArea.addEventListener('touchstart', shrinkToolbar);
+  // 7. 鼠标移出 Toolbar 区域或点击外部时自动收起（替代旧版辅助元素方案）
+  if (DOM.toolbar && DOM.toolbar.root) {
+    // 鼠标离开整个 Toolbar 区域时收起
+    DOM.toolbar.root.addEventListener('mouseleave', shrinkToolbar);
+    // 点击/触摸 Toolbar 外部区域时收起
+    document.addEventListener('click', function onOutsideClick(e) {
+      if (!DOM.toolbar.root.contains(e.target)) {
+        shrinkToolbar();
+      }
+    });
   }
 
   // 8. 保护图片与视频：禁止拖拽、禁止右键菜单

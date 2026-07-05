@@ -134,22 +134,34 @@ function filterSuggestions(query = '') {
 
 /**
  * 计算建议列表最多可显示的条目数
- * 通过 Toolbar 可用高度 ÷ 每条建议高度(36px) 得出
- * 需预留搜索框本身的高度和底部 padding
- * @apiNote 最小返回5个
+ * 总显示区域高度 = (100dvh - toolbar1高度 - padding高度) / 2
+ * 再扣除搜索框高度和底部间距后，÷ 每条建议高度(36px) 得出条数
+ * @apiNote 最小返回 3 条
  * @returns {number} 最多可显示的建议条目数
  */
 function calcMaxSuggestionItems() {
   const MIN = 3;
   if (!DOM.toolbar) return MIN;
-  const container = DOM.toolbar.actions.root;
-  if (!container || !searchSuggestions) return MIN;
-  const rect = container.getBoundingClientRect();
+
+  // 100dvh = viewport 高度
+  const viewportH = window.innerHeight;
+  // toolbar1 实际渲染高度
+  const toolbar1 = document.getElementById('toolbar1');
+  const toolbar1H = toolbar1 ? toolbar1.offsetHeight : 0;
+  // toolbar-area 的垂直 padding 总和
+  const area = DOM.toolbar.root;
+  const areaStyle = area ? getComputedStyle(area) : null;
+  const paddingH = areaStyle
+    ? parseFloat(areaStyle.paddingTop) + parseFloat(areaStyle.paddingBottom)
+    : 0;
+
+  const totalArea = (viewportH - toolbar1H - paddingH) / 2;
+
   const searchBox = document.getElementById('toolbar-search-box');
   const searchBoxHeight = searchBox ? searchBox.offsetHeight : 48;
-  const available = rect.height - searchBoxHeight - 20;  // 可用高度 = 总高 - 搜索框 - 底部间距
-  if (available <= 8) return MIN;                           // 高度不足时返回默认值
-  return Math.max(MIN, Math.floor(available / 36));         // 每条建议高度约 36px
+  const available = totalArea - searchBoxHeight - 20;  // 可用高度 = 总区域 - 搜索框 - 底部间距
+  if (available <= 8) return MIN;
+  return Math.max(MIN, Math.floor(available / 36));    // 每条建议高度约 36px
 }
 
 
