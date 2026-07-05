@@ -439,17 +439,13 @@ s-dialog div.dialog {
   cursor: pointer;
 }
 
-* [mobile-only] {
-  display: none !important;
-}
-* [pc-only] {
-  display: inherit !important;
-}
-@media screen and (max-width: 833px) {
-  * [mobile-only] {
-    display: inherit !important;
+@media screen and (min-width: 834px) {
+  [mobile-only] {
+    display: none !important;
   }
-  * [pc-only] {
+}
+@media screen and (max-width: 834px) {
+  [pc-only] {
     display: none !important;
   }
 }

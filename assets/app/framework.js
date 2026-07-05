@@ -238,7 +238,6 @@ export async function loadFragment(mountId, url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const html = await res.text();
-    if (url.includes('tool')) console.log(html);// 工具栏片段打印调试
     mount.insertAdjacentHTML('afterend', html);// 注入到挂载点之后
     mount.remove();// 移除挂载点自身
   } catch (err) {
@@ -627,7 +626,7 @@ export async function initFramework() {
       // 正文中的上标 → 脚注链接（点击滚动到对应脚注）
       const link2Footer = document.createElement('a');
       link2Footer.textContent = index;
-      link2Footer.style.cssText = 'font-size: .6em;';
+      link2Footer.style.cssText = 'font-size: .6em; display: initial;';
       link2Footer.addEventListener('click', (e) => e.preventDefault());
       eleOfColumn.addEventListener('click', () => executeCommand('note', index));
       eleOfColumn.appendChild(link2Footer);
@@ -635,12 +634,22 @@ export async function initFramework() {
       // 脚注 → 正文返回链接（↩ 点击返回正文对应位置）
       const link2Column = document.createElement('a');
       link2Column.textContent = '↩';
-      link2Column.style.cssText = 'font-size: .85em;';
+      link2Column.style.cssText = 'font-size: .85em; display: initial;';
       link2Column.addEventListener('click', () => eleOfColumn.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
       }));
       eleOfFooter.appendChild(link2Column);
+
+      // 判断 pc-only / mobile-only
+      const nearest = link2Footer.closest('[mobile-only],[pc-only]');
+      if (nearest?.matches('*[mobile-only]')) {
+        link2Footer.setAttribute('mobile-only', 'appended');
+        link2Column.setAttribute('mobile-only', 'appended');
+      } else if (nearest?.matches('*[pc-only]')) {
+        link2Footer.setAttribute('pc-only', 'appended');
+        link2Column.setAttribute('pc-only', 'appended');
+      }
     });
   }
 
