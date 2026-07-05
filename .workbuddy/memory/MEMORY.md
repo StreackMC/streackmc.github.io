@@ -19,6 +19,12 @@
 - 两种页面布局风格：FrameworkLayout（s-page dark theme + content slot 系统）、ToolLayout（纯 SoberJS shell）
 - Sitemap：@astrojs/sitemap 集成，filter 排除 404，customPages 收录 webtool 静态 HTML
 
+## Sitemap 配置
+- 模式：`sitemap-index.xml` + `sitemap-0.xml` 分片输出（与用户其它项目保持一致）
+- customPages 自动扫描 `public/` 下所有 HTML，排除 `assets/app/includes/` 和 `assets/archived-file/`
+- 外部 sitemap 在 `public/robots.txt` 末尾用 `Sitemap:` 指令添加
+- 扫描函数 `findHtmlFiles` 的 base 参数必须固定在最外层，递归时传递不变
+
 ## 构建注意事项
 - 构建命令：`ASTRO_TELEMETRY_DISABLED=1 npx astro build`
 - 所有引用 public/ 或外部 URL 的 `<script>` 必须加 `is:inline`

@@ -1,7 +1,41 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { readdirSync, statSync } from 'node:fs';
+import { join, relative } from 'node:path';
+
+/**
+ * 递归扫描目录下所有 .html 文件，返回相对于 base 的路径（以 / 开头）
+ * base 固定为最外层目录，递归时不改变，确保路径前缀完整
+ */
+function findHtmlFiles(dir, base = dir) {
+  const results = [];
+  for (const entry of readdirSync(dir)) {
+    const fullPath = join(dir, entry);
+    if (statSync(fullPath).isDirectory()) {
+      results.push(...findHtmlFiles(fullPath, base));
+    } else if (entry.endsWith('.html')) {
+      results.push('/' + relative(base, fullPath).replace(/\\/g, '/'));
+    }
+  }
+  return results;
+}
+
+/**
+ * 自动收集 public/ 下的静态 HTML 页面作为 sitemap customPages
+ * 排除框架片段和归档页面
+ */
+function collectStaticPages() {
+  const SITE = 'https://streack.top';
+  // 排除规则：这些路径前缀的 HTML 不收录进 sitemap
+  const excludePrefixes = [
+    '/assets/app/includes/', // 框架片段（toolbar/footer）
+    '/assets/archived-file/', // 归档旧站点
+  ];
+
+  return findHtmlFiles('public')
+    .filter((path) => !excludePrefixes.some((p) => path.startsWith(p)))
+    .map((path) => SITE + path);
+}
 
 // https://astro.build/config
 export default defineConfig({
@@ -24,37 +58,9 @@ export default defineConfig({
     sitemap({
       // 排除 404 页面
       filter: (page) => !page.includes('/404'),
-      // 收录 public/webtool/ 下的静态 HTML 页面
+      // 自动收录 public/ 下的静态 HTML 页面
       // （Astro sitemap 只扫描 src/pages/，这些静态透传文件需手动添加）
-      customPages: [
-        'https://streack.top/webtool/status.html',
-        'https://streack.top/webtool/uuid.html',
-        'https://streack.top/webtool/credits.html',
-      ],
+      customPages: collectStaticPages(),
     }),
-    // @astrojs/sitemap 默认输出 sitemap-index.xml + sitemap-0.xml
-    // 此内联集成在构建完成后将其合并为单个 /sitemap.xml
-    {
-      name: 'sitemap-to-single-file',
-      hooks: {
-        'astro:build:done': ({ dir }) => {
-          const distDir = fileURLToPath(dir);
-          const indexFile = distDir + 'sitemap-index.xml';
-          const dataFile = distDir + 'sitemap-0.xml';
-          const targetFile = distDir + 'sitemap.xml';
-
-          if (existsSync(dataFile)) {
-            // 将 sitemap-0.xml 内容写入 sitemap.xml
-            writeFileSync(targetFile, readFileSync(dataFile, 'utf-8'));
-            // 清理原始分片文件和索引文件
-            unlinkSync(dataFile);
-            if (existsSync(indexFile)) {
-              unlinkSync(indexFile);
-            }
-            console.log('\x1b[32m[sitemap]\x1b[0m sitemap-index.xml + sitemap-0.xml → sitemap.xml');
-          }
-        },
-      },
-    },
   ],
 });
