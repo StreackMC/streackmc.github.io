@@ -14,6 +14,8 @@
   --toolbar-items-max-gap: 32px;  /* 工具栏上面的控件间隔最大值 */
   --min-width: 320px;  /* 最小字号生效的视口宽度下限 */
   --max-width: 1352px;  /* 最大字号生效的视口宽度上限 */
+  --footer-font-basic-size: .9rem;  /* 尾注部分基准字号 */
+  --footer-note-font-size: .825rem;  /* 注释部分字号 */
   /* 以下为自动计算区域，无需修改 */
   --h: 100vh;
   --w: 100vw;
@@ -634,7 +636,7 @@ sup[data-note] a {
   gap: 0 40px;
   margin: 0 auto 0 auto;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  --fz: 1rem;
+  --fz: calc(var(--footer-font-basic-size) * 1);
 }
 .content[slot="footer"] > * {
   flex: 1;
@@ -647,7 +649,7 @@ sup[data-note] a {
 }
 .content[slot="footer"] h1 {
   margin: 0 0 0.2rem;
-  font-size: 1.15rem;
+  --fz: calc(var(--footer-font-basic-size) * 1.15);
   color: #eee;
 }
 .content[slot="footer"] p {
@@ -666,7 +668,7 @@ sup[data-note] a {
   gap: 0.4rem;
 }
 .content[slot="footer"] ul li:first-child {
-  font-size: 0.95rem;
+  --fz: calc(var(--footer-font-basic-size) * 0.95);
   color: #ddd;
   margin-bottom: 0.2rem;
 }
@@ -674,13 +676,13 @@ sup[data-note] a {
   margin: 0;
   padding-left: 1.2em;
   color: #888;
-  font-size: 0.88rem;
+  --fz: var(--footer-note-font-size);
 }
 .content[slot="footer"] ol li {
   padding-left: 0.3em;
 }
 .content[slot="footer"] .footer-brand {
-  font-size: 1.2rem;
+  --fz: calc(var(--footer-font-basic-size) * 1.2);
   color: #ccc;
   letter-spacing: 0.02em;
 }

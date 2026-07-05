@@ -254,23 +254,6 @@ requestInitFunc(() => {
   // 填充动态 DOM 引用（来自 footer include）
   homeDOM.counting = document.getElementById("counting");
 
-  // 处理页面注入模板（<template data-inject>）
-  document.querySelectorAll('template[data-inject]').forEach((tmpl) => {
-    const targetId = tmpl.dataset.inject;
-    const target = document.getElementById(targetId);
-    if (!target) return;
-    target.innerHTML = tmpl.innerHTML;
-    tmpl.remove();
-  });
-
-  // 处理工具栏导航模板（<template data-toolbar-nav>）
-  document.querySelectorAll('template[data-toolbar-nav]').forEach((tmpl) => {
-    const slot = document.getElementById('toolbar-nav-slot');
-    if (!slot) return;
-    slot.insertAdjacentHTML('beforeend', tmpl.innerHTML);
-    tmpl.remove();
-  });
-
   // 处理初始深层链接
   const params = new URLSearchParams(window.location.search);
   const action = params.get("action");

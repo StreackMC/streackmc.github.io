@@ -494,7 +494,7 @@ async function initToolbar2Slots() {
       }
 
       navSlot.innerHTML = '';
-      // 从 pc-only 导航槽克隆导航项
+      // 从 #toolbar-nav-slot 克隆导航项（模板已在 initFramework 步骤 4 中注入到此）
       const sourceSlot = document.getElementById('toolbar-nav-slot');
       if (sourceSlot) {
         Array.from(sourceSlot.children).forEach((child) => {
@@ -504,17 +504,6 @@ async function initToolbar2Slots() {
           navSlot.appendChild(clone);
         });
       }
-      // 补充 template[data-toolbar-nav]
-      document.querySelectorAll('template[data-toolbar-nav]').forEach((tmpl) => {
-        const temp = document.createElement('div');
-        temp.innerHTML = tmpl.innerHTML;
-        Array.from(temp.children).forEach((child) => {
-          const clone = child.cloneNode(true);
-          clone.removeAttribute('pc-only');
-          clone.removeAttribute('mobile-only');
-          navSlot.appendChild(clone);
-        });
-      });
 
       expandToolbar('nav');
     });
@@ -538,8 +527,9 @@ async function initToolbar2Slots() {
  * 初始化框架基础行为（入口函数）
  * 执行顺序：
  *   1. 等待 DOM 解析 → 2. 加载 HTML 片段 → 3. 缓存 DOM → 4. 初始化插槽
- *   5. 绑定声明式命令 → 6. 禁用缩放 → 7. 绑定关闭区域 →
- *   8. 保护媒体资源 → 9. 锁定 body 滚动 → 10. 处理注释链接 → 11. 通知页面模块
+ *   5. 模板注入（data-toolbar-nav / data-inject）→ 6. 移除非脚本提示 →
+ *   7. 绑定声明式命令 → 8. 禁用缩放 → 9. 绑定关闭区域 →
+ *   10. 保护媒体资源 → 11. 锁定 body 滚动 → 12. 处理注释链接 → 13. 通知页面模块
  */
 export async function initFramework() {
   // 1. 等待 DOM 解析完成
@@ -560,20 +550,38 @@ export async function initFramework() {
   // 初始化 toolbar2 插槽（移动端导航菜单 + 页面自定义插槽）
   initToolbar2Slots();
 
-  // 4. 移除非脚本提示（<noscript> 标签）
+  // 4. 处理页面模板注入
+  // 4a. <template data-toolbar-nav> → 注入到 #toolbar-nav-slot
+  document.querySelectorAll('template[data-toolbar-nav]').forEach((tmpl) => {
+    const slot = document.getElementById('toolbar-nav-slot');
+    if (slot) {
+      slot.insertAdjacentHTML('beforeend', tmpl.innerHTML);
+      tmpl.remove();
+    }
+  });
+  // 4b. <template data-inject="targetId"> → 注入到 #targetId
+  document.querySelectorAll('template[data-inject]').forEach((tmpl) => {
+    const target = document.getElementById(tmpl.dataset.inject);
+    if (target) {
+      target.innerHTML = tmpl.innerHTML;
+      tmpl.remove();
+    }
+  });
+
+  // 5. 移除非脚本提示（<noscript> 标签）
   if (DOM.noScript) DOM.noScript.remove();
 
-  // 5. 声明式命令绑定：将 data-cmd 属性转换为点击事件
+  // 6. 声明式命令绑定：将 data-cmd 属性转换为点击事件
   document.querySelectorAll('*[data-cmd]').forEach((ele) => {
     const [t, p] = new String(ele.dataset.cmd).split(':', 2);
     ele.addEventListener('click', (event) => { executeCommand(t, p); });
     delete ele.dataset.cmd;  // 消费后移除属性，避免重复绑定
   });
 
-  // 6. 禁止 Safari 双指缩放/缩放手势
+  // 7. 禁止 Safari 双指缩放/缩放手势
   document.addEventListener("gesturestart", (e) => e.preventDefault());
 
-  // 7. 鼠标移出 Toolbar 区域或点击外部时自动收起（替代旧版辅助元素方案）
+  // 8. 鼠标移出 Toolbar 区域或点击外部时自动收起（替代旧版辅助元素方案）
   if (DOM.toolbar && DOM.toolbar.root) {
     // 鼠标离开整个 Toolbar 区域时收起
     DOM.toolbar.root.addEventListener('mouseleave', shrinkToolbar);
@@ -588,7 +596,7 @@ export async function initFramework() {
     });
   }
 
-  // 8. 保护图片与视频：禁止拖拽、禁止右键菜单
+  // 9. 保护图片与视频：禁止拖拽、禁止右键菜单
   document.querySelectorAll('img').forEach((i) => {
     i.draggable = false;
     i.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -600,10 +608,11 @@ export async function initFramework() {
     i.addEventListener('dragstart', (e) => e.preventDefault());
   });
 
-  // 9. 锁定 body 滚动（页面滚动统一由容器管理）
+  // 10. 锁定 body 滚动（页面滚动统一由容器管理）
   document.body.addEventListener('scroll', () => { document.body.scrollTop = 0; document.body.scrollLeft = 0; });
 
-  // 10. 动态绑定正文注释的跳转链接（正文 ↔ 脚注双向关联）
+  // 11. 动态绑定正文注释的跳转链接（正文 ↔ 脚注双向关联）
+  // 初始化完成后由 flushInitCallbacks 通知页面模块
   const notesRoot = document.getElementById('notes');
   if (notesRoot) {
     const notesComments = notesRoot.querySelectorAll('li');
@@ -635,7 +644,7 @@ export async function initFramework() {
     });
   }
 
-  // 11. 框架初始化完成，依次执行页面模块注册的初始化回调
+  // 12. 框架初始化完成，依次执行页面模块注册的初始化回调
   flushInitCallbacks();
 }
 

@@ -208,24 +208,6 @@
     import { initSearch } from './assets/app/search.js';
 
     requestInitFunc(() => {
-      // 处理导航项模板
-      document.querySelectorAll('template[data-toolbar-nav]').forEach((tmpl) => {
-        const slot = document.getElementById('toolbar-nav-slot');
-        if (slot) {
-          slot.insertAdjacentHTML('beforeend', tmpl.innerHTML);
-          tmpl.remove();
-        }
-      });
-
-      // 处理注释模板
-      document.querySelectorAll('template[data-inject]').forEach((tmpl) => {
-        const target = document.getElementById(tmpl.dataset.inject);
-        if (target) {
-          target.innerHTML = tmpl.innerHTML;
-          tmpl.remove();
-        }
-      });
-
       // 可选：初始化搜索模块
       // initSearch();
     });
