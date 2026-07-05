@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
@@ -17,4 +18,17 @@ export default defineConfig({
     host: true,
     port: 4321,
   },
+  integrations: [
+    sitemap({
+      // 排除 404 页面
+      filter: (page) => !page.includes('/404'),
+      // 收录 public/webtool/ 下的静态 HTML 页面
+      // （Astro sitemap 只扫描 src/pages/，这些静态透传文件需手动添加）
+      customPages: [
+        'https://streack.top/webtool/status.html',
+        'https://streack.top/webtool/uuid.html',
+        'https://streack.top/webtool/credits.html',
+      ],
+    }),
+  ],
 });
