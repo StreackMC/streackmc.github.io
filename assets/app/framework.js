@@ -296,37 +296,47 @@ export function closeAllDialogs() {
 
 
 // ============================================================
-// 命令系统
+// 可扩展命令系统
 // ============================================================
+
+/** 自定义命令处理器注册表 */
+const _cmdHandlers = {};
+
+/**
+ * 注册自定义命令处理器
+ * 注册后可通过 executeCommand(type, param) 调用
+ * @param {string} type - 命令类型名（不区分大小写）
+ * @param {(param: string) => boolean} handler - 处理函数，返回是否成功
+ */
+export function registerCommand(type, handler) {
+  _cmdHandlers[type.toLowerCase()] = handler;
+}
 
 /**
  * 执行命令
- * 支持的命令类型：
+ * 内置类型：
  *   - url：     打开链接，参数格式 "uri|stayInSameWindow"
- *   - toolbar： 触发 Toolbar 动作（委托给页面自定义的 openToolbar）
  *   - state：   [已弃用] 旧状态系统，现跳转到 /{param} 独立页面
  *   - note：    滚动到指定脚注注释
  *   - slot：    滚动到指定锚点元素
- * @param {'url'|'toolbar'|'state'|'slot'|'note'} type 命令类型
+ * 自定义类型通过 registerCommand 注册（参见 popups.js）
+ * @param {string} type 命令类型
  * @param {string} param 命令参数
  * @returns {boolean} 是否成功执行
  */
 export function executeCommand(type, param) {
   if (!(type && param)) return false;
-  switch (type.toLowerCase()) {
+
+  const t = type.toLowerCase();
+
+  // 优先查找自定义处理器
+  const handler = _cmdHandlers[t];
+  if (handler) return handler(param);
+
+  switch (t) {
     case 'url':
       // 格式："url|stayInSameWindow" 或 "url"
       openURL(...param.split("|", 2));
-      break;
-
-    case 'toolbar':
-      // 调用页面注册的 Toolbar 动作
-      if (typeof window?.streack?.openToolbar === 'function') {
-        window.streack.openToolbar(param);
-      } else {
-        console.warn('[cmd] 页面未定义 openToolbar');
-        return false;
-      }
       break;
 
     case 'state':
@@ -659,7 +669,9 @@ export async function initFramework() {
   }
 
   // 12. 框架初始化完成，依次执行页面模块注册的初始化回调
+  console.log(`[streack-app/main] Streack Web Framework Loaded!`);
   flushInitCallbacks();
+  console.log(`[streack-app/plugins] Framework Plugins Loaded!`);
 }
 
 
