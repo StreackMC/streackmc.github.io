@@ -38,14 +38,14 @@ import FrameworkLayout from '../layouts/FrameworkLayout.astro';
   <!-- <link slot="head" rel="stylesheet" href="/assets/code/your-page.css" /> -->
 
   <!-- 导航项模板（可选） -->
-  <template data-toolbar-nav>
+  <template slot="toolbar-nav" data-toolbar-nav>
     <div pc-only onclick='window.streack.openURL("/doc/news",true)' clickable>新闻</div>
   </template>
 
   <!-- 自定义 toolbar2 插槽模板（可选）
        由 framework.js 自动注册，在 toolbar1 中添加按钮调用
        expandToolbar('my-panel') 即可打开 -->
-  <template data-toolbar2-slot="my-panel">
+  <template slot="toolbar-nav" data-toolbar2-slot="my-panel">
     <div style="padding:1rem;color:#ccc;">
       <h3 style="margin:0 0 0.5rem;">自定义面板</h3>
       <p style="margin:0;">此内容由 &lt;template data-toolbar2-slot&gt; 自动注册。</p>
@@ -112,7 +112,7 @@ import FrameworkLayout from '../layouts/FrameworkLayout.astro';
   </div>
 
   <!-- 注释模板 -->
-  <template data-inject="notes">
+  <template slot="notes" data-inject="notes">
     <li data-note="demo">这是一个注释示例，点击 ↩ 可回到原文位置。</li>
   </template>
 

@@ -15,7 +15,7 @@ import FrameworkLayout from '../layouts/FrameworkLayout.astro';
   <link slot="head" rel="stylesheet" href="/assets/code/home.css" />
 
   <!-- 导航项模板 -->
-  <template data-toolbar-nav>
+  <template slot="toolbar-nav" data-toolbar-nav>
     <div onclick="window.open('/qqun','_self')" clickable>QQ群</div>
     <div onclick="window.open('/donate','_self')" clickable>赞助</div>
   </template>
@@ -78,14 +78,15 @@ import FrameworkLayout from '../layouts/FrameworkLayout.astro';
   </div>
 
   <!-- 注释模板 -->
-  <template data-inject="notes">
+  <template slot="notes" data-inject="notes">
     <li data-note="sakura">首栏的樱花林中粉色复式建筑由<a href="https://www.bilibili.com/video/BV1Nb421H7NF/" target="_blank">@雪島べま</a>设计，由服内成员建造。</li>
     <li data-note="media">图片或视频摄制使用了光影 ComplementaryUnbound(EuphoriaPatches)与共计16倍采样抗锯齿技术，并为在线查看而压缩优化。实际效果受限于冒险家客户端与设备性能，仅供参考。</li>
     <li data-note="apple">Apple Inc. 与本服务器、本站点的运营没有任何关联，后者的相关数据亦不经过 Apple Inc. 传输、保存或运算。</li>
   </template>
 
   <!-- 弹窗 -->
-  <s-bottom-sheet id="play_message">
+  <Fragment slot="dialogs">
+    <s-bottom-sheet id="play_message">
     <div slot="text" class="unselectable">
       <h2>欢迎加入<span class="WenQuanWeiMiHei">栈流</span><span class="MiSans" style="color:var(--s-color-primary);">Streack</span></h2>
       <p>支持 <b>Java版 1.10～1.21.5</b> 与 <b>基岩版 1.21.50+</b>，即刻开始冒险。</p>
@@ -99,7 +100,8 @@ import FrameworkLayout from '../layouts/FrameworkLayout.astro';
       </s-chip><br>
       <p>若需端口号，请填写：<b onclick="CopyText('25882');" class="selectable">25882</b>。<br>喜欢我们？请<a href="https://play.mcmod.cn/sv20188495.html" target="_blank">留下五星好评</a>，感谢支持。</p>
     </div>
-  </s-bottom-sheet>
+    </s-bottom-sheet>
+  </Fragment>
 
   <!-- 页面脚本 -->
   <script slot="scripts" is:inline type="module" src="/assets/code/home.js"></script>

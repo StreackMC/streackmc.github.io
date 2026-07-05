@@ -32,7 +32,8 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     </s-button>
   </s-card>
 
-  <s-dialog id="help">
+  <Fragment slot="dialogs">
+    <s-dialog id="help">
     <div slot="headline"> 升级维护 </div>
     <div slot="text">
       <p class="unselectable">
@@ -49,7 +50,8 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
       </svg></s-icon>
     </s-button>
     <s-button slot="action" type="text">确定</s-button>
-  </s-dialog>
+    </s-dialog>
+  </Fragment>
 
   <script slot="scripts" is:inline src="https://rs.kdxiaoyi.top/res/static/site_rs/not_found_page.js"></script>
 </ToolLayout>

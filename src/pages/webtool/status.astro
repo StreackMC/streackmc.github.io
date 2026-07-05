@@ -173,7 +173,8 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   </s-card>
 
   <!-- 新查询弹窗 -->
-  <s-bottom-sheet id="newForm">
+  <Fragment slot="dialogs">
+    <s-bottom-sheet id="newForm">
     <div slot="text">
       <h2>发起新查询</h2>
       <p>在下方填写目标服务器地址即可发起查询。查询链接下次打开仍为该服务器。</p>
@@ -193,7 +194,8 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
         <div slot="text">支持SRV解析；若不含端口视为默认端口。</div>
       </s-text-field>
     </div>
-  </s-bottom-sheet>
+    </s-bottom-sheet>
+  </Fragment>
 
   <script slot="scripts" is:inline src="/webtool/code/javascript/status.js"></script>
 </ToolLayout>
