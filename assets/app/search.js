@@ -183,8 +183,8 @@ function clearHighlight() {
  */
 function setHighlight(index) {
   const items = searchSuggestions.querySelectorAll('.ts-suggestion-item');
+  if (index < 0 || index >= items.length || items[index]?.dataset?.searchSuggetionPlaceholderId) return;
   clearHighlight();
-  if (index < 0 || index >= items.length) return;
   items[index].classList.add('highlighted');
   highlightIndex = index;
   // 将高亮项滚动到可视区域（不改变滚动容器的平滑度）
@@ -264,6 +264,29 @@ function renderSuggestions(items) {
     bingEl.addEventListener('mousemove', () => setHighlight(bingIdx));
     searchSuggestions.appendChild(bingEl);
     currentSuggestionItems.push({ link: null, title: '在 Bing 上查找', bing: true });
+  }
+
+  // 如果建议数量不足，那么就在末尾补足数量
+  const missed = maxItems - bingReserved - limited.length;
+  for (let i = 1; i <= missed; i++) {
+    const el = document.createElement('div');
+    el.className = 'ts-suggestion-item';
+    el.style.animationDelay = `${i * 40}ms`;
+    el.innerHTML = `
+    <span class="ts-suggestion-icon" style="opacity:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
+        <path fill="#888" d="M14.298,27.202l-3.87-3.87c0.701-0.929,1.122-2.081,1.122-3.332c0-3.06-2.489-5.55-5.55-5.55c-3.06,0-5.55,2.49-5.55,5.55 c0,3.061,2.49,5.55,5.55,5.55c1.251,0,2.403-0.421,3.332-1.122l3.87,3.87c0.151,0.151,0.35,0.228,0.548,0.228 s0.396-0.076,0.548-0.228C14.601,27.995,14.601,27.505,14.298,27.202z M1.55,20c0-2.454,1.997-4.45,4.45-4.45 c2.454,0,4.45,1.997,4.45,4.45S8.454,24.45,6,24.45C3.546,24.45,1.55,22.454,1.55,20z" transform="translate(0, -9)"/>
+      </svg>
+    </span>
+    <span class="ts-suggestion-title" style="opacity:0;">No suggetions yet</span>
+    `;
+    // 设置透明度并忽略事件，只占据位置不渲染出图形
+    el.style.opacity = 0;
+    el.style.pointerEvents = 'none';
+    // 设置该属性防止 setHightlight
+    el.dataset.searchSuggetionPlaceholderId = i;
+    searchSuggestions.appendChild(el);
+    currentSuggestionItems.push({ link: null, title: null, bing: false });
   }
 
   // 无查询且无匹配时清空建议区
