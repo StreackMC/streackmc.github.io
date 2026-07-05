@@ -668,6 +668,9 @@ sup[data-note] a {
   color: #ddd;
   margin-bottom: 0.2rem;
 }
+.content[slot="footer"] ul li {
+  --fz: calc(var(--footer-font-basic-size) * 0.9);
+}
 .content[slot="footer"] ol {
   margin: 0;
   padding-left: 1.2em;
