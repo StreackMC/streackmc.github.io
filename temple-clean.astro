@@ -1,19 +1,18 @@
 ---
 import FrameworkLayout from '../layouts/FrameworkLayout.astro';
 ---
-<FrameworkLayout 
-title="未知的页面 — 栈流Streack" 
-description="404 Notfound Page" 
-keywords="404,unknown,missingno" 
-theme="dark">
-  <!-- 导航项模板（可选） -->
+<FrameworkLayout
+  title="页面标题 — 栈流Streack"
+  description="页面描述"
+  keywords="关键词1,关键词2"
+  theme="dark"
+>
+  <!-- 导航项模板 -->
   <template slot="toolbar-nav" data-toolbar-nav>
     <div pc-only onclick='window.streack.openURL("/doc/news",true)' clickable>新闻</div>
   </template>
 
-  <!-- 自定义 toolbar2 插槽模板（可选）
-       由 framework.js 自动注册，在 toolbar1 中添加按钮调用
-       expandToolbar('my-panel') 即可打开 -->
+  <!-- 自定义 toolbar2 插槽模板 -->
   <template slot="toolbar-nav" data-toolbar2-slot="my-panel">
     <div style="padding:1rem;color:#ccc;">
       <h3 style="margin:0 0 0.5rem;">自定义面板</h3>
@@ -21,7 +20,7 @@ theme="dark">
     </div>
   </template>
 
-  <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
+  <!-- 正文内容 -->
   <div style="display: contents">
     <!-- 内容块示例 1：全宽 Banner（slot="0" 自动全屏高度） -->
     <div class="content" slot="0" clickable>
@@ -84,4 +83,10 @@ theme="dark">
   <template slot="notes" data-inject="notes">
     <li data-note="demo">这是一个注释示例，点击 ↩ 可回到原文位置。</li>
   </template>
+
+  <!-- 页面独有逻辑 -->
+  <script slot="scripts" is:inline type="module">
+    import { requestInitFunc, registerToolbarSlot } from '/assets/app/framework.js';
+
+  </script>
 </FrameworkLayout>
