@@ -1,0 +1,126 @@
+/* ============================================================
+   Search CSS — Streack 搜索模块样式
+   与 search.js 配对，搜索框、建议列表、亮暗色适配
+   ============================================================ */
+
+/* --- 搜索框（高对比度） --- */
+#toolbar-search-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.55rem 0.8rem;
+  border-radius: calc(var(--lg-radius, 16px) / 2);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition:
+    border-color 200ms,
+    background 200ms;
+  box-sizing: border-box;
+}
+#toolbar-search-box:focus-within {
+  border-color: var(--s-color-primary, #89b4fa);
+  background: rgba(0, 0, 0, 0.45);
+}
+#toolbar-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #f0f0f0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 0;
+  min-width: 0;
+}
+#toolbar-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+#toolbar-search-icon {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+#toolbar-search-icon path {
+  fill: #ccc;
+}
+/* 亮色模式搜索框 */
+s-page:not([dark]) #toolbar-search-box {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+s-page:not([dark]) #toolbar-search-box:focus-within {
+  border-color: var(--s-color-primary, #00687b);
+  background: rgba(255, 255, 255, 0.95);
+}
+s-page:not([dark]) #toolbar-search-input {
+  color: #222;
+}
+s-page:not([dark]) #toolbar-search-input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+s-page:not([dark]) #toolbar-search-icon path {
+  fill: #666;
+}
+
+/* --- 搜索建议列表 --- */
+#toolbar-search-suggestions {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: 0.25rem 0;
+}
+#toolbar-search-suggestions.has-items {
+  display: flex;
+}
+.ts-suggestion-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: calc(var(--lg-radius, 16px) / 3);
+  cursor: pointer;
+  color: #d0d0d0;
+  font-size: 0.88rem;
+  user-select: none;
+  animation: suggestionIn 250ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.ts-suggestion-item:hover,
+.ts-suggestion-item.highlighted {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+/* 亮色模式搜索建议 */
+s-page:not([dark]) .ts-suggestion-item {
+  color: #444;
+}
+s-page:not([dark]) .ts-suggestion-item:hover,
+s-page:not([dark]) .ts-suggestion-item.highlighted {
+  background: rgba(0, 0, 0, 0.06);
+  color: #000;
+}
+@keyframes suggestionIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.ts-suggestion-item .ts-suggestion-icon {
+  flex-shrink: 0;
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+}
+.ts-suggestion-item .ts-suggestion-icon svg {
+  width: 14px;
+  height: 14px;
+}
+.ts-suggestion-item .ts-suggestion-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ts-suggestion-item .ts-suggestion-match {
+  color: var(--s-color-primary, #89b4fa);
+}
