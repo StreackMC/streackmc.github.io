@@ -267,7 +267,7 @@ sup[data-note] a {
   overflow: visible;
 }
 
-.contents > .content {
+.contents .content {
   width: auto;
   height: calc(var(--h) * 0.8639);
   position: relative;
@@ -283,7 +283,7 @@ sup[data-note] a {
   overflow: hidden;
 }
 
-.contents > .content.half {
+.contents .content.half {
   grid-column: span 1;
 }
 
@@ -447,7 +447,7 @@ s-page:not([dark]) .content[slot="footer"] > *:last-child {
 
 /* 针对小屏幕的优化 */
 @media screen and (max-width: 833px) {
-  .contents > .content.half {
+  .contents .content.half {
     grid-column: span 2;
   }
   .contents {
