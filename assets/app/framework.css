@@ -220,6 +220,7 @@ s-dialog div.dialog {
   align-items: center;
   flex-shrink: 0;
   overflow: visible;
+  /* 再多 0.25 倍的间隔，保证视觉协调 */
   margin-right: calc(clamp(var(--toolbar-items-min-gap), 5%, var(--toolbar-items-max-gap)) * 0.25);
 }
 #toolbar-nav-slot > * {
