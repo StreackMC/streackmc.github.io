@@ -6,16 +6,18 @@
 - UI 框架：Sober UI（自定义 Web Components，CDN 加载）
 - 自定义框架 JS：framework.js（运行时 HTML 片段加载 → 已改为服务端渲染）
 
-## Git 配置（仓库级）
-- user.name: Neonai
-- user.email: neonai+coding@streack.top
-- **只能写入本地 .git/config，不能写入全局配置**
+## Git 提交规则
+- 提交身份：user.name="Neonai", user.email="neonai+coding@streack.top"
+- **始终在命令行指定身份**：`git -c user.name="Neonai" -c user.email="neonai+coding@streack.top" commit ...`
+- 不再依赖仓库 .git/config 或全局配置
 
 ## 架构
-- `src/layouts/`：BaseLayout（HTML骨架）、FrameworkLayout（首页/dark）、ToolLayout（工具页/light）
-- `src/components/`：Toolbar、Footer、Sidebar（服务端渲染，替代原 fetch 注入）
+- `src/layouts/`：BaseLayout（HTML骨架）、FrameworkLayout（首页/dark）、ToolLayout（工具页/light，纯SoberJS）
+- `src/components/`：Toolbar、Footer（服务端渲染，替代原 fetch 注入）
 - `public/`：静态资源（assets/, webtool/code/, pmd.js 等）
-- 两种页面布局风格：FrameworkLayout（s-page dark theme + content slot 系统）、ToolLayout（s-appbar + s-drawer + sidebar）
+- `public/webtool/*.html`：原始静态 HTML（仅 SoberJS，Astro 静态透传，不加工）
+- 两种页面布局风格：FrameworkLayout（s-page dark theme + content slot 系统）、ToolLayout（纯 SoberJS shell）
+- Sitemap：@astrojs/sitemap 集成，filter 排除 404，customPages 收录 webtool 静态 HTML
 
 ## 构建注意事项
 - 构建命令：`ASTRO_TELEMETRY_DISABLED=1 npx astro build`
