@@ -1,7 +1,21 @@
-test
+# Astro
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Build artifacts
+_site
+.jekyll-cache
+
+# OS files
+.DS_Store
+
+# Editor
 *todo*
 *obsidian*
 repo.sh
-_site
-.jekyll-cache
-.DS_Store
+
+# Local server config
+.httpserver

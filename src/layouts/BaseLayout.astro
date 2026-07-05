@@ -1,0 +1,65 @@
+---
+/**
+ * BaseLayout — 所有页面的基础布局
+ * 提供 HTML 骨架、公共 Sober UI 框架、字体等资源引用
+ *
+ * Props:
+ *   title       - 页面标题
+ *   description - meta description
+ *   keywords    - meta keywords
+ *   lang        - 语言（默认 zh-cn）
+ *
+ * Slots:
+ *   default  - 页面 body 内容
+ *   head     - 额外的 <head> 资源（CSS preload 等）
+ *   scripts  - body 末尾的额外脚本
+ */
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string;
+  lang?: string;
+}
+
+const {
+  title,
+  description,
+  keywords,
+  lang = 'zh-cn',
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <title>{title}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  {description && <meta name="description" content={description} />}
+  {keywords && <meta name="keywords" content={keywords} />}
+
+  <!-- pmd.js 框架配置 -->
+  <script is:inline src="/pmd.js"></script>
+
+  <!-- Sober UI 框架 -->
+  <script is:inline src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script>
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/css/sober-theme-turquoise.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/predefs.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/font.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/SourceHanSerifCN/result.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/WenQuanWeiMiHei/result.css" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon_2.ico" />
+
+  <!-- 额外 head 资源 -->
+  <slot name="head" />
+</head>
+<body>
+  <slot />
+
+  <!-- 额外脚本 -->
+  <slot name="scripts" />
+</body>
+</html>

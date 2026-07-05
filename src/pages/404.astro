@@ -1,0 +1,24 @@
+---
+/**
+ * 404 页面
+ */
+import ToolLayout from '../layouts/ToolLayout.astro';
+---
+
+<ToolLayout title="页面未找到 — 栈流Streack">
+  <link slot="head" rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site_rs/not_found_page.css" />
+
+  <s-card id="notice" class="main-card">
+    <h1 style="font-weight: lighter;">抱歉。<br>您访问的页面不存在或已被移除。</h1>
+    <s-button onclick="window.history.back();">
+      <s-icon slot="start" name="arrow_back"></s-icon>
+      返回上一页
+    </s-button>
+    <s-button type="elevated" onclick="openURL('/',true);">
+      <s-icon slot="start" name="home"></s-icon>
+      回到主页
+    </s-button>
+  </s-card>
+
+  <script slot="scripts" is:inline src="https://rs.kdxiaoyi.top/res/static/site_rs/not_found_page.js"></script>
+</ToolLayout>

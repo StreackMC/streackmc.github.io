@@ -215,11 +215,11 @@ export const pmdStorage = {
 
 const FRAGMENTS_BASE = './assets/app/includes/';
 
-/** 默认要加载的片段 */
-const DEFAULT_FRAGMENTS = {
-  'toolbar-mount': FRAGMENTS_BASE + 'toolbar.html',
-  'footer-mount': FRAGMENTS_BASE + 'footer.html',
-};
+/**
+ * 默认要加载的片段
+ * Astro 迁移后：工具栏和页脚由 Astro 组件服务端渲染，无需运行时 fetch
+ */
+const DEFAULT_FRAGMENTS = {};
 
 /**
  * 加载 HTML 片段并注入到指定的挂载点

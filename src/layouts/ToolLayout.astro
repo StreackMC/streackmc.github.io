@@ -1,0 +1,63 @@
+---
+/**
+ * ToolLayout — 工具页面布局
+ * 用于 webtool/ 下的工具页面
+ * 包含：Appbar、Drawer、通用侧边栏、内容滚动区
+ *
+ * Props:
+ *   title       - 页面标题（显示在 appbar 和 <title> 中）
+ *   description - meta description
+ *   keywords    - meta keywords
+ *   theme       - s-page 主题（默认 light）
+ *
+ * Slots:
+ *   default  - 页面主内容（s-scroll-view 内）
+ *   action   - appbar 右侧操作区
+ *   dialogs  - 页面弹窗（s-bottom-sheet 等）
+ *   head     - 额外 <head> 资源
+ *   scripts  - 页面特定脚本
+ */
+import BaseLayout from './BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string;
+  theme?: string;
+}
+
+const {
+  title,
+  description,
+  keywords,
+  theme = 'light',
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description} keywords={keywords}>
+  <slot name="head" slot="head" />
+
+  <s-page id="pageRoot" theme={theme}>
+    <s-appbar id="appbarRoot">
+      <s-tooltip slot="navigation">
+        <s-icon-button id="menuBtn" type="filled-tonal" slot="trigger" onclick="document.querySelector('s-drawer').toggle()">
+          <s-icon name="menu"></s-icon>
+        </s-icon-button>
+        切换侧栏
+      </s-tooltip>
+      <div id="pageTitle" slot="headline">{title}</div>
+      <slot name="action" />
+    </s-appbar>
+    <s-drawer id="mainContent">
+      <Sidebar />
+      <s-scroll-view id="pContent" class="selectable">
+        <slot />
+        <div class="unselectable" id="no_script"><h1>您似乎没有启用JavaScript，而这是此网站正常运行所必须的。<br>此外，该页面不支持过老的浏览器内核。</h1></div>
+      </s-scroll-view>
+    </s-drawer>
+    <slot name="dialogs" />
+  </s-page>
+
+  <slot name="scripts" />
+</BaseLayout>

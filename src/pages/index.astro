@@ -1,0 +1,106 @@
+---
+/**
+ * 首页 — 栈流Streack 官方网站
+ * 使用 FrameworkLayout 框架布局
+ * 注意：content div 的 slot 属性会被 Astro 误解为插槽指令，
+ * 因此用 display:contents 包裹层隔离，使 slot 属性作为普通 HTML 属性传递
+ */
+import FrameworkLayout from '../layouts/FrameworkLayout.astro';
+---
+
+<FrameworkLayout
+  title="栈流Streack - 官方网站 -「岭回双壑风」"
+  theme="dark"
+>
+  <link slot="head" rel="stylesheet" href="/assets/code/home.css" />
+
+  <!-- 导航项模板 -->
+  <template data-toolbar-nav>
+    <div onclick="window.open('/qqun','_self')" clickable>QQ群</div>
+    <div onclick="window.open('/donate','_self')" clickable>赞助</div>
+  </template>
+
+  <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
+  <div style="display: contents">
+    <div class="content" slot="0" data-cmd="slot:1" clickable>
+      <div class="slotBg-V">
+        <video poster="https://s41.ax1x.com/2026/07/03/pm0mSYD.png" class="slotBg-V" muted playsinline preload="auto" loop>
+          <source src="/assets/video/cover.webm" type="video/webm">
+          <source src="/assets/video/cover.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="MiSans" style="--b: 4rem;--l: 3rem; color:#ffffffe0">
+        <h1 style="--fs:50px;--fl:114px;">有限世界，<wbr>无限可能。</h1>
+        <p style="--fs:35px;--fl:72px;">进一步了解⇓</p>
+      </div>
+      <div light style="--b: 1rem; --l: 1rem; --a: start; opacity: .25;">
+        <p class="text" style="--fs:12px;--fl:16px;">
+          摄于服务器内<sup data-note="sakura"></sup><sup data-note="media"></sup>
+        </p>
+      </div>
+    </div>
+
+    <div class="content half" slot="1" clickable data-cmd="bst:play_message">
+      <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0YSts.png');"></div>
+      <div style="--t: 3rem; --l:2rem; --a: start;">
+        <h1 style="--fs:35px;--fl:60px;">全新版本<wbr>「岭回双壑风」</h1>
+        <p style="--fs:20px;--fl:36px;">新篇章，新冒险。</p>
+        <s-button>即刻体验</s-button>
+      </div>
+    </div>
+
+    <div class="content half" slot="2" style="background: #fff;">
+      <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0d9yt.png');"></div>
+      <div mobile-only class="glass" light style="--b: 3.1rem; --r:auto; --l: auto; --a: center; padding: 1rem; color: #000000;">
+        <p class="text" style="--fs:20px;--fl:36px;">由 Apple M4 驱动<sup data-note="apple"></sup></p>
+        <h1 class="text" style="--fs:35px;--fl:60px;">强劲性能<br>超乎想象</h1>
+      </div>
+      <div pc-only class="glass" light style="--b: 3.1rem; --r:1rem; --a: end; padding: 1rem; color: #000000;">
+        <p class="text" style="--fs:20px;--fl:36px;">由 Apple M4 驱动<sup data-note="apple"></sup></p>
+        <h1 class="text" style="--fs:35px;--fl:60px; width:calc(5em + 5em * clamp(0, (100vw - 1299px) / 1px, 1));">强劲性能，<wbr>超乎想象。</h1>
+      </div>
+    </div>
+
+    <div class="content" slot="3" style="background: #fff;" clickable data-cmd="url:/about/leadership">
+      <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0RSpV.png');"></div>
+      <div light style="--t: 3rem; --r:auto; --l: auto; --a: center; color: #000000;">
+        <h1 class="text" style="--fs:35px;--fl:60px;">源于<span class="WenQuanWeiMiHei">栈流</span></h1>
+        <p class="text" style="--fs:20px;--fl:36px;">我们不断前行</p>
+        <s-button>进一步了解</s-button>
+      </div>
+      <div light style="--b: 1rem; --l: 1rem; --a: start; opacity: .25;">
+        <p class="text" style="--fs:12px;--fl:16px;">
+          左起：<wbr>@darkmattermax<wbr> @Lighting_bug<wbr> @hzcyq_Crazy<br>
+          摄于服务器内<sup data-note="media"></sup>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 注释模板 -->
+  <template data-inject="notes">
+    <li data-note="sakura">首栏的樱花林中粉色复式建筑由<a href="https://www.bilibili.com/video/BV1Nb421H7NF/" target="_blank">@雪島べま</a>设计，由服内成员建造。</li>
+    <li data-note="media">图片或视频摄制使用了光影 ComplementaryUnbound(EuphoriaPatches)与共计16倍采样抗锯齿技术，并为在线查看而压缩优化。实际效果受限于冒险家客户端与设备性能，仅供参考。</li>
+    <li data-note="apple">Apple Inc. 与本服务器、本站点的运营没有任何关联，后者的相关数据亦不经过 Apple Inc. 传输、保存或运算。</li>
+  </template>
+
+  <!-- 弹窗 -->
+  <s-bottom-sheet id="play_message">
+    <div slot="text" class="unselectable">
+      <h2>欢迎加入<span class="WenQuanWeiMiHei">栈流</span><span class="MiSans" style="color:var(--s-color-primary);">Streack</span></h2>
+      <p>支持 <b>Java版 1.10～1.21.5</b> 与 <b>基岩版 1.21.50+</b>，即刻开始冒险。</p>
+      <s-chip onclick="CopyText('play.streack.top');" type="outlined" clickable="true" style="width:100%">
+        <s-icon slot="start"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"></path></svg></s-icon>
+        play.streack.top
+      </s-chip><br>
+      <s-chip onclick="CopyText('streack.kdxiaoyi.top');" type="outlined" clickable="true" style="width:100%">
+        <s-icon slot="start"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"></path></svg></s-icon>
+        streack.kdxiaoyi.top
+      </s-chip><br>
+      <p>若需端口号，请填写：<b onclick="CopyText('25882');" class="selectable">25882</b>。<br>喜欢我们？请<a href="https://play.mcmod.cn/sv20188495.html" target="_blank">留下五星好评</a>，感谢支持。</p>
+    </div>
+  </s-bottom-sheet>
+
+  <!-- 页面脚本 -->
+  <script slot="scripts" is:inline type="module" src="/assets/code/home.js"></script>
+</FrameworkLayout>

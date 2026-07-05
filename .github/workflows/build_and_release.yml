@@ -1,22 +1,21 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy application to Github Pages
+# Astro 构建并部署到 GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # 推送到默认分支时触发
   push:
-    branches: ["main"]
+    branches: ["master", "main"]
 
-  # Allows you to run this workflow manually from the Actions tab
+  # 允许从 Actions 面板手动触发
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# 设置 GITHUB_TOKEN 权限以允许部署到 GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# 同一时间只允许一个部署，不取消进行中的部署
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -32,65 +31,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ===== 自动压缩与混淆 HTML/CSS/JS =====
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+          cache: 'npm'
 
-      - name: Install minification tools
-        run: npm install -g html-minifier-terser clean-css-cli terser
+      - name: Install dependencies
+        run: npm ci
 
-      # ===== 读取排除列表 =====
-      - name: Read deploy ignore list
-        id: deployignore
-        run: |
-          if [ -f .deployignore ]; then
-            # 将排除项组装成 find -not -name 参数
-            IGNORE=""
-            while IFS= read -r line; do
-              # 跳过空行和注释
-              [[ -z "$line" || "$line" =~ ^# ]] && continue
-              IGNORE="$IGNORE -not -name \"$line\""
-            done < .deployignore
-            echo "ignore_flags=$IGNORE" >> $GITHUB_OUTPUT
-          else
-            echo "ignore_flags=" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Minify HTML
-        run: |
-          FLAGS="${{ steps.deployignore.outputs.ignore_flags }}"
-          eval "find . -type f -name \"*.html\" ! -path \"./node_modules/*\" $FLAGS \
-            -exec html-minifier-terser \
-              --collapse-whitespace \
-              --remove-comments \
-              --minify-js true \
-              --minify-css true \
-              {} -o {} \;"
-
-      - name: Minify CSS
-        run: |
-          FLAGS="${{ steps.deployignore.outputs.ignore_flags }}"
-          eval "find . -type f -name \"*.css\" ! -path \"./node_modules/*\" ! -name \"*.min.css\" $FLAGS \
-            -exec cleancss -o {} {} \;"
-
-      - name: Minify JS
-        run: |
-          FLAGS="${{ steps.deployignore.outputs.ignore_flags }}"
-          eval "find . -type f -name \"*.js\" ! -path \"./node_modules/*\" ! -name \"*.min.js\" $FLAGS \
-            -exec terser {} --compress --mangle -o {} \;"
-
-      # ===== 移除排除列表中的文件，使其不进入部署产物 =====
-      - name: Remove excluded files from deployment
-        run: |
-          if [ -f .deployignore ]; then
-            while IFS= read -r line; do
-              [[ -z "$line" || "$line" =~ ^# ]] && continue
-              echo "移除排除项: $line"
-              rm -f "$line"
-            done < .deployignore
-          fi
+      - name: Build with Astro
+        run: npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -98,8 +49,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          # 上传 Astro 构建产物
+          path: './dist'
 
       - name: Deploy to GitHub Pages
         id: deployment

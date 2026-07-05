@@ -1,0 +1,134 @@
+---
+/**
+ * Streack Framework — 模板页面 (Temple)
+ *
+ * 本文件是基于 Streack 通用框架的 Astro 模板。
+ * 复制此文件并修改内容来快速创建与首页设计语言一致的新页面。
+ *
+ * 资源结构说明：
+ *   public/assets/app/framework.css       — 通用框架样式（必需，由 FrameworkLayout 引入）
+ *   public/assets/app/framework.js        — 通用框架脚本（必需，由 entry.js 引入）
+ *   public/assets/app/search.js           — 搜索模块（可选，由 entry.js 引入）
+ *   src/components/Toolbar.astro           — 工具栏组件（服务端渲染）
+ *   src/components/Footer.astro            — 页脚组件（服务端渲染）
+ *   public/assets/code/your-page.css      — 页面独有样式（按需创建）
+ *   public/assets/code/your-page.js       — 页面独有脚本（按需创建）
+ *
+ * 模板机制：
+ *   <template data-toolbar-nav>           — 向 toolbar1 添加导航项
+ *   <template data-toolbar2-slot="xxx">   — 向 toolbar2 注册自定义抽屉面板（自动处理）
+ *   <template data-inject="notes">        — 向页脚 #notes 注入注释条目
+ *
+ * 快速开始：
+ *   1. 复制本文件为 src/pages/new-page.astro
+ *   2. 修改 title 和页面内容
+ *   3. 如需页面特定样式，新建 public/assets/code/new-page.css 并通过 head slot 引入
+ *   4. 如需页面特定脚本，新建 public/assets/code/new-page.js 并通过 scripts slot 引入
+ */
+import FrameworkLayout from '../layouts/FrameworkLayout.astro';
+---
+
+<FrameworkLayout
+  title="页面标题 — 栈流Streack"
+  description="页面描述"
+  keywords="关键词1,关键词2"
+  theme="dark"
+>
+  <!-- 页面特定样式（可选） -->
+  <!-- <link slot="head" rel="stylesheet" href="/assets/code/your-page.css" /> -->
+
+  <!-- 导航项模板（可选） -->
+  <template data-toolbar-nav>
+    <div pc-only onclick='window.streack.openURL("/doc/news",true)' clickable>新闻</div>
+  </template>
+
+  <!-- 自定义 toolbar2 插槽模板（可选）
+       由 framework.js 自动注册，在 toolbar1 中添加按钮调用
+       expandToolbar('my-panel') 即可打开 -->
+  <template data-toolbar2-slot="my-panel">
+    <div style="padding:1rem;color:#ccc;">
+      <h3 style="margin:0 0 0.5rem;">自定义面板</h3>
+      <p style="margin:0;">此内容由 &lt;template data-toolbar2-slot&gt; 自动注册。</p>
+    </div>
+  </template>
+
+  <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
+  <div style="display: contents">
+    <!-- 内容块示例 1：全宽 Banner（slot="0" 自动全屏高度） -->
+    <div class="content" slot="0" clickable>
+      <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0YSts.png');"></div>
+      <div style="--t: 3rem; --l:2rem; --a: start;">
+        <h1 style="--fs:35px;--fl:60px;">标题文字</h1>
+        <p style="--fs:20px;--fl:36px;">描述文字</p>
+        <s-button>按钮</s-button>
+      </div>
+      <div light style="--b: 1rem; --l: 1rem; --a: start; opacity: .25;">
+        <p class="text" style="--fs:12px;--fl:16px;">标注文字<sup data-note="demo"></sup></p>
+      </div>
+    </div>
+
+    <!-- 内容块示例 2：半宽卡片 -->
+    <div class="content half" slot="1" style="background: #fff;">
+      <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0d9yt.png');"></div>
+      <div light style="--b: 3.1rem; --r:1rem; --a: end; padding: 1rem; color: #000000;">
+        <p class="text" style="--fs:20px;--fl:36px;">副标题</p>
+        <h1 class="text" style="--fs:35px;--fl:60px;">主要内容</h1>
+      </div>
+    </div>
+
+    <!-- 内容块示例 3：半宽卡片（与上者并排） -->
+    <div class="content half" slot="2" clickable>
+      <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0RSpV.png');"></div>
+      <div style="--t: 3rem; --l:2rem; --a: start; color: #fff;">
+        <h1 style="--fs:35px;--fl:60px;">第二卡片</h1>
+        <p style="--fs:20px;--fl:36px;">描述内容</p>
+      </div>
+    </div>
+
+    <!-- 内容块示例 4：全宽纯内容 -->
+    <div class="content" slot="3" style="background: var(--s-color-surface-container, #222); color: #fff;">
+      <div style="--a: center;">
+        <h1 style="--fs:35px;--fl:60px;">纯内容区域</h1>
+        <p style="--fs:20px;--fl:36px;">可自由放置任意 HTML 内容。</p>
+        <p style="--fs:16px;--fl:24px;">
+          使用 CSS 变量控制样式：
+          <br>--t / --r / --b / --l — 绝对定位
+          <br>--fs / --fl — 字号 clamp(最小, 自动斜率, 最大)
+          <br>--a — 文本对齐 (start/center/end)
+        </p>
+      </div>
+    </div>
+
+    <!-- 注释引用示例 -->
+    <div class="content" slot="4" style="background: #1a1a2e; color: #ccc; height: auto; min-height: 30vh;">
+      <div style="position: static; width: 80%; max-width: 800px; padding: 3rem 0;">
+        <h2 style="--fs:24px;--fl:36px; color: #eee;">注释引用示例</h2>
+        <p>
+          这段文字包含一个注释引用<sup data-note="demo"></sup>，
+          点击数字可以跳转到页脚注释。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 注释模板 -->
+  <template data-inject="notes">
+    <li data-note="demo">这是一个注释示例，点击 ↩ 可回到原文位置。</li>
+  </template>
+
+  <!-- 页面特定逻辑（可选）
+       通过 requestInitFunc 注册回调，框架就绪后自动执行 -->
+  <script slot="scripts" is:inline type="module">
+    import { requestInitFunc, registerToolbarSlot } from '/assets/app/framework.js';
+
+    // 示例：以编程方式注册自定义 toolbar2 插槽
+    // requestInitFunc(() => {
+    //   registerToolbarSlot('my-panel', `
+    //     <div style="padding:1rem;color:#ccc;">
+    //       <h3>自定义面板</h3>
+    //       <p>在 toolbar1 中添加按钮调用 expandToolbar('my-panel') 即可打开</p>
+    //     </div>
+    //   `);
+    // });
+  </script>
+</FrameworkLayout>
