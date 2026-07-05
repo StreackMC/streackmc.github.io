@@ -3,3 +3,10 @@
 # 每行一个，支持 glob 模式
 
 temple.html
+.gitignore
+.httpserver
+CNAME
+jsconfig.json
+LICENSE
+.github/**
+.vscode/**

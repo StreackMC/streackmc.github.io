@@ -5,5 +5,7 @@
   },
   "include": [
     "webtool/code/javascript/*.js",
+    "assets/app/*.js",
+    "assets/code/*.js",
   ],
 }
