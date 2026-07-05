@@ -173,7 +173,7 @@ span#counting_msg {
 
 /* 毛玻璃效果，light/dark标记覆写配色模式，否则遵循页面配色 */
 .glass {
-  background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+  background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.3));
   border: 1px solid rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
   border-radius: var(--lg-radius, 16px);
   backdrop-filter: blur(12px) saturate(180%);
@@ -189,32 +189,32 @@ span#counting_msg {
 }
 .glass[clickable]:hover {
   background-color: rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
-  border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+  border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.3));
 }
 .glass[dark] {
   background-color: rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
-  border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+  border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.3));
 }
 .glass[dark][clickable]:hover {
-  background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+  background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.3));
   border: 1px solid rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
 }
 s-page[dark] {
   .glass[clickable]:hover {
-    background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+    background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.3));
     border: 1px solid rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
   }
   .glass {
     background-color: rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
-    border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+    border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.3));
   }
   .glass[light] {
-    background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+    background-color: rgba(255, 255, 255, var(--glass-light-opacity, 0.3));
     border: 1px solid rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
   }
   .glass[clickable][light]:hover {
     background-color: rgba(22, 22, 22, var(--glass-dark-opacity, 0.2));
-    border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.25));
+    border: 1px solid rgba(255, 255, 255, var(--glass-light-opacity, 0.3));
   }
 }
 
