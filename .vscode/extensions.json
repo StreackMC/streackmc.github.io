@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "yutent.simple-http"
+  ],
+  "unwantedRecommendations": [
+    "ritwickdey.LiveServer"
+  ]
+}

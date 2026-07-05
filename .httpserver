@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "port": 8081,
+  "headers": {
+    "cache-control": "no-store"
+  }
+}

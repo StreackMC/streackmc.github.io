@@ -1,4 +1,19 @@
 {
   "liveServer.settings.root": "/",
-  "liveServer.settings.port": 8081
+  "liveServer.settings.port": 8081,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.ignoreFiles": [
+    ".git/**",
+    ".vscode/**",
+    "**/*.scss",
+    "**/*.sass",
+    "**/*.ts",
+    "node_modules/**",
+    "venv/**",
+    ".venv/**",
+    "**/.DS_Store",
+    "assets/app/includes/*.html"
+  ],
+  "liveServer.settings.donotVerifyTags": true,
+  "liveServer.settings.useWebExt": true,
 }
