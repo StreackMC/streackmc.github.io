@@ -200,6 +200,7 @@ export async function loadFragment(mountId, url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const html = await res.text();
+    if (url.includes('tool')) console.log(html);
     mount.insertAdjacentHTML('afterend', html);
     mount.remove(); // 移除挂载点自身
   } catch (err) {
@@ -382,11 +383,85 @@ export function switchToolbar(slotName) {
 
 
 // ============================================================
+// Toolbar2 插槽注册
+// ============================================================
+
+/**
+ * 注册自定义 toolbar2 插槽
+ * 页面可通过此函数或 <template data-toolbar2-slot="name"> 添加自定义抽屉面板
+ * @param {string} name - 插槽名称（传给 expandToolbar 使用）
+ * @param {string} html  - 插槽 HTML 内容
+ * @param {{ noscroll?: boolean }} [opts] - 选项
+ */
+export function registerToolbarSlot(name, html, opts = {}) {
+  const toolbar2 = document.getElementById('toolbar2');
+  if (!toolbar2) return;
+
+  const div = document.createElement('div');
+  div.dataset.toolbarSlot = name;
+  div.className = 'toolbar2-slot';
+  if (opts.noscroll !== false) div.dataset.noscroll = 'true';
+  div.style.overflow = 'hidden';
+  div.innerHTML = html;
+  toolbar2.appendChild(div);
+  toolbarSlots[name] = div;
+}
+
+/** 初始化 toolbar2 插槽：移动端导航 + 页面自定义插槽 */
+async function initToolbar2Slots() {
+  // A) 移动端导航菜单
+  const menuBtn = document.getElementById('toolbar1-menu');
+  const navSlot = toolbarSlots.nav;
+  if (menuBtn && navSlot) {
+    menuBtn.addEventListener('click', () => {
+      if (toolbarExpanded) {
+        shrinkToolbar();
+        return;
+      }
+
+      navSlot.innerHTML = '';
+      // 从 pc-only 导航槽克隆导航项
+      const sourceSlot = document.getElementById('toolbar-nav-slot');
+      if (sourceSlot) {
+        Array.from(sourceSlot.children).forEach((child) => {
+          const clone = child.cloneNode(true);
+          clone.removeAttribute('pc-only');
+          clone.removeAttribute('mobile-only');
+          navSlot.appendChild(clone);
+        });
+      }
+      // 补充 template[data-toolbar-nav]
+      document.querySelectorAll('template[data-toolbar-nav]').forEach((tmpl) => {
+        const temp = document.createElement('div');
+        temp.innerHTML = tmpl.innerHTML;
+        Array.from(temp.children).forEach((child) => {
+          const clone = child.cloneNode(true);
+          clone.removeAttribute('pc-only');
+          clone.removeAttribute('mobile-only');
+          navSlot.appendChild(clone);
+        });
+      });
+
+      expandToolbar('nav');
+    });
+  }
+
+  // B) 页面自定义插槽：<template data-toolbar2-slot="name">
+  document.querySelectorAll('template[data-toolbar2-slot]').forEach((tmpl) => {
+    const name = tmpl.dataset.toolbar2Slot;
+    if (!name || toolbarSlots[name]) return;
+    registerToolbarSlot(name, tmpl.innerHTML);
+    tmpl.remove();
+  });
+}
+
+
+// ============================================================
 // 共享初始化（框架基础行为）
 // ============================================================
 
 /** 初始化框架基础行为 */
-async function initFramework() {
+export async function initFramework() {
   // 1. 等待 DOM 解析完成
   if (document.readyState === 'loading') {
     await new Promise(r => document.addEventListener('DOMContentLoaded', r, { once: true }));
@@ -401,6 +476,9 @@ async function initFramework() {
   // 3. 重新查询工具栏 DOM 并缓存插槽
   refreshToolbarDOM();
   cacheToolbarSlots();
+
+  // 初始化 toolbar2 插槽（移动端导航 + 页面自定义插槽）
+  initToolbar2Slots();
 
   // 4. 移除非脚本提示
   if (DOM.noScript) DOM.noScript.remove();
@@ -472,9 +550,6 @@ async function initFramework() {
   // 11. 框架初始化完成，调用页面注册的回调
   flushInitCallbacks();
 }
-
-// 框架自动初始化
-initFramework();
 
 
 // ============================================================

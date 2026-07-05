@@ -17,9 +17,13 @@
     assets/code/home.js            — 首页独有脚本（参考）
 
   模板机制：
-    <template data-toolbar-nav>  — 向工具栏添加自定义导航项
-    <template data-inject="notes"> — 向页脚 #notes 注入注释条目
+    <template data-toolbar-nav>         — 向 toolbar1 添加导航项
+    <template data-toolbar2-slot="xxx">  — 向 toolbar2 注册自定义抽屉面板（自动处理）
+    <template data-inject="notes">      — 向页脚 #notes 注入注释条目
     详情见下方页面底部 <script> 模块的 initPage() 示例
+
+  编程方式：
+    registerToolbarSlot(name, html, opts)  — 在 requestInitFunc 回调中调用
 
   快速开始：
     1. 复制本文件为 new-page.html
@@ -88,6 +92,15 @@
       <!-- 页面导航项模板（可选，toolbar 注入后由页面脚本移入 #toolbar-nav-slot） -->
       <template data-toolbar-nav>
         <div pc-only onclick='window.streack.openURL("/doc/news",true)' clickable>新闻</div>
+      </template>
+      <!-- 自定义 toolbar2 插槽模板（可选）
+           由 framework.js 自动注册，在 toolbar1 中添加按钮调用
+           expandToolbar('my-panel') 即可打开 -->
+      <template data-toolbar2-slot="my-panel">
+        <div style="padding:1rem;color:#ccc;">
+          <h3 style="margin:0 0 0.5rem;">自定义面板</h3>
+          <p style="margin:0;">此内容由 &lt;template data-toolbar2-slot&gt; 自动注册。</p>
+        </div>
       </template>
 
       <!-- ======================================================
@@ -184,9 +197,14 @@
        通过 requestInitFunc 注册回调，框架就绪后自动执行。
        每个使用框架的页面至少需要处理注入模板（data-toolbar-nav, data-inject），
        可参考此示例，或在 assets/code/ 下编写单独模块。
+
+  模板一览：
+    <template data-toolbar-nav>         → 向 toolbar1 添加导航项
+    <template data-toolbar2-slot="xxx"> → 向 toolbar2 注册自定义抽屉面板
+    <template data-inject="notes">      → 向页脚 #notes 注入注释条目
        ============================================================ -->
   <script type="module">
-    import { requestInitFunc } from './assets/app/framework.js';
+    import { requestInitFunc, registerToolbarSlot } from './assets/app/framework.js';
     import { initSearch } from './assets/app/search.js';
 
     requestInitFunc(() => {
@@ -211,6 +229,16 @@
       // 可选：初始化搜索模块
       // initSearch();
     });
+
+    // 示例：以编程方式注册自定义 toolbar2 插槽
+    // requestInitFunc(() => {
+    //   registerToolbarSlot('my-panel', `
+    //     <div style="padding:1rem;color:#ccc;">
+    //       <h3>自定义面板</h3>
+    //       <p>在 toolbar1 中添加按钮调用 expandToolbar('my-panel') 即可打开</p>
+    //     </div>
+    //   `);
+    // });
   </script>
 </body>
 </html>

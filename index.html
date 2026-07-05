@@ -28,11 +28,10 @@
       <div class="bg-filter"></div>
       <!-- 工具栏（由 framework.js 动态注入） -->
       <div id="toolbar-mount"></div>
-      <!-- 首页导航项模板（toolbar 注入后由 home.js 移入 #toolbar-nav-slot） -->
       <template data-toolbar-nav>
-        <div pc-only onclick='window.streack.openURL("./doc/news/2026/0704",true)' clickable>「岭回双壑风」</div>
-        <div pc-only onclick='window.streack.openState("qqun",true)' clickable>QQ群</div>
-        <div pc-only onclick='window.streack.openState("donate",true)' clickable>赞助</div>
+        <div onclick='window.streack.openURL("./doc/news/2026/0704",true)' clickable>「岭回双壑风」</div>
+        <div onclick='window.streack.openState("qqun",true)' clickable>QQ群</div>
+        <div onclick='window.streack.openState("donate",true)' clickable>赞助</div>
       </template>
       <!-- 正文 -->
       <div class="contents">
@@ -204,7 +203,7 @@
   <script>
     window.streack = {};
   </script>
-  <script type="module" src="./assets/app/framework.js"></script>
+  <script type="module" src="./assets/app/entry.js"></script>
   <script type="module" src="./assets/code/home.js"></script>
 </body>
 </html>

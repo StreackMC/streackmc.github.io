@@ -288,6 +288,27 @@ s-dialog div.dialog {
   to   { opacity: 0; transform: translateY(6px); }
 }
 
+/* --- 非搜索类的 toolbar2 插槽通用样式 --- */
+.toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"]) {
+  padding: 0.3rem 0;
+  overflow-y: auto;
+}
+.toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"]) > * {
+  padding: 0.6rem 0.8rem;
+  border-radius: calc(var(--lg-radius, 16px) / 3);
+  cursor: pointer;
+  color: #d0d0d0;
+  font-size: 0.95rem;
+  user-select: none;
+  white-space: nowrap;
+  transition: background 200ms;
+  text-align: left;
+}
+.toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"]) > *[clickable]:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
 /* --- 搜索框（高对比度） --- */
 #toolbar-search-box {
   display: flex;

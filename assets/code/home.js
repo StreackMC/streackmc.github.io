@@ -156,7 +156,7 @@ window.addEventListener("popstate", () => {
 // 兼容Hash路由
 window.addEventListener('hashchange', onHashChangeEvent);
 function onHashChangeEvent() {
-  if (!openState(location.hash.slice(1))) {
+  if (location.hash.slice(1) && !openState(location.hash.slice(1))) {
     const [t, p] = location.hash.slice(1).split(':', 2);
     executeCommand(t, p);
   }
@@ -275,9 +275,6 @@ requestInitFunc(() => {
   const params = new URLSearchParams(window.location.search);
   const action = params.get("action");
   if (action) openState(action);
-
-  // 初始化搜索模块
-  initSearch();
 
   // 启动运营计时器
   refreshCountup(2024, 12, 25);

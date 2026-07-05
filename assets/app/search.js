@@ -111,7 +111,7 @@ function filterSuggestions(query = '') {
 // ============================================================
 
 function calcMaxSuggestionItems() {
-  if (!DOM.toolbar) return 5;
+  if (!DOM.toolbar) return 0;
   const container = DOM.toolbar.actions.root;
   if (!container || !searchSuggestions) return 5;
   const rect = container.getBoundingClientRect();
@@ -260,7 +260,7 @@ function initSearchUI() {
     }
   }
   if (!searchBtn || !searchInput || !searchSuggestions) {
-    console.warn('[search] 搜索 DOM 元素未就绪，跳过初始化');
+    console.warn('[search] 搜索 DOM 元素未就绪，跳过初始化：btn/input/suggestion=', searchBtn, searchInput, searchSuggestions);
     return;
   }
   searchBtn.addEventListener('click', onSearchBtnClick);
