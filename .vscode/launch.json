@@ -8,15 +8,15 @@
       "name": "Launch Edge",
       "request": "launch",
       "type": "msedge",
-      "url": "http://localhost:8081",
+      "url": "http://localhost:4321",
       "webRoot": "${workspaceFolder}"
     },
     {
-      "name": "Attach to Chrome",
-      "port": 9222,
-      "request": "attach",
+      "name": "Launch Chrome",
+      "request": "launch",
       "type": "chrome",
-      "webRoot": "${workspaceFolder}",
+      "url": "http://localhost:4321",
+      "webRoot": "${workspaceFolder}"
     }
   ]
 }
