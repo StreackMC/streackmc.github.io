@@ -7,7 +7,8 @@
   <script src="/pmd.js"></script>
   <script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script>
   <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/css/sober-theme-turquoise.css" />
-  <link rel="stylesheet" href="/assets/code/app.css" />
+  <link rel="stylesheet" href="/assets/app/framework.css" />
+  <link rel="stylesheet" href="/assets/code/home.css" />
   <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/predefs.css" />
   <link rel="shortcut icon" type="image/x-icon" href="https://streack.top/assets/img/favicon_2.ico">
   <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/font.css" />
@@ -25,45 +26,14 @@
       <!-- 背景 -->
       <div class="bg"></div>
       <div class="bg-filter"></div>
-      <!-- 工具栏 -->
-      <div id="toolbar-area" class="glass">
-        <!-- 展示按钮 -->
-        <div id="toolbar1">
-          <!-- 品牌logo -->
-          <div onclick='window.streack.openURL("./",true)'><span class="WenQuanWeiMiHei">栈流</span><span class="MiSans"
-              style="color:var(--s-color-primary);">Streack</span></div>
-          <div pc-only onclick='window.streack.openURL("./doc/news/2026/0704",true)' clickable>「岭回双壑风」</div>
-          <div pc-only onclick='window.streack.openURL("./doc",true)' clickable>文档</div>
-          <div pc-only onclick='window.streack.openURL("./webtool/status.html",true)' clickable>在线状态</div>
-          <div pc-only onclick='window.streack.openState("qqun",true)' clickable>QQ群</div>
-          <div pc-only onclick='window.streack.openState("donate",true)' clickable>赞助</div>
-          <!-- 搜索按钮 -->
-          <s-tooltip clickable id="toolbar1-search">
-            <svg slot="trigger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-              <path style="fill:currentColor;"
-                d="M14.298,27.202l-3.87-3.87c0.701-0.929,1.122-2.081,1.122-3.332c0-3.06-2.489-5.55-5.55-5.55c-3.06,0-5.55,2.49-5.55,5.55 c0,3.061,2.49,5.55,5.55,5.55c1.251,0,2.403-0.421,3.332-1.122l3.87,3.87c0.151,0.151,0.35,0.228,0.548,0.228 s0.396-0.076,0.548-0.228C14.601,27.995,14.601,27.505,14.298,27.202z M1.55,20c0-2.454,1.997-4.45,4.45-4.45 c2.454,0,4.45,1.997,4.45,4.45S8.454,24.45,6,24.45C3.546,24.45,1.55,22.454,1.55,20z"
-                transform="translate(0, -9)" />
-            </svg>
-            搜索
-          </s-tooltip>
-        </div>
-        <!-- 操作区域（data-toolbar-slot 声明式插槽） -->
-        <div id="toolbar2">
-          <div data-toolbar-slot="search" data-noscroll="true" class="toolbar2-slot" style="overflow: hidden;">
-            <div id="toolbar-search-box">
-              <svg id="toolbar-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
-                <path
-                  d="M14.298,27.202l-3.87-3.87c0.701-0.929,1.122-2.081,1.122-3.332c0-3.06-2.489-5.55-5.55-5.55c-3.06,0-5.55,2.49-5.55,5.55 c0,3.061,2.49,5.55,5.55,5.55c1.251,0,2.403-0.421,3.332-1.122l3.87,3.87c0.151,0.151,0.35,0.228,0.548,0.228 s0.396-0.076,0.548-0.228C14.601,27.995,14.601,27.505,14.298,27.202z M1.55,20c0-2.454,1.997-4.45,4.45-4.45 c2.454,0,4.45,1.997,4.45,4.45S8.454,24.45,6,24.45C3.546,24.45,1.55,22.454,1.55,20z"
-                  transform="translate(0, -9)" />
-              </svg>
-              <input id="toolbar-search-input" type="text" placeholder="搜索 Streack……" spellcheck="false" autocomplete="off" />
-            </div>
-            <div id="toolbar-search-suggestions"></div>
-          </div>
-        </div>
-      </div>
-      <!-- 辅助区域，用于点击就关 -->
-      <div id="toolbar-outline"></div>
+      <!-- 工具栏（由 framework.js 动态注入） -->
+      <div id="toolbar-mount"></div>
+      <!-- 首页导航项模板（toolbar 注入后由 home.js 移入 #toolbar-nav-slot） -->
+      <template data-toolbar-nav>
+        <div pc-only onclick='window.streack.openURL("./doc/news/2026/0704",true)' clickable>「岭回双壑风」</div>
+        <div pc-only onclick='window.streack.openState("qqun",true)' clickable>QQ群</div>
+        <div pc-only onclick='window.streack.openState("donate",true)' clickable>赞助</div>
+      </template>
       <!-- 正文 -->
       <div class="contents">
         <div class="content" slot="0" data-cmd="slot:1" clickable>
@@ -128,53 +98,14 @@
             </p>
           </div>
         </div>
-        <div class="content" slot="footer">
-          <div>
-            <ol id="notes">
-              <li data-note="sakura">首栏的樱花林中粉色复式建筑由<a href="https://www.bilibili.com/video/BV1Nb421H7NF/" target="_blank">@雪島べま</a>设计，由服内成员建造。</li>
-              <li data-note="media">图片或视频摄制使用了光影 ComplementaryUnbound(EuphoriaPatches)与共计16倍采样抗锯齿技术，并为在线查看而压缩优化。实际效果受限于冒险家客户端与设备性能，仅供参考。</li>
-              <li data-note="apple">Apple Inc. 与本服务器、本站点的运营没有任何关联，后者的相关数据亦不经过 Apple Inc. 传输、保存或运算。</li>
-            </ol>
-          </div>
-          <div style="flex:2;">
-            <h1 style="--fz:1.3rem;"><span class="WenQuanWeiMiHei">栈流</span><span class="MiSans" style="color:var(--s-color-primary);">Streack</span></h1>
-            <p>
-              创立于2024年12月25日的《Minecraft》第三方服务器。<br>
-              <span id="counting"></span>
-            </p>
-          </div>
-          <ul>
-            <li><b>事务及了解</b></li>
-            <li><a href="./doc/" target="_blank">文档</a></li>
-            <li><a href="./doc/news/" target="_blank">新闻博客</a></li>
-            <li><a href="./doc/event/" target="_blank">活动一览</a></li>
-            <li><a href="./webtool/status_next.html" target="_blank">在线状态</a></li>
-          </ul>
-          <ul>
-            <li><b>政策与方针</b></li>
-            <li><a href="./doc/policy/rule" target="_blank">基本方针</a></li>
-            <li><a href="./doc/policy/donate" target="_blank">赞助方针</a></li>
-            <li><a href="./doc/policy/backup_and_restore" target="_blank">备份与恢复方针</a></li>
-            <li><a href="./doc/policy/entroprix" target="_blank">「熵流」概率公示</a></li>
-          </ul>
-          <ul>
-            <li><b>联系与支持</b></li>
-            <li><a href="#state:qqun">QQ群</a></li>
-            <li><a href="mailto:streack@kdxiaoyi.top">电子邮箱</a></li>
-            <li><a href="https://github.com/StreackMC" target="_blank">Github</a></li>
-          </ul>
-          <div>
-            <p>
-              Copyright © 2026,<wbr> kdxiaoyi &amp; Streack.<wbr> 保留所有权利。
-              <span style="margin-left: 2em;">
-                <a href="https://streack.top/our_license" target="_blank">版权许可</a> |
-                <a href="./doc/policy/user" target="_blank">用户协议</a> |
-                <a href="./doc/policy/privacy" target="_blank">隐私政策</a>
-              </span><br>
-              此站点与Mojang Studio、<wbr>Microsoft<wbr>或<wbr>网易Netease<wbr>没有任何关联。
-            </p>
-          </div>
-        </div>
+        <!-- 页脚（由 framework.js 动态注入） -->
+        <div id="footer-mount"></div>
+        <!-- 首页注释模板（footer 注入后由 home.js 移入 #notes） -->
+        <template data-inject="notes">
+          <li data-note="sakura">首栏的樱花林中粉色复式建筑由<a href="https://www.bilibili.com/video/BV1Nb421H7NF/" target="_blank">@雪島べま</a>设计，由服内成员建造。</li>
+          <li data-note="media">图片或视频摄制使用了光影 ComplementaryUnbound(EuphoriaPatches)与共计16倍采样抗锯齿技术，并为在线查看而压缩优化。实际效果受限于冒险家客户端与设备性能，仅供参考。</li>
+          <li data-note="apple">Apple Inc. 与本服务器、本站点的运营没有任何关联，后者的相关数据亦不经过 Apple Inc. 传输、保存或运算。</li>
+        </template>
       </div>
       <!-- 悬浮按钮 -->
       <div class="glass" clickable id="floating" style="--lg-radius:24px;"
@@ -273,6 +204,7 @@
   <script>
     window.streack = {};
   </script>
-  <script type="module" src="./assets/code/index.js"></script>
+  <script type="module" src="./assets/app/framework.js"></script>
+  <script type="module" src="./assets/code/home.js"></script>
 </body>
 </html>

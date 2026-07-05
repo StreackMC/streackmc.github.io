@@ -1,0 +1,216 @@
+<!DOCTYPE HTML>
+<!--
+  ═══════════════════════════════════════════════════════════
+  Streack Framework — 模板页面 (Temple)
+  ═══════════════════════════════════════════════════════════
+  本文件是基于 Streack 通用框架的模板。
+  您可以复制此文件并修改 <body> 内的内容来快速创建
+  与首页设计语言一致的新页面。
+
+  资源结构说明：
+    assets/app/framework.css       — 通用框架样式（必需）
+    assets/app/framework.js        — 通用框架脚本（必需）
+    assets/app/search.js           — 搜索模块（可选，按需引入）
+    assets/app/includes/toolbar.html — 工具栏 HTML 片段（framework.js 自动加载）
+    assets/app/includes/footer.html  — 页脚 HTML 片段（framework.js 自动加载）
+    assets/code/home.css           — 首页独有样式（参考）
+    assets/code/home.js            — 首页独有脚本（参考）
+
+  模板机制：
+    <template data-toolbar-nav>  — 向工具栏添加自定义导航项
+    <template data-inject="notes"> — 向页脚 #notes 注入注释条目
+    详情见下方页面底部 <script> 模块的 initPage() 示例
+
+  快速开始：
+    1. 复制本文件为 new-page.html
+    2. 修改 <title> 和页面内容
+    3. 如需页面特定样式，新建 assets/code/new-page.css 并引入
+    4. 如需页面特定脚本，新建 assets/code/new-page.js 并引入
+  ═══════════════════════════════════════════════════════════
+-->
+<html lang="zh-cn">
+<head>
+  <title>页面标题 — 栈流 (Streack)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="description" content="页面描述" />
+  <meta name="keywords" content="关键词1,关键词2" />
+
+  <!-- ============================================================
+       Sober UI 框架（必需）
+       ============================================================ -->
+  <script src="/pmd.js"></script>
+  <script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script>
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/css/sober-theme-turquoise.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/predefs.css" />
+
+  <!-- ============================================================
+       Streack 通用框架样式（必需）
+       ============================================================ -->
+  <link rel="stylesheet" href="/assets/app/framework.css" />
+
+  <!-- ============================================================
+       页面特定样式（可选）
+       新建 assets/code/your-page.css 并在此引入
+       ============================================================ -->
+  <!-- <link rel="stylesheet" href="/assets/code/your-page.css" /> -->
+
+  <!-- ============================================================
+       字体与图标（必需）
+       ============================================================ -->
+  <link rel="shortcut icon" type="image/x-icon" href="https://streack.top/assets/img/favicon_2.ico">
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/font.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/SourceHanSerifCN/result.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/WenQuanWeiMiHei/result.css" />
+</head>
+<body>
+  <s-page id="page" theme="dark">
+
+    <!-- ==========================================================
+         无脚本提示（建议保留）
+         ========================================================== -->
+    <div class="unselectable" style="position: absolute;" id="no_script">
+      <h1>您似乎没有启用JavaScript，而这是此网站正常运行所必须的。<br>此外，该页面不支持过老的浏览器内核。</h1>
+    </div>
+
+    <!-- ==========================================================
+         主显示区域
+         ========================================================== -->
+    <div id="main" class="main">
+
+      <!-- 背景层 -->
+      <div class="bg"></div>
+      <div class="bg-filter"></div>
+
+      <!-- 工具栏（由 framework.js 动态注入） -->
+      <div id="toolbar-mount"></div>
+      <!-- 页面导航项模板（可选，toolbar 注入后由页面脚本移入 #toolbar-nav-slot） -->
+      <template data-toolbar-nav>
+        <div pc-only onclick='window.streack.openURL("/doc/news",true)' clickable>新闻</div>
+      </template>
+
+      <!-- ======================================================
+           正文内容（核心区）
+           使用 .contents > .content 网格布局
+           slot 属性控制内容块顺序
+           half 类使内容块占半宽（桌面端两列布局）
+           ====================================================== -->
+      <div class="contents">
+
+        <!-- 内容块示例 1：全宽 Banner（slot="0" 自动全屏高度） -->
+        <div class="content" slot="0" clickable>
+          <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0YSts.png');"></div>
+          <div style="--t: 3rem; --l:2rem; --a: start;">
+            <h1 style="--fs:35px;--fl:60px;">标题文字</h1>
+            <p style="--fs:20px;--fl:36px;">描述文字</p>
+            <s-button>按钮</s-button>
+          </div>
+          <div light style="--b: 1rem; --l: 1rem; --a: start; opacity: .25;">
+            <p class="text" style="--fs:12px;--fl:16px;">标注文字<sup data-note="demo"></sup></p>
+          </div>
+        </div>
+
+        <!-- 内容块示例 2：半宽卡片 -->
+        <div class="content half" slot="1" style="background: #fff;">
+          <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0d9yt.png');"></div>
+          <div light style="--b: 3.1rem; --r:1rem; --a: end; padding: 1rem; color: #000000;">
+            <p class="text" style="--fs:20px;--fl:36px;">副标题</p>
+            <h1 class="text" style="--fs:35px;--fl:60px;">主要内容</h1>
+          </div>
+        </div>
+
+        <!-- 内容块示例 3：半宽卡片（与上者并排） -->
+        <div class="content half" slot="2" clickable>
+          <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0RSpV.png');"></div>
+          <div style="--t: 3rem; --l:2rem; --a: start; color: #fff;">
+            <h1 style="--fs:35px;--fl:60px;">第二卡片</h1>
+            <p style="--fs:20px;--fl:36px;">描述内容</p>
+          </div>
+        </div>
+
+        <!-- 内容块示例 4：全宽纯内容 -->
+        <div class="content" slot="3" style="background: var(--s-color-surface-container, #222); color: #fff;">
+          <div style="--a: center;">
+            <h1 style="--fs:35px;--fl:60px;">纯内容区域</h1>
+            <p style="--fs:20px;--fl:36px;">可自由放置任意 HTML 内容。</p>
+            <p style="--fs:16px;--fl:24px;">
+              使用 CSS 变量控制样式：
+              <br>--t / --r / --b / --l — 绝对定位
+              <br>--fs / --fl — 字号 clamp(最小, 自动斜率, 最大)
+              <br>--a — 文本对齐 (start/center/end)
+            </p>
+          </div>
+        </div>
+
+        <!-- 注释引用示例（可选）
+             使用 <sup data-note="xxx"> 在正文中引用
+             在 <template data-inject="notes"> 中定义注释内容
+             ==================================================== -->
+        <div class="content" slot="4" style="background: #1a1a2e; color: #ccc; height: auto; min-height: 30vh;">
+          <div style="position: static; width: 80%; max-width: 800px; padding: 3rem 0;">
+            <h2 style="--fs:24px;--fl:36px; color: #eee;">注释引用示例</h2>
+            <p>
+              这段文字包含一个注释引用<sup data-note="demo"></sup>，
+              点击数字可以跳转到页脚注释。
+            </p>
+          </div>
+        </div>
+
+        <!-- 页脚（由 framework.js 动态注入） -->
+        <div id="footer-mount"></div>
+        <!-- 页面注释模板（可选，footer 注入后由页面脚本移入 #notes） -->
+        <template data-inject="notes">
+          <li data-note="demo">这是一个注释示例，点击 ↩ 可回到原文位置。</li>
+        </template>
+      </div>
+    </div>
+  </s-page>
+
+  <!-- ============================================================
+       全局对象初始化（必需，在框架脚本前定义）
+       ============================================================ -->
+  <script>
+    window.streack = {};
+  </script>
+
+  <!-- ============================================================
+       Streack 框架脚本（必需）
+       ============================================================ -->
+  <script type="module" src="./assets/app/framework.js"></script>
+
+  <!-- ============================================================
+       页面特定逻辑（必需 - 处理模板注入）
+       通过 requestInitFunc 注册回调，框架就绪后自动执行。
+       每个使用框架的页面至少需要处理注入模板（data-toolbar-nav, data-inject），
+       可参考此示例，或在 assets/code/ 下编写单独模块。
+       ============================================================ -->
+  <script type="module">
+    import { requestInitFunc } from './assets/app/framework.js';
+    import { initSearch } from './assets/app/search.js';
+
+    requestInitFunc(() => {
+      // 处理导航项模板
+      document.querySelectorAll('template[data-toolbar-nav]').forEach((tmpl) => {
+        const slot = document.getElementById('toolbar-nav-slot');
+        if (slot) {
+          slot.insertAdjacentHTML('beforeend', tmpl.innerHTML);
+          tmpl.remove();
+        }
+      });
+
+      // 处理注释模板
+      document.querySelectorAll('template[data-inject]').forEach((tmpl) => {
+        const target = document.getElementById(tmpl.dataset.inject);
+        if (target) {
+          target.innerHTML = tmpl.innerHTML;
+          tmpl.remove();
+        }
+      });
+
+      // 可选：初始化搜索模块
+      // initSearch();
+    });
+  </script>
+</body>
+</html>
