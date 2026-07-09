@@ -633,6 +633,14 @@ export async function initFramework() {
       tmpl.remove();
     }
   });
+  // 4a-2. 若导航插槽无内容，隐藏移动端折叠菜单按钮（无项可展开）
+  {
+    const navSlot = document.getElementById('toolbar-nav-slot');
+    const menuBtn = document.getElementById('toolbar1-menu');
+    if (menuBtn && navSlot && navSlot.children.length === 0) {
+      menuBtn.style.display = 'none';
+    }
+  }
   // 4b. <template data-inject="targetId"> → 注入到 #targetId
   document.querySelectorAll('template[data-inject]').forEach((tmpl) => {
     const target = document.getElementById(tmpl.dataset.inject);
