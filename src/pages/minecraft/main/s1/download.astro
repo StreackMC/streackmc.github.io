@@ -29,8 +29,10 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
       <li>Minecraft Java Edition <strong>1.21.8</strong> 及更高版本</li>
     </ul>
     <p style="margin-top: 1rem;">
-      SHA256：<br/>
-      <span class="sha256 selectable" data-cmd="cp:f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5">f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5</span>
+      SHA256：
+      <span class="sha256 selectable" clickable></span>
+      <br>
+      <span>&nbsp;</span>
     </p>
   </div>
 
@@ -40,6 +42,10 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
 
   <!-- 页面脚本 -->
   <script slot="scripts" is:inline type="module">
-    import { requestInitFunc, registerToolbarSlot } from '/assets/app/framework.js';
+    const hash = ['sha256', 'f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5'];
+    import { CopyText } from '/assets/app/framework.js';
+    const sha = document.querySelector('.sha256');
+    sha.innerText = hash[1];
+    sha.addEventListener('click', () => CopyText(hash[1]));
   </script>
 </DownloadLayout>

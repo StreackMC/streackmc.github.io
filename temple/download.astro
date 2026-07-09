@@ -52,7 +52,7 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
     </ul>
     <p style="margin-top: 1rem;">
       SHA256：<br/>
-      <span class="sha256 selectable" data-cmd="cp:你的SHA256哈希值">你的SHA256哈希值</span>
+      <span class="sha256 selectable"></span>
     </p>
   </div>
 
@@ -62,6 +62,10 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
 
   <!-- 页面脚本 -->
   <script slot="scripts" is:inline type="module">
-    import { requestInitFunc, registerToolbarSlot } from '/assets/app/framework.js';
+    const hash = ['sha256', 'f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5'];
+    import { CopyText } from '/assets/app/framework.js';
+    const sha = document.querySelector('.sha256');
+    sha.innerText = hash[1];
+    sha.addEventListener('click', () => copyText(hash[1]));
   </script>
 </DownloadLayout>
