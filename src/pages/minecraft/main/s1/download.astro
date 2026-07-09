@@ -16,16 +16,16 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
   <h2 style="--fs:24px;--fl:42px; --a:center; margin: 4rem auto 1.5rem;">下载「樱飘雪霁月」存档</h2>
 
   <time datetime="2026-07-09" style="opacity:.6; font-size:.85rem;">2026-07-09</time>
-  <p>S1「樱飘雪霁月」自 2025 年 1 月起运营，于 2026 年 6 月 30 日正式收官。最终版本存档包含 S1P1「初樱」与 S1P2「霁月」两个版本周期的完整世界数据。该存档已停止更新，仅供留念与回顾，不再提供任何技术支持。</p>
+  <p>该存档为S1「樱飘雪霁月」的P1与P2两个版本的存档文件，与原始存档略有出入。</p>
 
   <!-- 区域 2：下载按钮 -->
-  <s-button slot="buttons" data-cmd="url:https://pan.huang1111.cn/s/BGaxNF6">下载</s-button>
+  <s-button slot="buttons" data-cmd="purl:https://pan.huang1111.cn/s/BGaxNF6">下载</s-button>
 
   <!-- 区域 3：淡化附加信息 -->
   <div slot="additional-info">
     <p>将前往外部页面进行下载。你将需要：</p>
     <ul>
-      <li>至少 <strong>6.2GB</strong> 的可用磁盘空间</li>
+      <li>至少约 6.2GB 的可用磁盘空间<sup data-note="disk"></sup></li>
       <li>Minecraft Java Edition <strong>1.21.8</strong> 及更高版本</li>
     </ul>
     <p style="margin-top: 1rem;">
@@ -37,6 +37,7 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
 
   <!-- 注释模板 -->
   <template slot="notes" data-inject="notes">
+    <li data-note="disk">要完全解压文件需要至少约 23GB 的可用磁盘空间。</li>
   </template>
 
   <!-- 页面脚本 -->
