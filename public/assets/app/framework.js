@@ -375,7 +375,11 @@ export function executeCommand(type, param) {
       // 格式："url|stayInSameWindow" 或 "url"
       // 并且只匹配最后一个 | ，支持语法糖，存在即为 true
       const lastSplash = param.lastIndexOf('|');
-      openURL(param.slice(0, lastSplash), (lastSplash >= 0 && lastSplash < param.length) ? true : false);
+      if (lastSplash >= 0 && lastSplash < param.length) {
+        openURL(param.slice(0, lastSplash), true);
+      } else {
+        openURL(param, false);
+      }
       break;
 
     case 'state':
