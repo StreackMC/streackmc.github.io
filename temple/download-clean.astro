@@ -1,0 +1,58 @@
+---
+/**
+ * Temple — 下载页纯净骨架模板
+ * 最简结构，无示例数据，适合从零开始搭建下载页
+ *
+ * 使用方式：复制此文件到目标目录，按注释填充内容
+ *
+ * 与 download.astro 的区别：
+ *   - 不含示例文字，所有区域均为空插槽
+ *   - 不预设 SHA256 格式、不预设需求列表
+ *   - 适合完全自定义的下载页
+ */
+import DownloadLayout from '/src/layouts/DownloadLayout.astro';
+---
+
+<DownloadLayout
+  title="下载「  」 — 栈流Streack"
+  description=""
+  keywords=""
+  theme="light"
+>
+  <!-- 导航项 -->
+  <template slot="toolbar-nav" data-toolbar-nav>
+    <div pc-only data-cmd="url:/你的路径|true" clickable>导航项</div>
+  </template>
+
+  <!-- ========== 区域 1：版本日志 / 说明 ========== -->
+  <!-- ※ 修改 h2 标题、time 日期、p 说明内容 ※ -->
+  <h2 style="--fs:24px;--fl:42px; --a:center; margin: 4rem auto 1.5rem;">下载「  」</h2>
+  <time datetime="" style="opacity:.6; font-size:.85rem;"></time>
+  <p></p>
+
+  <!-- ========== 区域 2：下载按钮 ========== -->
+  <!-- ※ 修改 data-cmd 为实际下载链接 ※ -->
+  <s-button slot="buttons" data-cmd="url:你的下载链接">下载</s-button>
+
+  <!-- ========== 区域 3：淡化附加信息 ========== -->
+  <div slot="additional-info">
+    <!-- ※ 添加外部链接提示、需求、SHA256 等 ※ -->
+    <p></p>
+    <ul>
+      <li></li>
+    </ul>
+    <p style="margin-top: 1rem;">
+      SHA256：<br/>
+      <span class="sha256 selectable" data-cmd="cp:你的SHA256值">你的SHA256值</span>
+    </p>
+  </div>
+
+  <!-- 注释模板（可选） -->
+  <template slot="notes" data-inject="notes">
+  </template>
+
+  <!-- 页面脚本 -->
+  <script slot="scripts" is:inline type="module">
+    import { requestInitFunc, registerToolbarSlot } from '/assets/app/framework.js';
+  </script>
+</DownloadLayout>
