@@ -9,7 +9,7 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
 >
   <!-- 导航项模板 -->
   <template slot="toolbar-nav" data-toolbar-nav>
-    <div pc-only data-cmd="url:/minecraft/main/s1/download|true" clickable>存档下载</div>
+    <div pc-only data-cmd="url:/minecraft/main/s1/download|" clickable>存档下载</div>
   </template>
 
   <!-- 正文内容 -->
@@ -22,7 +22,7 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
           两次版本迭代，无数身影来来往往，为这个世界留下深深浅浅的印记。<br>
           如今，对S1版本的支持已结束。你可以：
         <div>
-          <s-button data-cmd="url:/minecraft/main/s1/download|true">下载本周目存档</s-button>
+          <s-button data-cmd="url:/minecraft/main/s1/download|">下载本周目存档</s-button>
           <s-button data-cmd="slot:0" type="outlined">进一步了解本周目</s-button>
         </div>
         </p>

@@ -3,6 +3,17 @@
  * 提供所有基于此框架的页面共享的：工具函数、存储API、Toolbar管理器、命令系统、循环卡片、视频背景等
  */
 
+/**
+ * 定义不隔离的同源域名列表，支持子域名，列表之外的域名进行访问时会尝试尽可能地隔离数据。
+ * 
+ * 若定义端口，则端口需要严格显式相等
+ */
+export const SAME_REIGON = [
+  'streack.top',
+  'kdxiaoyi.top',
+  'kdx233.eu.org',
+]
+
 // ============================================================
 // DOM 元素引用（通用部分）
 // ============================================================
@@ -316,6 +327,7 @@ export function registerCommand(type, handler) {
  * 执行命令
  * 内置类型：
  *   - url：     打开链接，参数格式 "uri|stayInSameWindow"
+ *   - popurl    在小窗里面打开链接，不支持自动回退
  *   - state：   [已弃用] 旧状态系统，现跳转到 /{param} 独立页面
  *   - note：    滚动到指定脚注注释
  *   - slot：    滚动到指定锚点元素
@@ -336,9 +348,34 @@ export function executeCommand(type, param) {
   if (handler) return handler(param);
 
   switch (t) {
+    case 'popurl':
+    case 'purl':
+      try {
+        const uri = new URL(param);
+        let isolated = true;
+        for (let i = 0; i < SAME_REIGON.length; i++) {
+          const acceptableDomain = SAME_REIGON[i];
+          if (uri.host.includes(acceptableDomain)) {
+            isolated = false;
+            break;
+          }
+        }
+        window.open(param, '_blank', {
+          'popup': true,
+          noopener: isolated,
+        });
+        break;
+      } catch (popurlErr) {
+        // 不支持或发生意外自动fall through到普通URL处理
+        // 此处仅记录即可
+        console.warn('[streack-app.cmd/popurl] POPURL 命令发生回退：无法处理 POPURL 命令 ', [t, param], ' ，因为：', popurlErr);
+      }
+
     case 'url':
       // 格式："url|stayInSameWindow" 或 "url"
-      openURL(...param.split("|", 2));
+      // 并且只匹配最后一个 | ，支持语法糖，存在即为 true
+      const lastSplash = param.lastIndexOf('|');
+      openURL(param.slice(0, lastSplash), (lastSplash >= 0 && lastSplash < param.length) ? true : false);
       break;
 
     case 'state':
@@ -352,7 +389,7 @@ export function executeCommand(type, param) {
       const notesRoot = document.getElementById('notes');
       const notesComments = notesRoot ? notesRoot.querySelectorAll('li') : null;
       if (!notesRoot || !notesComments) {
-        console.error('[cmd/note] 页面不存在注释区域');
+        console.error('[streack-app.cmd/note] 页面不存在注释区域');
         msg('页面中未定义注释区域', '好', true);
         break;
       }
@@ -363,7 +400,7 @@ export function executeCommand(type, param) {
           block: 'center',
         });
       } catch (error) {
-        console.warn('[cmd/note] 无法滚动目标注释', param, '至视口：', error);
+        console.warn('[streack-app.cmd/note] 无法滚动目标注释', param, '至视口：', error);
         msg('无法查找目标注释：' + error.message, '好', true);
       }
       break;
@@ -383,7 +420,7 @@ export function executeCommand(type, param) {
           block: 'center',
         });
       } catch (error) {
-        console.warn('[cmd/slot] 无法滚动目标元素', param, '至视口：', error);
+        console.warn('[streack-app.cmd/slot] 无法滚动目标元素', param, '至视口：', error);
         msg('无法查找目标锚点：' + error.message, '好', true);
       }
       break;
@@ -606,8 +643,8 @@ export async function initFramework() {
 
   // 6. 声明式命令绑定：将 data-cmd 属性转换为点击事件
   document.querySelectorAll('*[data-cmd]').forEach((ele) => {
-    const [t, p] = new String(ele.dataset.cmd).split(':', 2);
-    ele.addEventListener('click', (event) => { executeCommand(t, p); });
+    const p = new String(ele.dataset.cmd).split(':');
+    ele.addEventListener('click', (event) => { executeCommand(p[0], p.slice(1).join(':')); });
     delete ele.dataset.cmd;  // 消费后移除属性，避免重复绑定
   });
 
