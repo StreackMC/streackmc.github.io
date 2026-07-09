@@ -53,9 +53,9 @@ const {
 
   <!-- 正文内容（下载页专用布局） -->
   <div style="display: contents">
-    <div class="content" slot="0" style="height: max-content;">
+    <div class="content" slot="0" style="height: max-content; padding-top: calc(var(--safezone, 0) * 1.2);">
       <div
-        style="position: relative; --t: calc(var(--safezone, 0) * 1.2); --l:auto; --r:auto; --a: start; width: min(1024px, calc(var(--w) * 0.6)); margin: 0 auto;">
+        style="position: static; width: min(1024px, calc(var(--w) * 0.6)); margin: 0 auto;">
 
         <!-- 区域 1：版本日志 / 说明文本（一句话页面描述，无需拆多段） -->
         <section class="download-hero" style="margin-bottom: 2rem; --fs:1rem; --fl:1.2rem;">
