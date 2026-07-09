@@ -21,7 +21,6 @@
 import BaseLayout from './BaseLayout.astro';
 import Toolbar from '../components/Toolbar.astro';
 import Footer from '../components/Footer.astro';
-import { Spa } from 'astro-spa';
 
 interface Props {
   title: string;
@@ -84,9 +83,4 @@ const {
 
   <!-- 页面特定脚本 -->
   <slot name="scripts" />
-
-  <!-- SPA 客户端导航（仅 Astro 页面生效，webtool 静态页不含此组件） -->
-  <!-- webtool 页面天然隔离：工具栏导航用 onclick（非 <a>），页脚链接用 target="_blank" -->
-  <!-- 注意：astro-spa 的 ignores prop 有 bug（引用未定义变量），不可使用 -->
-  <Spa />
 </BaseLayout>
