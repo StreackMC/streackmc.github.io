@@ -12,26 +12,11 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
     <div pc-only data-cmd="url:/minecraft/main/s1|true" clickable>返回 S1 主页</div>
   </template>
 
-  <!-- 区域 1：版本日志 + 说明文本 -->
+  <!-- 区域 1：版本日志 / 说明 -->
   <h2 style="--fs:24px;--fl:42px; --a:center; margin: 4rem auto 1.5rem;">下载「樱飘雪霁月」存档</h2>
 
-  <section class="changelog">
-    <h3 style="--fs:1.1rem; --fl:1.4rem; margin-bottom: .75rem;">版本日志</h3>
-    <div class="changelog-entry">
-      <time datetime="2026-07-09" style="opacity:.6; font-size:.85rem;">2026-07-09</time>
-      <p style="--fs:.95rem; --fl:1.3rem; margin-top: .25rem;">
-        最终版本存档打包发布。包含 S1P1「初樱」与 S1P2「霁月」两个版本周期的完整世界数据。
-      </p>
-    </div>
-  </section>
-
-  <section style="margin-top: 1.5rem;">
-    <h3 style="--fs:1.1rem; --fl:1.4rem; margin-bottom: .75rem;">说明</h3>
-    <p style="--fs:.95rem; --fl:1.5rem; line-height: 1.8;">
-      S1「樱飘雪霁月」自 2025 年 1 月起运营，于 2026 年 6 月 30 日正式收官。<br/>
-      该存档已停止更新，仅供留念与回顾，不再提供任何技术支持。
-    </p>
-  </section>
+  <time datetime="2026-07-09" style="opacity:.6; font-size:.85rem;">2026-07-09</time>
+  <p>S1「樱飘雪霁月」自 2025 年 1 月起运营，于 2026 年 6 月 30 日正式收官。最终版本存档包含 S1P1「初樱」与 S1P2「霁月」两个版本周期的完整世界数据。该存档已停止更新，仅供留念与回顾，不再提供任何技术支持。</p>
 
   <!-- 区域 2：下载按钮 -->
   <s-button slot="buttons" data-cmd="url:https://pan.huang1111.cn/s/BGaxNF6">下载存档</s-button>

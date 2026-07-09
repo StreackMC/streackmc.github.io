@@ -16,6 +16,7 @@
   --max-width: 1352px;  /* 最大字号生效的视口宽度上限 */
   --footer-font-basic-size: .9rem;  /* 尾注部分基准字号 */
   --footer-note-font-size: .825rem;  /* 注释部分字号 */
+  --lh: unset;  /* 行高变量，p 元素默认 1.5lh，其余 unset */
   /* 以下为自动计算区域，无需修改 */
   --h: 100vh;
   --w: 100vw;
@@ -39,6 +40,9 @@ body {
   margin: 0;
   height: 100vh;
 }
+
+/* 通用行高：p 默认 1.5lh，其它通过 --lh 内联覆盖 */
+p { line-height: var(--lh, 1.5lh); }
 
 a {
   color: #89b4fa;

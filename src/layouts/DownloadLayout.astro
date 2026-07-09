@@ -4,7 +4,7 @@
  * 继承 FrameworkLayout（含工具栏 + 页脚），专用于下载类页面
  *
  * 布局结构：
- *   [版本日志 + 说明文本]  ← default slot
+ *   [版本日志 / 说明文本]  ← default slot
  *   [下载按钮]              ← buttons slot
  *   [淡化附加信息]          ← additional-info slot（含 SHA256、需求等）
  *
@@ -57,8 +57,8 @@ const {
       <div
         style="position: relative; --t: 0; --l:auto; --r:auto; --a: start; width: min(1024px, calc(var(--w) * 0.6)); margin: 0 auto;">
 
-        <!-- 区域 1：版本日志 + 说明文本 -->
-        <section class="download-hero" style="margin-bottom: 2rem;">
+        <!-- 区域 1：版本日志 / 说明文本（一句话页面描述，无需拆多段） -->
+        <section class="download-hero" style="margin-bottom: 2rem; --fs:1rem; --fl:1.2rem; --lh:1.5lh;">
           <slot />
         </section>
 
@@ -94,17 +94,12 @@ const {
   /* === 淡化附加信息区域 === */
   .download-meta {
     opacity: .5;
-    transition: opacity .25s ease;
     font-size: .85rem;
     line-height: 1.6;
     padding-top: 1.5rem;
     border-top: 1px solid rgb(from var(--s-color-outline) r g b / .15);
     mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-  }
-
-  .download-meta:hover {
-    opacity: .85;
   }
 
   .download-meta p {
@@ -124,7 +119,7 @@ const {
 
   .download-meta .sha256 {
     word-break: break-all;
-    font-family: var(--s-font-mono, monospace);
+    font-family: "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
     font-size: .8rem;
     user-select: all;
   }
