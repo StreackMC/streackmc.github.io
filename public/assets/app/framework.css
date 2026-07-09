@@ -41,8 +41,7 @@ body {
   height: 100vh;
 }
 
-/* 通用行高：p 默认 1.5lh，其它通过 --lh 内联覆盖 */
-p { line-height: var(--lh, 1.5lh); }
+p { line-height: var(--lh, 1.5rlh); }
 
 a {
   color: #89b4fa;

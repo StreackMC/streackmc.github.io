@@ -58,7 +58,7 @@ const {
         style="position: relative; --t: 0; --l:auto; --r:auto; --a: start; width: min(1024px, calc(var(--w) * 0.6)); margin: 0 auto;">
 
         <!-- 区域 1：版本日志 / 说明文本（一句话页面描述，无需拆多段） -->
-        <section class="download-hero" style="margin-bottom: 2rem; --fs:1rem; --fl:1.2rem; --lh:1.5lh;">
+        <section class="download-hero" style="margin-bottom: 2rem; --fs:1rem; --fl:1.2rem;">
           <slot />
         </section>
 
@@ -96,10 +96,10 @@ const {
     opacity: .5;
     font-size: .85rem;
     line-height: 1.6;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgb(from var(--s-color-outline) r g b / .15);
-    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    /* padding-top: 1.5rem;
+    border-top: 1px solid rgb(from var(--s-color-outline) r g b / .15); */
+    /* mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%); */
   }
 
   .download-meta p {
