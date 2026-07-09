@@ -760,11 +760,11 @@ function refreshCountup(year, month, day) {
   countingEl.innerHTML = `今天是${now.getFullYear()}年的第${weekNum}周，迄今为止我们已运营${days}天${hours}小时${minutes}分钟${seconds}秒。`;
 }
 
-/** 从 pmd.js conf.info.time 读取配置并启动计时器 */
+/** 从 window.streack.conf.info.time 读取配置并启动计时器 */
 function initCounting() {
   try {
     // conf.info.time: [enabled, year, month, day, hour, minute, second]
-    const tConf = window?.conf?.info?.time;
+    const tConf = window?.streack?.conf?.info?.time;
     if (!tConf || !tConf[0]) return;
     const y = tConf[1], m = tConf[2], d = tConf[3];
     refreshCountup(y, m, d);
