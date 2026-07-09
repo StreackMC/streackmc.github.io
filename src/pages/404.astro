@@ -12,7 +12,7 @@ theme="light">
     <!-- 内容块示例 1：全宽 Banner -->
     <div class="content" slot="0">
       <div class="slotBg-I" style="--u:white;"></div>
-      <div style="--t: max(10vh, 5rem); --l:auto; --r: auto; --a: center;">
+      <div style="--t: calc(max(10vh, 5rem) + var(--safezone, 0)); --l:auto; --r: auto; --a: center;">
         <h1 style="--fs:35px;--fl:60px;max-width:calc(var(--w) * 0.8);">抱歉，<wbr>但你要访问<wbr>的网页找不到</h1>
         <!-- <p style="--fs:20px;--fl:36px;">描述文字</p> -->
         <s-button data-cmd="search:" style="margin-top: 2rem;" id="hostname-p">Search</s-button>

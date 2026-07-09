@@ -270,7 +270,7 @@ sup[data-note] a {
 .contents .content {
   width: auto;
   height: calc(var(--h) * 0.8639);
-  margin-top: calc(var(--toolbar-padding-h) * 2 + var(--toolbar-height));
+  --safezone: calc(var(--toolbar-padding-h) * 2 + var(--toolbar-height));
   position: relative;
   z-index: 1;
   min-height: 100%;
@@ -302,7 +302,7 @@ sup[data-note] a {
   white-space: normal;
   word-break: normal;
   text-align: var(--a, left);
-  line-height: var(--lh, unset);
+  line-height: var(--lh, initial);
   font-size: var(--fz, clamp(var(--fs),
     var(--fv, calc(var(--fs) + (var(--fl) - var(--fs)) * (var(--w) - var(--min-width)) / (var(--max-width) - var(--min-width)))),
     var(--fl)));
