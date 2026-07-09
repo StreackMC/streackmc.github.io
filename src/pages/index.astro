@@ -24,7 +24,7 @@ import FrameworkLayout from '../layouts/FrameworkLayout.astro';
 
   <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
   <div style="display: contents">
-    <div class="content" slot="0" style="height: var(--h);" data-cmd="slot:1" clickable>
+    <div class="content fullheight" slot="0" data-cmd="slot:1" clickable>
       <div class="slotBg-V">
         <video poster="https://s41.ax1x.com/2026/07/03/pm0mSYD.png" class="slotBg-V" muted playsinline preload="auto" loop>
           <source src="/assets/video/cover.webm" type="video/webm">
@@ -42,7 +42,7 @@ import FrameworkLayout from '../layouts/FrameworkLayout.astro';
       </div>
     </div>
 
-    <div class="content half" slot="1" clickable data-cmd="bst:play_message">
+    <div class="content half" slot="1" clickable data-cmd="url:/minecraft/main/s2|true">
       <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0YSts.png');"></div>
       <div style="--t: 3rem; --l:2rem; --a: start;">
         <h1 style="--fs:35px;--fl:60px;">全新版本<wbr>「岭回双壑风」</h1>
