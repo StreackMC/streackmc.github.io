@@ -319,6 +319,7 @@ export function registerCommand(type, handler) {
  *   - state：   [已弃用] 旧状态系统，现跳转到 /{param} 独立页面
  *   - note：    滚动到指定脚注注释
  *   - slot：    滚动到指定锚点元素
+ *   - copy/cp   复制指定文本
  * 自定义类型通过 registerCommand 注册（参见 popups.js）
  * @param {string} type 命令类型
  * @param {string} param 命令参数
@@ -366,6 +367,10 @@ export function executeCommand(type, param) {
         msg('无法查找目标注释：' + error.message, '好', true);
       }
       break;
+    
+    case 'copy':
+    case 'cp':
+      return CopyText(param);
 
     case 'slot':
       // 滚动到指定 slot 属性的元素

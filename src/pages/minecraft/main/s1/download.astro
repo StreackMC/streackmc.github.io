@@ -12,14 +12,15 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
         style="position: relative; --t: 0; --l:auto; --r:auto; --a: start; width: min(1024px, calc(var(--w) * 0.6));">
         <h2 style="--fs:24px;--fl:42px; --a:center; margin: 4rem auto;">下载「樱飘雪霁月」存档</h2>
         <div>
-          <s-button data-cmd="url:https://pan.huang1111.cn/s/BGaxNF6|true">下载</s-button>
+          <s-button data-cmd="url:https://pan.huang1111.cn/s/BGaxNF6">下载</s-button>
         </div>
-        <p style="--fs:1rem; --fl:1.2rem; margin-top: .5rem; line-height: 1.2lh;">
+        <p style="--fs:1rem; --fl:1.2rem; margin-top: .5rem; line-height: 2rlh;">
           点击该按钮将跳转到外部页面进行下载。您可能需要：
           <ul>
             <li>至少 6.2GB 的可用磁盘空间</li>
             <li>Minecraft Java Edition 1.21.8 及更高版本</li>
           </ul>
+          SHA256：<span class="selectable" data-cmd="cp:f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5">f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5</span>
         </p>
       </div>
     </div>
@@ -28,7 +29,7 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
 
   <!-- 注释模板 -->
   <template slot="notes" data-inject="notes">
-    <li data-note="dl-external">将前往外部页面下载</li>
+    <li>发布日期：2026-07-09</li>
   </template>
 
   <!-- 页面独有逻辑 -->
