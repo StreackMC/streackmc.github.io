@@ -16,7 +16,6 @@
   --max-width: 1352px;  /* 最大字号生效的视口宽度上限 */
   --footer-font-basic-size: .9rem;  /* 尾注部分基准字号 */
   --footer-note-font-size: .825rem;  /* 注释部分字号 */
-  --lh: unset;  /* 行高变量，p 元素默认 1.5lh，其余 unset */
   /* 以下为自动计算区域，无需修改 */
   --h: 100vh;
   --w: 100vw;
@@ -40,8 +39,6 @@ body {
   margin: 0;
   height: 100vh;
 }
-
-p { line-height: var(--lh, 1.5rlh); }
 
 a {
   color: #89b4fa;
@@ -305,10 +302,15 @@ sup[data-note] a {
   white-space: normal;
   word-break: normal;
   text-align: var(--a, left);
+  line-height: var(--lh, unset);
   font-size: var(--fz, clamp(var(--fs),
     var(--fv, calc(var(--fs) + (var(--fl) - var(--fs)) * (var(--w) - var(--min-width)) / (var(--max-width) - var(--min-width)))),
     var(--fl)));
   margin: var(--my, 0) var(--mx, 0);
+}
+
+.contents .content p {
+  line-height: var(--lh, 1.5rlh);
 }
 
 .content *[nowrap] {
