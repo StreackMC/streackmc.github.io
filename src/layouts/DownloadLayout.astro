@@ -1,0 +1,131 @@
+---
+/**
+ * DownloadLayout — 下载页面布局模板
+ * 继承 FrameworkLayout（含工具栏 + 页脚），专用于下载类页面
+ *
+ * 布局结构：
+ *   [版本日志 + 说明文本]  ← default slot
+ *   [下载按钮]              ← buttons slot
+ *   [淡化附加信息]          ← additional-info slot（含 SHA256、需求等）
+ *
+ * Props（全部透传给 FrameworkLayout）:
+ *   title       - 页面标题
+ *   description - meta description
+ *   keywords    - meta keywords
+ *   theme       - s-page 主题（默认 light）
+ *
+ * Slots:
+ *   default         - 版本日志 + 说明文本区域
+ *   buttons         - 下载按钮
+ *   additional-info - 淡化附加信息（外部链接提示、需求、SHA256 等）
+ *   toolbar-nav     - 导航项模板（透传给 FrameworkLayout）
+ *   notes           - 页面注释（透传给 FrameworkLayout）
+ *   dialogs         - 页面弹窗（透传给 FrameworkLayout）
+ *   scripts         - 页面脚本（透传给 FrameworkLayout）
+ *   head            - 额外 <head> 资源（透传给 FrameworkLayout）
+ */
+import FrameworkLayout from './FrameworkLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string;
+  theme?: string;
+}
+
+const {
+  title,
+  description,
+  keywords,
+  theme = 'light',
+} = Astro.props;
+---
+
+<FrameworkLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  theme={theme}
+>
+  <!-- 导航项模板（透传） -->
+  <slot name="toolbar-nav" slot="toolbar-nav" />
+  <slot name="head" slot="head" />
+
+  <!-- 正文内容（下载页专用布局） -->
+  <div style="display: contents">
+    <div class="content" slot="0" style="height: max-content;">
+      <div
+        style="position: relative; --t: 0; --l:auto; --r:auto; --a: start; width: min(1024px, calc(var(--w) * 0.6)); margin: 0 auto;">
+
+        <!-- 区域 1：版本日志 + 说明文本 -->
+        <section class="download-hero" style="margin-bottom: 2rem;">
+          <slot />
+        </section>
+
+        <!-- 区域 2：下载按钮 -->
+        <section class="download-actions" style="margin-bottom: 2rem;">
+          <slot name="buttons">
+            <!-- 默认占位：提醒使用者填入按钮 -->
+            <s-button disabled>尚未配置下载按钮</s-button>
+          </slot>
+        </section>
+
+        <!-- 区域 3：淡化附加信息 -->
+        <section class="download-meta">
+          <slot name="additional-info">
+            <p style="--fs:.85rem; --fl:1.2rem;">暂无附加信息。</p>
+          </slot>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- 弹窗（透传） -->
+  <slot name="dialogs" />
+
+  <!-- 页面注释（透传） -->
+  <slot name="notes" slot="notes" />
+
+  <!-- 页面脚本（透传） -->
+  <slot name="scripts" slot="scripts" />
+</FrameworkLayout>
+
+<style>
+  /* === 淡化附加信息区域 === */
+  .download-meta {
+    opacity: .5;
+    transition: opacity .25s ease;
+    font-size: .85rem;
+    line-height: 1.6;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgb(from var(--s-color-outline) r g b / .15);
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+
+  .download-meta:hover {
+    opacity: .85;
+  }
+
+  .download-meta p {
+    --fs: .85rem;
+    --fl: 1.2rem;
+    margin-top: .25rem;
+  }
+
+  .download-meta ul {
+    margin-top: .25rem;
+    padding-inline-start: 1.25rem;
+  }
+
+  .download-meta li {
+    margin-top: .125rem;
+  }
+
+  .download-meta .sha256 {
+    word-break: break-all;
+    font-family: var(--s-font-mono, monospace);
+    font-size: .8rem;
+    user-select: all;
+  }
+</style>

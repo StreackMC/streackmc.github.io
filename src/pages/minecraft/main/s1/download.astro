@@ -1,30 +1,52 @@
 ---
-import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
+import DownloadLayout from '/src/layouts/DownloadLayout.astro';
 ---
-<FrameworkLayout title="下载「樱飘雪霁月」存档 — 栈流Streack" description="栈流Streack的旧版本展示页面，并提供对该已停止支持版本的存档数据的下载。"
+<DownloadLayout
+  title="下载「樱飘雪霁月」存档 — 栈流Streack"
+  description="栈流Streack的旧版本展示页面，并提供对该已停止支持版本的存档数据的下载。"
   keywords="栈流,saves,download,下载,存档,EOS,S1,樱飘雪霁月,S1P1,S1P2,Streack,mc,Minecraft,我的世界,服务器,优秀,高性能,生存,生电,电路,开放,团队,StreackMC,saves"
-  theme="light">
+  theme="light"
+>
+  <!-- 导航项 -->
+  <template slot="toolbar-nav" data-toolbar-nav>
+    <div pc-only data-cmd="url:/minecraft/main/s1|true" clickable>返回 S1 主页</div>
+  </template>
 
-  <!-- 正文内容 -->
-  <div style="display: contents">
-    <div class="content" slot="0" style="height: max-content;">
-      <div
-        style="position: relative; --t: 0; --l:auto; --r:auto; --a: start; width: min(1024px, calc(var(--w) * 0.6));">
-        <h2 style="--fs:24px;--fl:42px; --a:center; margin: 4rem auto;">下载「樱飘雪霁月」存档</h2>
-        <div>
-          <s-button data-cmd="url:https://pan.huang1111.cn/s/BGaxNF6">下载</s-button>
-        </div>
-        <p style="--fs:1rem; --fl:1.2rem; margin-top: .5rem; line-height: 2rlh;">
-          点击该按钮将跳转到外部页面进行下载。您可能需要：
-          <ul>
-            <li>至少 6.2GB 的可用磁盘空间</li>
-            <li>Minecraft Java Edition 1.21.8 及更高版本</li>
-          </ul>
-          SHA256：<span class="selectable" data-cmd="cp:f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5">f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5</span>
-        </p>
-      </div>
+  <!-- 区域 1：版本日志 + 说明文本 -->
+  <h2 style="--fs:24px;--fl:42px; --a:center; margin: 4rem auto 1.5rem;">下载「樱飘雪霁月」存档</h2>
+
+  <section class="changelog">
+    <h3 style="--fs:1.1rem; --fl:1.4rem; margin-bottom: .75rem;">版本日志</h3>
+    <div class="changelog-entry">
+      <time datetime="2026-07-09" style="opacity:.6; font-size:.85rem;">2026-07-09</time>
+      <p style="--fs:.95rem; --fl:1.3rem; margin-top: .25rem;">
+        最终版本存档打包发布。包含 S1P1「初樱」与 S1P2「霁月」两个版本周期的完整世界数据。
+      </p>
     </div>
+  </section>
 
+  <section style="margin-top: 1.5rem;">
+    <h3 style="--fs:1.1rem; --fl:1.4rem; margin-bottom: .75rem;">说明</h3>
+    <p style="--fs:.95rem; --fl:1.5rem; line-height: 1.8;">
+      S1「樱飘雪霁月」自 2025 年 1 月起运营，于 2026 年 6 月 30 日正式收官。<br/>
+      该存档已停止更新，仅供留念与回顾，不再提供任何技术支持。
+    </p>
+  </section>
+
+  <!-- 区域 2：下载按钮 -->
+  <s-button slot="buttons" data-cmd="url:https://pan.huang1111.cn/s/BGaxNF6">下载存档</s-button>
+
+  <!-- 区域 3：淡化附加信息 -->
+  <div slot="additional-info">
+    <p>点击下载按钮将跳转到外部网盘。下载前请注意：</p>
+    <ul>
+      <li>至少 <strong>6.2GB</strong> 的可用磁盘空间</li>
+      <li>Minecraft Java Edition <strong>1.21.8</strong> 及更高版本</li>
+    </ul>
+    <p style="margin-top: 1rem;">
+      SHA256：<br/>
+      <span class="sha256 selectable" data-cmd="cp:f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5">f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5</span>
+    </p>
   </div>
 
   <!-- 注释模板 -->
@@ -32,9 +54,8 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
     <li>发布日期：2026-07-09</li>
   </template>
 
-  <!-- 页面独有逻辑 -->
+  <!-- 页面脚本 -->
   <script slot="scripts" is:inline type="module">
     import { requestInitFunc, registerToolbarSlot } from '/assets/app/framework.js';
-
   </script>
-</FrameworkLayout>
+</DownloadLayout>
