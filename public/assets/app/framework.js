@@ -699,7 +699,6 @@ export function initVideoBg() {
   });
 }
 
-
 // ============================================================
 // 循环卡片（通用组件）
 // ============================================================
@@ -809,3 +808,43 @@ window.addEventListener('resize', () => {
     initLoopCards();
   }, 300);
 });
+
+// ============================================================
+// 导出通用对象
+// ============================================================
+if (!Array.isArray(window?.streack?.meta?.initby)) {
+  window.streack = {
+    meta: { initby: ["streack-web-framework/main"] },
+    openURL: openURL,
+    msg: msg,
+    executeCommand: executeCommand,
+    cmd: executeCommand,
+    registerCommand: registerCommand,
+    registerToolbarSlot: registerToolbarSlot,
+    shrinkToolbar: shrinkToolbar,
+    expandToolbar: expandToolbar,
+    switchToolbar: switchToolbar,
+    CopyText: CopyText,
+    copyText: CopyText,
+    closeAllDialogs: closeAllDialogs,
+    getCurrentTimeZone: getCurrentTimeZone,
+    getQueryString: getQueryString,
+  };
+} else {
+  window.streack.meta.initby.push("streack-web-framework");
+  window.streack.openURL = openURL;
+  window.streack.msg = msg;
+  window.streack.executeCommand = executeCommand;
+  window.streack.cmd = executeCommand;
+  window.streack.registerCommand = registerCommand;
+  window.streack.registerToolbarSlot = registerToolbarSlot;
+  window.streack.shrinkToolbar = shrinkToolbar;
+  window.streack.expandToolbar = expandToolbar;
+  window.streack.switchToolbar = switchToolbar;
+  window.streack.CopyText = CopyText;
+  window.streack.copyText = CopyText;
+  window.streack.closeAllDialogs = closeAllDialogs;
+  window.streack.getCurrentTimeZone = getCurrentTimeZone;
+  window.streack.getQueryString = getQueryString;
+
+};

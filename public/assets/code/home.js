@@ -23,7 +23,7 @@ const homeDOM = {
 // 旧 state 向后兼容 —— 处理地址栏 & hash 路由
 // ============================================================
 
-if (!window.streack) window.streack = {};
+if (!window.streack) window.streack = { meta: { initby: ["home/js"] }, };
 
 /** 将旧 state 动作转发到新 API */
 function migrateState(name) {

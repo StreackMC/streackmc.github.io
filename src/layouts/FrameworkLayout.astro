@@ -79,7 +79,7 @@ const {
     <slot name="dialogs" />
   </s-page>
 
-  <script is:inline>window.streack = {};</script>
+  <script is:inline>window.streack = { meta: { initby: ["streack-web-framework/layout"] }, };</script>
   <script is:inline type="module" src="/assets/app/entry.js"></script>
 
   <!-- 页面特定脚本 -->
