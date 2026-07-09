@@ -43,7 +43,7 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
     </ul>
     <p style="margin-top: 1rem;">
       SHA256：<br/>
-      <span class="sha256 selectable" data-cmd="cp:你的SHA256值">你的SHA256值</span>
+      <span class="sha256 selectable" data-sha256="你的SHA256值"></span>
     </p>
   </div>
 
@@ -52,7 +52,5 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
   </template>
 
   <!-- 页面脚本 -->
-  <script slot="scripts" is:inline type="module">
-    import { requestInitFunc, registerToolbarSlot } from '/assets/app/framework.js';
-  </script>
+  <script slot="scripts" is:inline type="module" src="/assets/code/download.js"></script>
 </DownloadLayout>

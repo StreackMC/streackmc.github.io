@@ -30,9 +30,7 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
     </ul>
     <p style="margin-top: 1rem;">
       SHA256：
-      <span class="sha256 selectable" clickable></span>
-      <br>
-      <span>&nbsp;</span>
+      <span class="sha256 selectable" data-sha256="f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5"></span>
     </p>
   </div>
 
@@ -41,11 +39,5 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
   </template>
 
   <!-- 页面脚本 -->
-  <script slot="scripts" is:inline type="module">
-    const hash = ['sha256', 'f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5'];
-    import { CopyText } from '/assets/app/framework.js';
-    const sha = document.querySelector('.sha256');
-    sha.innerText = hash[1];
-    sha.addEventListener('click', () => CopyText(hash[1]));
-  </script>
+  <script slot="scripts" is:inline type="module" src="/assets/code/download.js"></script>
 </DownloadLayout>
