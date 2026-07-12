@@ -1,0 +1,75 @@
+---
+import SelectorLayout from '/src/layouts/SelectorLayout.astro';
+const config = {
+  title: "开始游戏",
+  description: "按需选择你需要的内容，随后在S2「岭回双壑风」里尽情展现你的创意或是来一场轰轰烈烈的冒险。",
+  layerTitle: "选择游戏平台",
+  options: [
+    {
+      label: "Java版",
+      hint: "",
+      layerTitle: "选择网络线路",
+      children: [
+        {
+          label: "浙江电信",
+          hint: "部分时段可能质量较差",
+          result: {
+            content: `地址：<a class="selectable" clickable data-cmd="cp:play.streack.top">play.streack.top</a>`
+          }
+        },
+        {
+          label: "浙江电信（嘉欣）",
+          hint: "",
+          result: {
+            content: `地址：<a class="selectable" clickable data-cmd="cp:play2.streack.top">play2.streack.top</a>`
+          }
+        },
+      ]
+    },
+    {
+      label: "基岩版",
+      hint: "已为此版本优化",
+      layerTitle: "选择网络线路",
+      children: [
+        {
+          label: "浙江电信",
+          hint: "部分时段可能质量较差",
+          result: {
+            content: `
+              <p class="unselectable">
+                地址：<a class="selectable" clickable data-cmd="cp:be.streack.top">be.streack.top</a><br>
+                端口：<a class="selectable" clickable data-cmd="cp:25882">25882</a><br>
+                <s-button data-cmd="url:minecraft://?addExternalServer=%E6%A0%88%E6%B5%81Streack|be.streack.top:25882|">打开Minecraft: Bedrock Edition</s-button>
+              </p>`
+          }
+        },
+        {
+          label: "山东移动",
+          hint: "",
+          result: {
+            content: `
+              <p class="unselectable">
+                地址：<a class="selectable" clickable data-cmd="cp:be2.streack.top">be2.streack.top</a><br>
+                端口：<a class="selectable" clickable data-cmd="cp:25882">25882</a><br>
+                <s-button data-cmd="url:minecraft://?addExternalServer=%E6%A0%88%E6%B5%81Streack|be2.streack.top:25882|">打开Minecraft: Bedrock Edition</s-button>
+              </p>`
+          }
+        },
+      ]
+    },
+  ]
+};
+---
+
+<SelectorLayout
+  title="开始游戏 - S2「岭回双壑风」 — 栈流Streack"
+  description="加入第三方公益服务器栈流Streack S2「岭回双壑风」的指引页面"
+  theme="light"
+  config={config}
+  id="play"
+>
+  <template slot="toolbar-nav" data-toolbar-nav>
+    <div pc-only data-cmd="url:/minecraft/main/s2|" clickable>S2「岭回双壑风」</div>
+    <div pc-only data-cmd="url:/doc|" clickable>文档</div>
+  </template>
+</SelectorLayout>

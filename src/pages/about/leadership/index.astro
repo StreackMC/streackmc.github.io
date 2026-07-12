@@ -19,7 +19,7 @@ theme="dark"
           <div slot="headline">@澪奈 Neonai</div>
           <div slot="subhead">吉祥物</div>
           <div slot="text">（不愿露面）</div><br>
-          <s-button slot="action" type="text" disabled="true" data-cmd="msg:现在还不行哦|好">QQ</s-button>
+          <s-button id="neonai" slot="action" type="text" disabled="true" data-cmd="msg:现在还不行哦|好">QQ</s-button>
         </s-card>
         <s-card type="outlined">
           <img slot="image" src="/assets/img/leadership/lighting_bug.png" alt="@kdxiaoyi 的皮肤图片">
@@ -51,6 +51,7 @@ theme="dark"
           <div slot="headline">@默</div>
           <div slot="subhead">群聊管理员</div>
           <div slot="text">&nbsp;</div><br>
+          <s-button id="mo" slot="action" type="text" onclick="document.getElementById('neonai').disabled = false; document.getElementById('mo').disabled = true; ">暂无</s-button>
         </s-card>
       </div>
       <style>

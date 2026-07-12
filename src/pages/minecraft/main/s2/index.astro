@@ -3,7 +3,9 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
 ---
 <FrameworkLayout title="Forwarding — 栈流Streack" theme="light">
 
+  <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
   <div style="display: contents">
+    <!-- 内容块示例 1：全宽 Banner -->
     <div class="content" slot="0">
       <div class="slotBg-I" style="--u:white;"></div>
       <div style="--t: calc(max(10vh, 5rem) + var(--safezone, 0)); --l:auto; --r: auto; --a: center;">
@@ -13,6 +15,6 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
   </div>
 
   <script slot="scripts" is:inline type="module">
-    location.replace('/about/legal?selector=legal%3A版权许可.所有');
+    location.replace('/minecraft/main/s2/play');
   </script>
 </FrameworkLayout>
