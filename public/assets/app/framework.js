@@ -408,10 +408,14 @@ export function executeCommand(type, param) {
         msg('无法查找目标注释：' + error.message, '好', true);
       }
       break;
-    
+
     case 'copy':
     case 'cp':
       return CopyText(param);
+
+    case 'msg':
+      const params = param.split(/(?<!\\)\|/);
+      return msg(...params);
 
     case 'slot':
       // 滚动到指定 slot 属性的元素
