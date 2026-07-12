@@ -6,8 +6,9 @@
  *   渲染分层选择器交互。
  *
  * 配置结构（由 SelectorLayout 序列化注入）：
- *   config = { title, description, options: [...] }
- *   每个选项 = { label, hint?, children? | result? }
+ *   config = { title, description, layerTitle?, options: [...] }
+ *   每个选项 = { label, hint?, layerTitle?, children? | result? }
+ *   layerTitle → 该选项子层的选择区域标题（默认用 label）
  *   children → 有子选项，继续下钻
  *   result: { title, content(HTML) } → 最终结果
  *   两者互斥
@@ -43,10 +44,10 @@ if (!configScript) {
 
     function initSelector() {
       path = [];
-      renderLayer(config.options, 0);
+      renderLayer(config.options, 0, config.layerTitle || config.title);
     }
 
-    function renderLayer(options, depth) {
+    function renderLayer(options, depth, layerTitle) {
       if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
       $layers().querySelectorAll('.selector-layer').forEach(l => {
         if (parseInt(l.dataset.depth) >= depth) l.remove();
@@ -57,6 +58,15 @@ if (!configScript) {
       const layer = document.createElement('div');
       layer.className = 'selector-layer';
       layer.dataset.depth = depth;
+
+      /* 层级标题（分割不同选择区域） */
+      if (layerTitle) {
+        const heading = document.createElement('h2');
+        heading.className = 'selector-layer-title';
+        heading.textContent = layerTitle;
+        layer.appendChild(heading);
+      }
+
       options.forEach(opt => layer.appendChild(createOptionButton(opt, depth)));
       $layers().appendChild(layer);
 
@@ -97,7 +107,7 @@ if (!configScript) {
       path[depth] = { option, depth };
 
       if (option.children && option.children.length > 0) {
-        renderLayer(option.children, depth + 1);
+        renderLayer(option.children, depth + 1, option.layerTitle || option.label);
       } else {
         /* 清理更深层级（从分支切换到叶子时，旧子层必须移除） */
         if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
@@ -153,13 +163,13 @@ if (!configScript) {
 
     function goBackTo(depth) {
       path = path.slice(0, depth);
-      if (depth === 0) renderLayer(config.options, 0);
-      else renderLayer(path[depth - 1].option.children, depth);
+      if (depth === 0) renderLayer(config.options, 0, config.layerTitle || config.title);
+      else renderLayer(path[depth - 1].option.children, depth, path[depth - 1].option.layerTitle || path[depth - 1].option.label);
     }
 
     function resetSelector() {
       path = [];
-      renderLayer(config.options, 0);
+      renderLayer(config.options, 0, config.layerTitle || config.title);
     }
 
     initSelector();

@@ -74,6 +74,12 @@ s-page[dark] .selector-wrap {
 
 /* === 选项层 === */
 .selector-wrap .selector-layers { display: flex; flex-direction: column; gap: 1.25rem; }
+.selector-wrap .selector-layer-title {
+  font-size: 0.8rem; font-weight: 500; color: var(--sel-text-muted);
+  text-transform: uppercase; letter-spacing: 0.04em;
+  margin: 0 0 0.25rem; width: 100%;
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--sel-border);
+}
 .selector-wrap .selector-layer {
   display: flex; flex-wrap: wrap; gap: 0.6rem;
   opacity: 0; transform: translateY(16px);
