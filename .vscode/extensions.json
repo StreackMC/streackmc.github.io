@@ -2,5 +2,8 @@
   "unwantedRecommendations": [
     "yutent.simple-http",
     "ritwickdey.LiveServer"
+  ],
+  "recommendations": [
+    "astro-build.astro-vscode"
   ]
 }
