@@ -122,7 +122,7 @@ s-page[dark] .selector-wrap {
 .selector-wrap .selector-option[data-selected="true"] .selector-option-arrow { opacity: 0.8; }
 
 /* === 结果区域 === */
-.selector-wrap .selector-result { display: none; margin-top: 1.5rem; }
+.selector-wrap .selector-result { display: none; margin-top: 1.5rem; scroll-margin-top: calc(var(--safezone, 0) + var(--h, 100vh) * .1); }
 .selector-wrap .selector-result.visible { display: block; animation: selResultIn 0.4s ease; }
 @keyframes selResultIn {
   from { opacity: 0; transform: translateY(16px); }

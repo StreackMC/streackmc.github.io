@@ -220,7 +220,7 @@
       el.appendChild(resetBtn);
 
       requestAnimationFrame(function () { el.classList.add('visible'); });
-      setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+      setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
     }
 
     function updateBreadcrumb() {
