@@ -14,6 +14,7 @@
  *   - 用户交互后 pushState 更新参数
  *   - 浏览器前进/后退时 popstate 重新应用
  *   需要给 .selector-wrap 设置 id 属性才能参与 URL 同步
+ *   data-selector-history="false" → replaceState 仅改地址栏，不增加历史条目
  *
  * 配置结构：
  *   config = { title, description?, layerTitle?, options: [...] }
@@ -30,17 +31,22 @@
   let ICON_RESET = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>';
 
   /* === 实例注册表 & URL 同步 === */
-  let registry = []; /* { root, getPath, selectPath } */
+  let registry = []; /* { root, getPath, selectPath, addHistory } */
   let fromURLSync = false; /* true 时抑制 pushState（URL 驱动 / popstate） */
 
   /**
    * 收集所有已注册实例的路径，构建 selector 参数并写入 URL
-   * @param {boolean} usePush — true=pushState（用户交互），false=replaceState（初始化）
+   * @param {boolean} usePush — true=用户交互（受 addHistory 控制），false=初始化/URL驱动
+   *
+   * addHistory 规则：
+   *   当 usePush=true 时，若所有参与同步的实例 addHistory=false → replaceState
+   *   否则 → pushState（只要有任一实例需要历史记录，就保留）
    */
   function syncURL(usePush) {
-    let parts = registry.filter(function (inst) {
+    let active = registry.filter(function (inst) {
       return inst.root.id && inst.getPath().length > 0;
-    }).map(function (inst) {
+    });
+    let parts = active.map(function (inst) {
       return inst.root.id + ':' + inst.getPath().join('.');
     });
 
@@ -51,7 +57,14 @@
       url.searchParams.delete('selector');
     }
 
-    if (usePush) {
+    /* 判断实际操作：pushState 还是 replaceState */
+    let shouldPush = usePush;
+    if (usePush && active.length > 0) {
+      /* 只要有一个实例 addHistory=true，就 pushState */
+      shouldPush = active.some(function (inst) { return inst.addHistory; });
+    }
+
+    if (shouldPush) {
       history.pushState({}, '', url);
     } else {
       history.replaceState({}, '', url);
@@ -318,7 +331,8 @@
     }
 
     /* 注册实例 */
-    registry.push({ root: root, getPath: getPath, selectPath: selectPath });
+    let addHistory = root.dataset.selectorHistory !== 'false';
+    registry.push({ root: root, getPath: getPath, selectPath: selectPath, addHistory: addHistory });
 
     /* 启动 */
     path = [];

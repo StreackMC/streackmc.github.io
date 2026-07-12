@@ -14,6 +14,7 @@
  *   theme       - s-page 主题（默认 light）
  *   config      - 选择器配置对象 { title, description, options: [...] }
  *   id          - 选择器实例 ID（用于 URL 同步 ?selector=id:path）
+ *   history     - 是否添加历史记录条目（默认 true；false 则仅 replaceState 改地址栏）
  *
  * Slots:
  *   toolbar-nav - 导航项模板（透传给 FrameworkLayout）
@@ -39,6 +40,7 @@ interface Props {
   theme?: string;
   config: SelectorConfig;
   id?: string;
+  history?: boolean;
 }
 
 const {
@@ -48,6 +50,7 @@ const {
   theme = 'light',
   config,
   id,
+  history = true,
 } = Astro.props;
 ---
 
@@ -66,7 +69,7 @@ const {
   <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
   <div style="display: contents">
     <div class="content selector-content" slot="0">
-      <div class="selector-wrap" data-selector {...(id ? { id } : {})}>
+      <div class="selector-wrap" data-selector {...(id ? { id } : {})} {...(history === false ? { 'data-selector-history': 'false' } : {})}>
         <!-- 标题 + 描述（服务端渲染） -->
         <header class="selector-header">
           <h1 class="selector-title">{config.title}</h1>

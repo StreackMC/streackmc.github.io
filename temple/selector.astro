@@ -16,13 +16,14 @@
  *      theme="light"
  *      config={config}
  *      id="legal"           // 可选，用于 URL 同步
+ *      history={true}       // 可选，默认 true；false 则仅 replaceState
  *    />
  *
  *  ② 嵌入模式（Selector 组件）— 作为控件插入任意页面
  *  ─────────────────────────────────────────────────────────────
  *    import Selector from '/src/components/Selector.astro';
  *
- *    <Selector config={config} id="faq" />
+ *    <Selector config={config} id="faq" history={false} />
  *
  *  ═══════════════════════════════════════════════════════════════
  *  URL 同步（需要设置 id 属性）
@@ -37,6 +38,7 @@
  *  - 按 . 分隔的路径逐层选中对应 label 的按钮
  *  - 用户交互后自动 pushState 更新参数
  *  - 浏览器前进/后退时 popstate 重新应用
+ *  - history=false 时用 replaceState 仅改地址栏，不增加历史条目
  *
  *  ═══════════════════════════════════════════════════════════════
  *  配置结构
