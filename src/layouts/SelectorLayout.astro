@@ -13,6 +13,7 @@
  *   keywords    - meta keywords
  *   theme       - s-page 主题（默认 light）
  *   config      - 选择器配置对象 { title, description, options: [...] }
+ *   id          - 选择器实例 ID（用于 URL 同步 ?selector=id:path）
  *
  * Slots:
  *   toolbar-nav - 导航项模板（透传给 FrameworkLayout）
@@ -21,7 +22,7 @@
  *
  * 外部资源：
  *   CSS — /assets/code/selector.css
- *   JS  — /assets/code/selector.js（通过 #selector-config JSON 读取配置）
+ *   JS  — /assets/code/selector.js（通过 [data-selector-config] JSON 读取配置）
  */
 import FrameworkLayout from './FrameworkLayout.astro';
 
@@ -37,6 +38,7 @@ interface Props {
   keywords?: string;
   theme?: string;
   config: SelectorConfig;
+  id?: string;
 }
 
 const {
@@ -45,6 +47,7 @@ const {
   keywords,
   theme = 'light',
   config,
+  id,
 } = Astro.props;
 ---
 
@@ -63,7 +66,7 @@ const {
   <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
   <div style="display: contents">
     <div class="content selector-content" slot="0">
-      <div class="selector-wrap" data-selector>
+      <div class="selector-wrap" data-selector {...(id ? { id } : {})}>
         <!-- 标题 + 描述（服务端渲染） -->
         <header class="selector-header">
           <h1 class="selector-title">{config.title}</h1>

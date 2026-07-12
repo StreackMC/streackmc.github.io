@@ -8,36 +8,102 @@
  * 两种模式共享同一份 JS：扫描页面上所有 [data-selector] 元素，
  * 各自从内部 [data-selector-config] 读取配置并独立初始化。
  *
+ * URL 同步：
+ *   通过 ?selector=id:path.subpath|id2:path2 参数控制选择器状态。
+ *   - 页面加载时解析参数，自动选中对应路径
+ *   - 用户交互后 pushState 更新参数
+ *   - 浏览器前进/后退时 popstate 重新应用
+ *   需要给 .selector-wrap 设置 id 属性才能参与 URL 同步
+ *
  * 配置结构：
  *   config = { title, description?, layerTitle?, options: [...] }
  *   每个选项 = { label, hint?, layerTitle?, children? | result? }
- *   layerTitle → 该选项子层的选择区域标题（默认用 label）
  *   children → 有子选项，继续下钻
  *   result: { title, content(HTML) } → 最终结果
  *   两者互斥
- *
- * 交互：
- *   - 选项卡逐层展示，点击进入下一层
- *   - 新选项卡自动滚动至视口中央
- *   - 某层仅一个选项时自动选中并继续（700ms 延迟）
- *   - 面包屑导航可点击回退到任意层级
- *   - 最终结果以 s-card 卡片展示，附"重新选择"按钮
  */
 
 (function () {
   'use strict';
 
-  const ICON_CHEVRON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 6.71a1 1 0 0 0 0 1.41L13.17 12l-3.88 3.88a1 1 0 1 0 1.41 1.41l4.59-4.59a1 1 0 0 0 0-1.41L10.7 6.7a1 1 0 0 0-1.41 0z"/></svg>';
-  const ICON_RESET = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>';
+  var ICON_CHEVRON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 6.71a1 1 0 0 0 0 1.41L13.17 12l-3.88 3.88a1 1 0 1 0 1.41 1.41l4.59-4.59a1 1 0 0 0 0-1.41L10.7 6.7a1 1 0 0 0-1.41 0z"/></svg>';
+  var ICON_RESET = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>';
+
+  /* === 实例注册表 & URL 同步 === */
+  var registry = []; /* { root, getPath, selectPath } */
+  var fromURLSync = false; /* true 时抑制 pushState（URL 驱动 / popstate） */
 
   /**
-   * 初始化单个选择器实例
-   * @param {HTMLElement} root — .selector-wrap[data-selector] 根元素
-   * @param {object} config — 选择器配置
+   * 收集所有已注册实例的路径，构建 selector 参数并写入 URL
+   * @param {boolean} usePush — true=pushState（用户交互），false=replaceState（初始化）
    */
+  function syncURL(usePush) {
+    var parts = registry.filter(function (inst) {
+      return inst.root.id && inst.getPath().length > 0;
+    }).map(function (inst) {
+      return inst.root.id + ':' + inst.getPath().join('.');
+    });
+
+    var url = new URL(window.location.href);
+    if (parts.length > 0) {
+      url.searchParams.set('selector', parts.join('|'));
+    } else {
+      url.searchParams.delete('selector');
+    }
+
+    if (usePush) {
+      history.pushState({}, '', url);
+    } else {
+      history.replaceState({}, '', url);
+    }
+  }
+
+  /**
+   * 读取 URL ?selector= 参数并应用到对应实例
+   * 使用 framework.js 的 getQueryString
+   */
+  function applyURLParam() {
+    var raw = null;
+    if (window.streack && typeof window.streack.getQueryString === 'function') {
+      raw = window.streack.getQueryString('selector');
+    }
+    if (!raw) {
+      var url = new URL(window.location.href);
+      raw = url.searchParams.get('selector');
+    }
+    if (!raw) return;
+
+    fromURLSync = true;
+
+    /* 按 | 分拆多个选择器规格 */
+    var specs = raw.split('|');
+    for (var i = 0; i < specs.length; i++) {
+      var spec = specs[i].trim();
+      /* 验证格式：id:path（至少一个冒号，两边非空） */
+      var match = spec.match(/^([^:]+):(.+)$/);
+      if (!match) continue;
+
+      var id = match[1];
+      var pathStr = match[2];
+      var labels = pathStr.split('.');
+
+      /* 在注册表中查找匹配的实例 */
+      for (var j = 0; j < registry.length; j++) {
+        if (registry[j].root.id === id) {
+          registry[j].selectPath(labels);
+          break;
+        }
+      }
+    }
+
+    fromURLSync = false;
+  }
+
+  /* === 单实例初始化 === */
   function initInstance(root, config) {
     var path = [];
     var autoTimer = null;
+    var suppressAutoAdvance = false;
 
     var $bc = function () { return root.querySelector('[data-breadcrumb]'); };
     var $layers = function () { return root.querySelector('[data-layers]'); };
@@ -55,7 +121,6 @@
       layer.className = 'selector-layer';
       layer.dataset.depth = depth;
 
-      /* 层级标题（分割不同选择区域） */
       if (layerTitle) {
         var heading = document.createElement('h2');
         heading.className = 'selector-layer-title';
@@ -70,7 +135,7 @@
       setTimeout(function () { layer.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
       updateBreadcrumb();
 
-      if (options.length === 1) {
+      if (options.length === 1 && !suppressAutoAdvance) {
         autoTimer = setTimeout(function () {
           autoTimer = null;
           var btn = layer.querySelector('.selector-option');
@@ -84,6 +149,7 @@
       btn.type = 'button';
       btn.className = 'selector-option';
       btn.dataset.selected = 'false';
+      btn.dataset.label = option.label;
       var hasChildren = option.children && option.children.length > 0;
       btn.innerHTML = '<span class="selector-option-text"><span class="selector-option-label">'
         + option.label + '</span>'
@@ -105,7 +171,6 @@
       if (option.children && option.children.length > 0) {
         renderLayer(option.children, depth + 1, option.layerTitle || option.label);
       } else {
-        /* 清理更深层级（从分支切换到叶子时，旧子层必须移除） */
         if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
         $layers().querySelectorAll('.selector-layer').forEach(function (l) {
           if (parseInt(l.dataset.depth) > depth) l.remove();
@@ -114,20 +179,20 @@
         showResult(result);
       }
       updateBreadcrumb();
+
+      if (!fromURLSync) syncURL(true);
     }
 
     function showResult(result) {
       var el = $result();
       el.innerHTML = '';
 
-      /* Sober UI s-card */
       var card = document.createElement('s-card');
       card.type = 'outlined';
       card.classList.add('selector-result-card');
       card.innerHTML = '<div slot="headline">' + result.title + '</div><div slot="text">' + result.content + '</div>';
       el.appendChild(card);
 
-      /* Sober UI s-button */
       var resetBtn = document.createElement('s-button');
       resetBtn.type = 'outlined';
       resetBtn.classList.add('selector-reset');
@@ -161,32 +226,95 @@
       path = path.slice(0, depth);
       if (depth === 0) renderLayer(config.options, 0, config.layerTitle || config.title);
       else renderLayer(path[depth - 1].option.children, depth, path[depth - 1].option.layerTitle || path[depth - 1].option.label);
+
+      if (!fromURLSync) syncURL(true);
     }
 
     function resetSelector() {
       path = [];
       renderLayer(config.options, 0, config.layerTitle || config.title);
+
+      if (!fromURLSync) syncURL(true);
     }
+
+    /**
+     * 获取当前选择路径（选项 label 数组）
+     */
+    function getPath() {
+      return path.map(function (item) { return item.option.label; });
+    }
+
+    /**
+     * 按 label 路径自动选中选项（URL 驱动）
+     * @param {string[]} labels — 如 ['隐私政策', '我们收集的信息', '账户信息']
+     */
+    function selectPath(labels) {
+      if (!labels || labels.length === 0) return;
+
+      suppressAutoAdvance = true;
+      if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+
+      /* 重置到根层 */
+      $layers().innerHTML = '';
+      $result().innerHTML = '';
+      $result().classList.remove('visible');
+      path = [];
+
+      /* 渲染根层 */
+      renderLayer(config.options, 0, config.layerTitle || config.title);
+
+      var currentOptions = config.options;
+      for (var i = 0; i < labels.length; i++) {
+        var label = labels[i];
+        var found = null;
+        for (var j = 0; j < currentOptions.length; j++) {
+          if (currentOptions[j].label === label) {
+            found = currentOptions[j];
+            break;
+          }
+        }
+        if (!found) break;
+
+        /* 在当前层中找到对应按钮 */
+        var layer = $layers().querySelector('.selector-layer[data-depth="' + i + '"]');
+        if (!layer) break;
+
+        var btn = null;
+        layer.querySelectorAll('.selector-option').forEach(function (b) {
+          if (b.dataset.label === label) btn = b;
+        });
+        if (!btn) break;
+
+        /* 选中该选项（selectOption 内部会渲染下一层） */
+        selectOption(found, i, btn);
+
+        if (found.children && found.children.length > 0) {
+          currentOptions = found.children;
+        } else {
+          break; /* 叶子节点，路径结束 */
+        }
+      }
+
+      suppressAutoAdvance = false;
+    }
+
+    /* 注册实例 */
+    registry.push({ root: root, getPath: getPath, selectPath: selectPath });
 
     /* 启动 */
     path = [];
     renderLayer(config.options, 0, config.layerTitle || config.title);
   }
 
-  /**
-   * 扫描页面上所有 [data-selector] 元素并初始化
-   * 支持多实例：每个实例从自身内部的 [data-selector-config] 读取配置
-   */
+  /* === 扫描 & 初始化 === */
   function scanAndInit() {
-    var instances = document.querySelectorAll('[data-selector]');
-    instances.forEach(function (root) {
-      /* 避免重复初始化 */
+    var nodes = document.querySelectorAll('[data-selector]');
+    nodes.forEach(function (root) {
       if (root.dataset.selectorInit === 'true') return;
       root.dataset.selectorInit = 'true';
 
       var configScript = root.querySelector('[data-selector-config]');
       if (!configScript) {
-        /* 向后兼容：查找同页面的 #selector-config */
         configScript = document.getElementById('selector-config');
         if (!configScript) {
           console.warn('[Selector] No config found for', root);
@@ -204,7 +332,15 @@
 
       initInstance(root, config);
     });
+
+    /* 所有实例初始化完成后，应用 URL 参数 */
+    if (registry.length > 0) applyURLParam();
   }
+
+  /* popstate：浏览器前进/后退时重新应用 URL 参数 */
+  window.addEventListener('popstate', function () {
+    applyURLParam();
+  });
 
   /* DOM 就绪后扫描 */
   if (document.readyState === 'loading') {

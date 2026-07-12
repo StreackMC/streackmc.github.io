@@ -15,13 +15,28 @@
  *      description="页面描述"
  *      theme="light"
  *      config={config}
+ *      id="legal"           // 可选，用于 URL 同步
  *    />
  *
  *  ② 嵌入模式（Selector 组件）— 作为控件插入任意页面
  *  ─────────────────────────────────────────────────────────────
  *    import Selector from '/src/components/Selector.astro';
  *
- *    <Selector config={config} />
+ *    <Selector config={config} id="faq" />
+ *
+ *  ═══════════════════════════════════════════════════════════════
+ *  URL 同步（需要设置 id 属性）
+ *  ═══════════════════════════════════════════════════════════════
+ *
+ *  页面加载时读取 ?selector= 参数，格式：
+ *    id:label.sublabel|id2:label2.sublabel2
+ *
+ *  示例：?selector=legal:隐私政策.我们收集的信息.账户信息
+ *  多控件：?selector=legal:隐私政策|faq:退款.方式
+ *
+ *  - 按 . 分隔的路径逐层选中对应 label 的按钮
+ *  - 用户交互后自动 pushState 更新参数
+ *  - 浏览器前进/后退时 popstate 重新应用
  *
  *  ═══════════════════════════════════════════════════════════════
  *  配置结构
@@ -108,6 +123,7 @@ const config = {
  *   description="选择法律主题以查看相关条款"
  *   theme="light"
  *   config={config}
+ *   id="legal"
  * />
  */
 
@@ -116,5 +132,5 @@ const config = {
  *
  * import Selector from '/src/components/Selector.astro';
  *
- * <Selector config={config} />
+ * <Selector config={config} id="legal" />
  */
