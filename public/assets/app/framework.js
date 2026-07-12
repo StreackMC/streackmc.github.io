@@ -457,6 +457,26 @@ export function executeCommand(type, param) {
   return true;
 }
 
+/**
+ * 对目标元素及其全部子元素绑定命令
+ * 扫描 data-cmd 属性（格式 "type:param"），转换为点击事件，消费后移除属性。
+ * 用于动态插入 DOM 后重新绑定命令（如 selector 结果区、弹窗内容等）。
+ * @param {Element} element - 目标元素（含自身及子元素）
+ */
+export function bindCommandOn(element) {
+  if (!element || !element.querySelectorAll) return;
+
+  const targets = element.hasAttribute && element.hasAttribute('data-cmd')
+    ? [element, ...element.querySelectorAll('*[data-cmd]')]
+    : [...element.querySelectorAll('*[data-cmd]')];
+
+  targets.forEach((ele) => {
+    const p = new String(ele.dataset.cmd).split(':');
+    ele.addEventListener('click', (event) => { executeCommand(p[0], p.slice(1).join(':')); });
+    delete ele.dataset.cmd;
+  });
+}
+
 // ============================================================
 // Toolbar 插槽管理器
 // ============================================================
@@ -692,11 +712,7 @@ export async function initFramework() {
   }
 
   // 6. 声明式命令绑定：将 data-cmd 属性转换为点击事件
-  document.querySelectorAll('*[data-cmd]').forEach((ele) => {
-    const p = new String(ele.dataset.cmd).split(':');
-    ele.addEventListener('click', (event) => { executeCommand(p[0], p.slice(1).join(':')); });
-    delete ele.dataset.cmd;  // 消费后移除属性，避免重复绑定
-  });
+  bindCommandOn(document.body);
 
   // 7. 禁止 Safari 双指缩放/缩放手势
   document.addEventListener("gesturestart", (e) => e.preventDefault());
@@ -957,6 +973,7 @@ if (!Array.isArray(window?.streack?.meta?.initby)) {
     executeCommand: executeCommand,
     cmd: executeCommand,
     registerCommand: registerCommand,
+    bindCommandOn: bindCommandOn,
     registerToolbarSlot: registerToolbarSlot,
     shrinkToolbar: shrinkToolbar,
     expandToolbar: expandToolbar,
@@ -974,6 +991,7 @@ if (!Array.isArray(window?.streack?.meta?.initby)) {
   window.streack.executeCommand = executeCommand;
   window.streack.cmd = executeCommand;
   window.streack.registerCommand = registerCommand;
+  window.streack.bindCommandOn = bindCommandOn;
   window.streack.registerToolbarSlot = registerToolbarSlot;
   window.streack.shrinkToolbar = shrinkToolbar;
   window.streack.expandToolbar = expandToolbar;

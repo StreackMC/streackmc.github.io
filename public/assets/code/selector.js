@@ -206,22 +206,14 @@
       let content = '';
       if (result.html) {
         card.innerHTML = result.html;
-        // 绑定新插入的元素的命令
-        card.querySelectorAll('*[data-cmd]').forEach((ele) => {
-          const p = new String(ele.dataset.cmd).split(':');
-          ele.addEventListener('click', (event) => {
-            if (typeof window?.streack?.executeCommand !== 'function') {
-              window.streack.executeCommand(p[0], p.slice(1).join(':'));
-            } else {
-              console.warn(`[selector/command] Unable to handle command via`, event, `: no command instance was found.`)
-            };
-          });
-          delete ele.dataset.cmd;
-        });
       } else {
         if (result.title) content += `<div slot="headline">${result.title}</div>`;
         if (result.content) content += `<div slot="text">${result.content}</div>`;
         card.innerHTML = (content) ? content : `<div slot="text">暂无内容</div>`;
+      }
+      // 绑定新插入元素的命令（统一处理 html / content 两种分支）
+      if (typeof window?.streack?.bindCommandOn === 'function') {
+        window.streack.bindCommandOn(card);
       }
       el.appendChild(card);
 
