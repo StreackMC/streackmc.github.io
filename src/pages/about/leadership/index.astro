@@ -1,0 +1,68 @@
+---
+import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
+---
+<FrameworkLayout
+title="StreackTeam — 栈流Streack"
+description="介绍栈流Streack团队的成员组成，并提供指向成员的个人页面的链接"
+theme="dark"
+>
+  <template slot="toolbar-nav" data-toolbar-nav>
+  </template>
+
+  <!-- 正文内容 -->
+  <div style="display: contents">
+    <div class="content" slot="0">
+      <h2 style="--fs:20px;--fl:24px;">Streack Team 成员</h2>
+      <div id="humancards">
+        <s-card type="outlined">
+          <img slot="image" src="/assets/img/leadership/neonai.svg" alt="@Neonai 的皮肤图片">
+          <div slot="headline">@澪奈 Neonai</div>
+          <div slot="subhead">吉祥物</div>
+          <div slot="text">（不愿露面）</div><br>
+          <s-button slot="action" type="text" disabled="true" data-cmd="msg:现在还不行哦|好">QQ</s-button>
+        </s-card>
+        <s-card type="outlined">
+          <img slot="image" src="/assets/img/leadership/lighting_bug.png" alt="@kdxiaoyi 的皮肤图片">
+          <div slot="headline">@kdxiaoyi</div>
+          <div slot="subhead">服主、游戏管理员、群聊管理员、开发</div>
+          <div slot="text">Lighting_bug is always fixing lighting bug.</div><br>
+          <s-button slot="action" type="text" data-cmd="url://space.bilibili.com/1987247870">bilibili</s-button>
+          <s-button slot="action" type="text" data-cmd="url://github.com/kdxhub">Github</s-button>
+          <s-button slot="action" type="text" data-cmd="url://kdxiaoyi.top">个人网页</s-button>
+        </s-card>
+        <s-card type="outlined">
+          <img slot="image" src="/assets/img/leadership/hzcyq_crazy.png" alt="@hzcyq_Crazy 的皮肤图片">
+          <div slot="headline">@hzcyq_Crazy</div>
+          <div slot="subhead">游戏管理员、群聊管理员</div>
+          <div slot="text">笃志前行，虽远必达。</div><br>
+          <s-button slot="action" type="text" data-cmd="url://space.bilibili.com/1087636944">bilibili</s-button>
+          <s-button slot="action" type="text" data-cmd="url://github.com/hzcyq">Github</s-button>
+          <s-button slot="action" type="text" data-cmd="url://namemc.com/profile/b2a0c87c-97de-4934-83aa-09229883c35d">NAMEMC</s-button>
+        </s-card>
+        <s-card type="outlined">
+          <img slot="image" src="/assets/img/leadership/darkmattermax.svg" alt="@darkmattermax 的皮肤图片">
+          <div slot="headline">@darkmattermax</div>
+          <div slot="subhead">群聊管理员</div>
+          <div slot="text">&nbsp;</div><br>
+          <s-button slot="action" type="text" data-cmd="url://github.com/darkmattermax">Github</s-button>
+        </s-card>
+        <s-card type="outlined">
+          <img slot="image" src="/assets/img/leadership/mo.jpeg" alt="@默 的头像">
+          <div slot="headline">@默</div>
+          <div slot="subhead">群聊管理员</div>
+          <div slot="text">&nbsp;</div><br>
+        </s-card>
+      </div>
+      <style>
+        div.content[slot="0"] { height: max-content; align-items: center; max-width: 975px; margin: 0 auto; }
+        div.content[slot="0"] h2 { position: relative; padding-top: calc(var(--safezone, 0) + 2rlh); padding-bottom: 3rlh; }
+        div#humancards { position: relative; width: min(1024px, calc(var(--w) * 0.6)); justify-content: space-evenly; flex-wrap: wrap; gap: 1rem; flex-direction: row; align-items: flex-start; }
+        div#humancards s-card { display: inline-block; width: 100%; margin-bottom: 1rem; break-inside: avoid; padding: 1rem 1.5rem; height: 100%; max-width: 360px; }
+        div#humancards s-card img[slot="image"] { margin: auto; }
+        div#humancards s-card div[slot="headline"] { font-size: 1.5rem; }
+        div#humancards s-card div[slot="subhead"] { font-size: 1rem; }
+        div#humancards s-card div[slot="text"] { font-size: .875rem; }
+      </style>
+    </div>
+  </div>
+</FrameworkLayout>

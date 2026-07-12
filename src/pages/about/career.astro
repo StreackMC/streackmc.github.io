@@ -1,23 +1,73 @@
 ---
-import FrameworkLayout from '../../layouts/FrameworkLayout.astro';
+import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
 ---
-<FrameworkLayout title="未知的页面 — 栈流Streack" description="404 Notfound Page" keywords="404,unknown,missingno"
+<FrameworkLayout title="广纳贤士 — 栈流Streack" description="栈流Streack团队的招新介绍页"
   theme="light">
+  <!-- 导航项模板 -->
+  <template slot="toolbar-nav" data-toolbar-nav>
+  </template>
 
-  <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
+  <!-- 正文内容 -->
   <div style="display: contents">
-    <!-- 内容块示例 1：全宽 Banner -->
-    <div class="content" slot="0">
-      <div class="slotBg-I" style="--u:white;"></div>
-      <div style="--t: max(20vh, 12rem); --l:auto; --r: auto; --a: center;">
-        <h1 style="--fs:35px;--fl:60px;">抱歉，但你要访问的网页找不到</h1>
-        <!-- <p style="--fs:20px;--fl:36px;">描述文字</p> -->
-        <s-button data-cmd="search:" style="margin-top: 2rem;" id="hostname-p">Search</s-button>
+    <div class="content" slot="0" style="height: max-content;">
+      <div
+        style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: start; width: min(1024px, calc(var(--w) * 0.6));">
+        <h2 style="--fs:24px;--fl:42px; --a:center; margin: 4rem auto;">加入我们，展现自我。</h2>
+        <p style="--fs:1rem;--fl:1.2rem;">
+          爱好者们齐聚此间，在再大的困困难难面前却从不放弃，因为凭借每个人的创造力，我们一定可以一路前行。<br>
+          于此间，加入我们不仅可以为我们带来精彩的新思维，更是为了共同的喜好而共舞。
+        </p>
       </div>
     </div>
+    <div class="content" slot="1" style="height: max-content;">
+      <div id="jobcards" style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: start; width: min(1024px, calc(var(--w) * 0.6));">
+      </div>
+    </div>
+
   </div>
 
+  <!-- 页面独有逻辑 -->
   <script slot="scripts" is:inline type="module">
-    document.getElementById('hostname-p').innerText = `搜索 ${location.hostname}`;
+    import { openURL } from '/assets/app/framework.js';
+    const container = document.getElementById('jobcards');
+    [
+      {
+        // 职位
+        "what": "暂无",
+        // 地点
+        "where": "目前 Streack Team 暂时没有发布招聘需求",
+        // 工作内容
+        "todo": "点击以刷新",
+        // 需求
+        "wanna": "",
+        // 福利待遇
+        "reward": "",
+        // 详细地址
+        "detail": "/about/career",
+      },
+    ].forEach((job)=>{
+      const card = document.createElement('s-card');
+      card.type = 'outlined';
+      card.classList.add('jobs_container');
+      card.innerHTML = `
+        <!-- <img slot="image" src="cover.jpg" alt=""> -->
+        <div slot="headline">${job.what.replace(/\n/g, '<br>') }</div>
+        <div slot="subhead">${job.where.replace(/\n/g, '<br>') }</div>
+        <div slot="text">${job.todo.replace(/\n/g, '<br>') }<br>${job.wanna.replace(/\n/g, '<br>') }<br>${job.reward.replace(/\n/g,'<br>')}</div>
+      `;
+      card.clickable = true;
+      card.addEventListener('click', () => openURL(job.detail, true));
+      container.appendChild(card);
+    });
+
+    const style = document.createElement('style');
+    style.innerText = `
+      div#jobcards { flex-direction: row; flex-wrap: wrap; gap: 1rem; }
+      body s-card.jobs_container { width: fit-content; padding: 1rem 1.5rem; height: max-content; min-width: calc(50% - 1rem); max-width: 100%; }
+      body s-card.jobs_container div[slot="headline"] { font-size: 1.5rem; }
+      body s-card.jobs_container div[slot="subhead"] { font-size: 1rem; }
+      body s-card.jobs_container div[slot="text"] { font-size: .875rem; }
+    `;
+    document.body.appendChild(style);
   </script>
 </FrameworkLayout>
