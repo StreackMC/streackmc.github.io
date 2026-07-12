@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Selector 模版 — 栈流Streack</title>
+  <meta name="description" content="分层选择器模版，类似 Apple 隐私页的逐层选择交互。正文流中依次展示标题、描述、选择区，逐层展示选项卡直至最终结果。" />
+  <script src="/pmd.js"></script>
+  <script src="https://rs.kdxiaoyi.top/res/scripts/js/sober@1.0.6.min.js"></script>
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/css/sober-theme-turquoise.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/predefs.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/static/site/font.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/SourceHanSerifCN/result.css" />
+  <link rel="stylesheet" href="https://rs.kdxiaoyi.top/res/fonts/WenQuanWeiMiHei/result.css" />
+  <link rel="stylesheet" href="./code/css/selector.css" />
+</head>
+<body>
+  <s-page id="pageRoot" theme="light">
+    <s-appbar id="appbarRoot">
+      <s-tooltip slot="navigation">
+        <s-icon-button slot="trigger" onclick="history.back()">
+          <s-icon name="arrow_back"></s-icon>
+        </s-icon-button>
+        返回
+      </s-tooltip>
+      <div slot="headline">Selector 模版</div>
+    </s-appbar>
+
+    <s-scroll-view id="scrollView" class="selectable">
+      <div class="selector-wrap">
+        <!-- 标题 + 描述（正文流） -->
+        <header class="selector-header">
+          <h1 class="selector-title" id="selTitle"></h1>
+          <p class="selector-description" id="selDesc"></p>
+        </header>
+
+        <!-- 面包屑导航（选择后出现） -->
+        <nav class="selector-breadcrumb" id="breadcrumb"></nav>
+
+        <!-- 选择区：逐层渲染选项卡 -->
+        <div class="selector-layers" id="layers"></div>
+
+        <!-- 最终结果 -->
+        <div class="selector-result" id="result"></div>
+      </div>
+    </s-scroll-view>
+  </s-page>
+
+  <script src="./code/javascript/selector.js"></script>
+</body>
+</html>
