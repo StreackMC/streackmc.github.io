@@ -350,7 +350,11 @@
       }
 
       initInstance(root, config);
-      console.log(`[selector] 成功初始化:`, root);
+
+      /* 配置已载入内存，移除 DOM 中的原始数据脚本 */
+      configScript.remove();
+
+      console.log('[selector] 成功初始化:', root);
     });
 
     /* 所有实例初始化完成后，应用 URL 参数 */
