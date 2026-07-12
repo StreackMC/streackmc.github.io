@@ -190,7 +190,14 @@
       var card = document.createElement('s-card');
       card.type = 'outlined';
       card.classList.add('selector-result-card');
-      card.innerHTML = '<div slot="headline">' + result.title + '</div><div slot="text">' + result.content + '</div>';
+      let content = '';
+      if (result.html) {
+        content = result.html;
+      } else {
+        if (result.title) content += `<div slot="headline">${result.title}</div>`;
+        if (result.content) content += `<div slot="text">${result.content}</div>`;
+      }
+      card.innerHTML = (content) ? content : `<div slot="text">暂无内容</div>`;
       el.appendChild(card);
 
       var resetBtn = document.createElement('s-button');
