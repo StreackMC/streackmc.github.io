@@ -133,6 +133,7 @@ s-page[dark] .selector-wrap {
 .selector-wrap s-card.selector-result-card {
   display: block; padding: 1.75rem 2rem; margin: 0 0 1.25rem 0;
   width: 100%; box-sizing: border-box;
+  max-width: unset;
 }
 .selector-wrap s-card.selector-result-card [slot="headline"] {
   font-size: 1.3rem; font-weight: 600; color: var(--sel-text);
@@ -146,7 +147,7 @@ s-page[dark] .selector-wrap {
 .selector-wrap s-card.selector-result-card [slot="text"] ul,
 .selector-wrap s-card.selector-result-card [slot="text"] ol { margin: 0 0 0.75rem; padding-left: 1.5rem; }
 .selector-wrap s-card.selector-result-card [slot="text"] li { margin-bottom: 0.35rem; }
-.selector-wrap s-card.selector-result-card [slot="text"] a { color: var(--sel-primary); text-decoration: underline; }
+.selector-wrap s-card.selector-result-card [slot="text"] a { color: var(--sel-primary); /* text-decoration: underline; */ }
 
 /* === 重置按钮 (Sober UI s-button) === */
 .selector-wrap s-button.selector-reset s-icon { width: 1.1rem; height: 1.1rem; }
