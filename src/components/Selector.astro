@@ -1,0 +1,58 @@
+---
+/**
+ * Selector — 嵌入式分层选择器组件
+ *
+ * 可插入任意 Astro 页面/布局，作为控件使用。
+ * 与 SelectorLayout（整页模式）共享同一份 CSS/JS，支持同页多实例。
+ *
+ * 用法：
+ *   ---
+ *   import Selector from '/src/components/Selector.astro';
+ *   ---
+ *   <Selector config={myConfig} />
+ *
+ * Props:
+ *   config  - 选择器配置对象 { title, layerTitle?, options: [...] }
+ *   id      - 可选，实例唯一 ID（多实例时用于区分）
+ *   class   - 可选，额外 CSS 类名（控制宽度/边距等）
+ *
+ * 与 SelectorLayout 的区别：
+ *   - 不包含 FrameworkLayout 包裹，不是整页布局
+ *   - 不渲染标题/描述 header（由宿主页面提供上下文）
+ *   - 不覆盖 .content 布局，仅作为普通块级元素
+ *   - CSS/JS 由组件自行引入，浏览器自动去重
+ */
+
+interface Props {
+  config: any;
+  id?: string;
+  class?: string;
+}
+
+const { config, id, class: className } = Astro.props;
+---
+
+<!-- 页面 CSS（浏览器自动去重，多实例安全） -->
+<link rel="stylesheet" href="/assets/code/selector.css" />
+
+<!-- 嵌入式选择器 -->
+<div
+  class:list={["selector-wrap", "selector-embed", className]}
+  data-selector
+  {...(id ? { id } : {})}
+>
+  <!-- 面包屑（选择后出现） -->
+  <nav class="selector-breadcrumb" data-breadcrumb></nav>
+
+  <!-- 选择区：逐层渲染选项卡 -->
+  <div class="selector-layers" data-layers></div>
+
+  <!-- 最终结果 -->
+  <div class="selector-result" data-result></div>
+
+  <!-- 选择器配置（JSON 序列化，供 selector.js 读取） -->
+  <script type="application/json" data-selector-config set:html={JSON.stringify(config)}></script>
+</div>
+
+<!-- 页面脚本（浏览器自动去重，多实例安全） -->
+<script is:inline type="module" src="/assets/code/selector.js"></script>

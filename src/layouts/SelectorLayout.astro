@@ -63,7 +63,7 @@ const {
   <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
   <div style="display: contents">
     <div class="content selector-content" slot="0">
-      <div class="selector-wrap">
+      <div class="selector-wrap" data-selector>
         <!-- 标题 + 描述（服务端渲染） -->
         <header class="selector-header">
           <h1 class="selector-title">{config.title}</h1>
@@ -78,12 +78,12 @@ const {
 
         <!-- 最终结果 -->
         <div class="selector-result" data-result></div>
+
+        <!-- 选择器配置（JSON 序列化，供 selector.js 读取） -->
+        <script type="application/json" data-selector-config set:html={JSON.stringify(config)}></script>
       </div>
     </div>
   </div>
-
-  <!-- 选择器配置（JSON 序列化，供 selector.js 读取） -->
-  <script slot="scripts" type="application/json" id="selector-config" set:html={JSON.stringify(config)}></script>
 
   <!-- 弹窗（透传） -->
   <slot name="dialogs" />

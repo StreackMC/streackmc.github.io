@@ -1,11 +1,15 @@
 /**
  * Streack Selector 分层选择器 · 页面样式
  *
- * 配合 SelectorLayout.astro 使用
- * 元素结构：.selector-wrap > (.selector-header, .selector-breadcrumb, .selector-layers, .selector-result)
+ * 两种使用模式：
+ *   1. 整页模式 — SelectorLayout（.contents .content.selector-content > .selector-wrap）
+ *   2. 嵌入模式 — Selector.astro 组件（.selector-wrap.selector-embed，可插入任意页面）
+ *
+ * 元素结构：.selector-wrap > (.selector-header?, .selector-breadcrumb, .selector-layers, .selector-result)
+ *   嵌入模式不含 .selector-header（标题/描述由宿主页面提供）
  */
 
-/* === 覆盖 FrameworkLayout .content 布局 === */
+/* === 整页模式：覆盖 FrameworkLayout .content 布局 === */
 .contents .content.selector-content {
   height: auto;
   min-height: 100vh;
@@ -27,6 +31,15 @@
   right: unset;
   left: unset;
   bottom: unset;
+}
+
+/* === 嵌入模式：作为控件插入任意页面 === */
+.selector-wrap.selector-embed {
+  display: block;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* === 主题变量 === */
