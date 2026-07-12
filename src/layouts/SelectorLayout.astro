@@ -1,0 +1,96 @@
+---
+/**
+ * SelectorLayout — 分层选择器页面布局模板
+ * 继承 FrameworkLayout（含工具栏 + 页脚），专用于逐层选择交互页面
+ *
+ * 类似 Apple 隐私页：正文流展示标题 → 描述 → 选择区，
+ * 选项卡逐层下钻，单选项自动跳转，新选项卡滚动至视口，
+ * 面包屑可回退，最终展示结果卡片。
+ *
+ * Props（全部透传给 FrameworkLayout）:
+ *   title       - 页面标题
+ *   description - meta description
+ *   keywords    - meta keywords
+ *   theme       - s-page 主题（默认 light）
+ *   config      - 选择器配置对象 { title, description, options: [...] }
+ *
+ * Slots:
+ *   toolbar-nav - 导航项模板（透传给 FrameworkLayout）
+ *   notes       - 页面注释（透传给 FrameworkLayout）
+ *   dialogs     - 页面弹窗（透传给 FrameworkLayout）
+ *
+ * 外部资源：
+ *   CSS — /assets/code/selector.css
+ *   JS  — /assets/code/selector.js（通过 #selector-config JSON 读取配置）
+ */
+import FrameworkLayout from './FrameworkLayout.astro';
+
+interface SelectorConfig {
+  title: string;
+  description: string;
+  options: any[];
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string;
+  theme?: string;
+  config: SelectorConfig;
+}
+
+const {
+  title,
+  description,
+  keywords,
+  theme = 'light',
+  config,
+} = Astro.props;
+---
+
+<FrameworkLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  theme={theme}
+>
+  <!-- 导航项模板（透传） -->
+  <slot name="toolbar-nav" slot="toolbar-nav" />
+
+  <!-- 页面 CSS -->
+  <link slot="head" rel="stylesheet" href="/assets/code/selector.css" />
+
+  <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
+  <div style="display: contents">
+    <div class="content selector-content" slot="0">
+      <div class="selector-wrap">
+        <!-- 标题 + 描述（服务端渲染） -->
+        <header class="selector-header">
+          <h1 class="selector-title">{config.title}</h1>
+          <p class="selector-description">{config.description}</p>
+        </header>
+
+        <!-- 面包屑（选择后出现） -->
+        <nav class="selector-breadcrumb" data-breadcrumb></nav>
+
+        <!-- 选择区：逐层渲染选项卡 -->
+        <div class="selector-layers" data-layers></div>
+
+        <!-- 最终结果 -->
+        <div class="selector-result" data-result></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 选择器配置（JSON 序列化，供 selector.js 读取） -->
+  <script slot="scripts" type="application/json" id="selector-config" set:html={JSON.stringify(config)}></script>
+
+  <!-- 弹窗（透传） -->
+  <slot name="dialogs" />
+
+  <!-- 页面注释（透传） -->
+  <slot name="notes" slot="notes" />
+
+  <!-- 页面脚本 -->
+  <script slot="scripts" is:inline type="module" src="/assets/code/selector.js"></script>
+</FrameworkLayout>

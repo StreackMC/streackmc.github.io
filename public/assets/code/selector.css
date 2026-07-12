@@ -1,0 +1,142 @@
+/**
+ * Streack Selector 分层选择器 · 页面样式
+ *
+ * 配合 SelectorLayout.astro 使用
+ * 元素结构：.selector-wrap > (.selector-header, .selector-breadcrumb, .selector-layers, .selector-result)
+ */
+
+/* === 覆盖 FrameworkLayout .content 布局 === */
+.contents .content.selector-content {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+  display: block;
+  text-align: left;
+}
+.contents .content.selector-content > .selector-wrap {
+  position: static;
+  display: block;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  padding-top: calc(var(--safezone, 0px) + 2rem);
+  box-sizing: border-box;
+  z-index: auto;
+  top: unset;
+  right: unset;
+  left: unset;
+  bottom: unset;
+}
+
+/* === 主题变量 === */
+.selector-wrap {
+  --sel-text: var(--s-color-on-surface, #1a1a1a);
+  --sel-text-muted: var(--s-color-on-surface-variant, #666);
+  --sel-border: var(--s-color-outline, rgba(0,0,0,0.12));
+  --sel-primary: var(--s-color-primary, #00687b);
+  --sel-primary-text: var(--s-color-on-primary, #ffffff);
+  --sel-hover: rgba(0,0,0,0.04);
+  --sel-card-bg: var(--s-color-surface-container, #f5f5f5);
+}
+s-page[dark] .selector-wrap {
+  --sel-hover: rgba(255,255,255,0.06);
+}
+
+/* === 标题 & 描述 === */
+.selector-wrap .selector-header { margin-bottom: 1.5rem; }
+.selector-wrap .selector-title {
+  font-size: 1.75rem; font-weight: 600; color: var(--sel-text);
+  margin: 0 0 0.5rem; line-height: 1.3;
+}
+.selector-wrap .selector-description {
+  font-size: 1rem; color: var(--sel-text-muted);
+  line-height: 1.6; margin: 0;
+}
+
+/* === 面包屑 === */
+.selector-wrap .selector-breadcrumb {
+  display: none; align-items: center; flex-wrap: wrap;
+  gap: 0.35rem; font-size: 0.85rem; color: var(--sel-text-muted);
+  margin-bottom: 1.5rem; padding: 0.75rem 1rem;
+  background: var(--sel-card-bg); border-radius: 8px;
+}
+.selector-wrap .selector-breadcrumb:not(:empty) { display: flex; }
+.selector-wrap .bc-item {
+  cursor: pointer; padding: 2px 8px; border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+  color: var(--sel-text-muted); white-space: nowrap;
+}
+.selector-wrap .bc-item:hover { background: var(--sel-hover); color: var(--sel-text); }
+.selector-wrap .bc-item.current { color: var(--sel-primary); font-weight: 500; cursor: default; }
+.selector-wrap .bc-item.current:hover { background: transparent; }
+.selector-wrap .bc-sep { opacity: 0.5; user-select: none; }
+
+/* === 选项层 === */
+.selector-wrap .selector-layers { display: flex; flex-direction: column; gap: 1.25rem; }
+.selector-wrap .selector-layer {
+  display: flex; flex-wrap: wrap; gap: 0.6rem;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.selector-wrap .selector-layer.visible { opacity: 1; transform: translateY(0); }
+
+/* === 选项按钮 === */
+.selector-wrap .selector-option {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1.1rem; border-radius: 100px;
+  border: 1.5px solid var(--sel-border); background: transparent;
+  color: var(--sel-text); font-size: 0.95rem; font-family: inherit;
+  cursor: pointer; transition: all 0.2s ease;
+  line-height: 1.4; max-width: 100%;
+}
+.selector-wrap .selector-option:hover { border-color: var(--sel-primary); background: var(--sel-hover); }
+.selector-wrap .selector-option[data-selected="true"] {
+  background: var(--sel-primary); border-color: var(--sel-primary); color: var(--sel-primary-text);
+}
+.selector-wrap .selector-option-text { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+.selector-wrap .selector-option-label { font-weight: 500; white-space: nowrap; }
+.selector-wrap .selector-option-hint { font-size: 0.8rem; opacity: 0.7; white-space: nowrap; }
+.selector-wrap .selector-option[data-selected="true"] .selector-option-hint { opacity: 0.85; }
+.selector-wrap .selector-option-arrow { display: flex; align-items: center; opacity: 0.5; flex-shrink: 0; }
+.selector-wrap .selector-option-arrow svg { width: 1rem; height: 1rem; }
+.selector-wrap .selector-option[data-selected="true"] .selector-option-arrow { opacity: 0.8; }
+
+/* === 结果区域 === */
+.selector-wrap .selector-result { display: none; margin-top: 1.5rem; }
+.selector-wrap .selector-result.visible { display: block; animation: selResultIn 0.4s ease; }
+@keyframes selResultIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === 结果卡片 (Sober UI s-card) === */
+.selector-wrap s-card.selector-result-card {
+  display: block; padding: 1.75rem 2rem; margin: 0 0 1.25rem 0;
+  width: 100%; box-sizing: border-box;
+}
+.selector-wrap s-card.selector-result-card [slot="headline"] {
+  font-size: 1.3rem; font-weight: 600; color: var(--sel-text);
+  margin: 0 0 1rem 0; line-height: 1.4;
+}
+.selector-wrap s-card.selector-result-card [slot="text"] {
+  font-size: 0.95rem; line-height: 1.7; color: var(--sel-text);
+}
+.selector-wrap s-card.selector-result-card [slot="text"] p { margin: 0 0 0.75rem; }
+.selector-wrap s-card.selector-result-card [slot="text"] p:last-child { margin-bottom: 0; }
+.selector-wrap s-card.selector-result-card [slot="text"] ul,
+.selector-wrap s-card.selector-result-card [slot="text"] ol { margin: 0 0 0.75rem; padding-left: 1.5rem; }
+.selector-wrap s-card.selector-result-card [slot="text"] li { margin-bottom: 0.35rem; }
+.selector-wrap s-card.selector-result-card [slot="text"] a { color: var(--sel-primary); text-decoration: underline; }
+
+/* === 重置按钮 (Sober UI s-button) === */
+.selector-wrap s-button.selector-reset s-icon { width: 1.1rem; height: 1.1rem; }
+.selector-wrap s-button.selector-reset s-icon svg { width: 100%; height: 100%; }
+
+/* === 响应式 === */
+@media (max-width: 600px) {
+  .contents .content.selector-content > .selector-wrap { padding: 1.5rem 1rem 3rem !important; }
+  .selector-wrap .selector-title { font-size: 1.4rem; }
+  .selector-wrap .selector-option { padding: 0.5rem 0.9rem; font-size: 0.9rem; }
+  .selector-wrap s-card.selector-result-card { padding: 1.25rem 1rem; }
+}
