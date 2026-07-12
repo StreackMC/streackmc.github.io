@@ -64,9 +64,9 @@
    */
   function applyURLParam() {
     var raw = null;
-    if (window.streack && typeof window.streack.getQueryString === 'function') {
+  /*   if (window.streack && typeof window.streack.getQueryString === 'function') {
       raw = window.streack.getQueryString('selector');
-    }
+    } */
     if (!raw) {
       var url = new URL(window.location.href);
       raw = url.searchParams.get('selector');
@@ -331,6 +331,7 @@
       }
 
       initInstance(root, config);
+      console.log(`[selector] 成功初始化:`, root);
     });
 
     /* 所有实例初始化完成后，应用 URL 参数 */
