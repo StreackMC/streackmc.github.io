@@ -1,109 +1,160 @@
 ---
-/**
- * 法律与隐私 — 栈流Streack
- * 使用 Selector 分层选择器展示法律文档
- * 模版来源：temple/selector.astro → SelectorLayout
- */
 import SelectorLayout from '/src/layouts/SelectorLayout.astro';
+const license_text = `
+<h2>许可约定内容</h2>
+<p>栈流Streack团队（以下简称"我们"）就涉及栈流Streack网站（<a href="https://streack.top/">https://streack.top/</a>）上相关受知识产权保护作品的权利让渡与授权做出相关约定。<br>
+<strong>您知悉，以任何形式、理由使用相关作品均受此约定限制，来自我们的书面许可、另有声明的或《中华人民共和国著作权法》（以下简称"著作权法"）中另有规定的除外。</strong></p>
 
+<p>我们授予全球范围内的、可撤销的、不可转让或再许可的、非排他性许可，允许您在以下情形时使用我们的作品：</p>
+
+<ol>
+<li>著作权法所规定的"合理使用"情形，例如用作教育教学、新闻报道等。</li>
+<li>您引用我们的作品用作非商业用途，且该引用不是对源作品的复制、转载、改编或再分发。引用时需署名，不得修改源作品。</li>
+</ol>
+
+<h3>此约定保护的作品</h3>
+
+<ul>
+<li>由我们持有著作权的文章、图片、视频、文档、网页设计、计算机程序源代码、用户创作内容等作品，并发布在我们的网站上或经由我们网站引用的。</li>
+<li>由他人持有著作权且未指定授权协议的及由我们持有合法使用权的文章、图片、视频、文档、网页设计、计算机程序源代码、用户创作内容等作品，并发布在我们的网站上或经由我们网站引用的。</li>
+</ul>
+
+<p>如作品中另有声明，则不适用本约定。</p>
+
+<h3>定义</h3>
+
+<h4>何谓「有效署名」</h4>
+<p>有效署名是指您在使用我们的作品之页面、文档等作品中附加了所使用作品的署名。<br>
+该署名应至少包括：指向所使用作品的来源链接、作者、标题（若有）以及指向本约定的链接。</p>
+
+<h4>何谓「使用」</h4>
+<p>上文中的"使用"一词包含复制、引用、转载、翻译、改编、编排、改写、剪辑、制作衍生作品或其他依据著作权与类似权利需要获得所有人许可的修改行为。</p>
+
+<h4>何谓「非商业用途」</h4>
+<p>参考CC BY-NC 4.0协议中相关定义：</p>
+
+<blockquote>
+<p>指该使用的主要意图或者指向并非获取商业优势或金钱报酬。<br>
+为本公共许可协议之目的，以数字文件共享或类似方式，用授权作品(Licensed Material)交换其他受到著作权与类似权利保护的作品(material)是非商业性使用，只要该交换不涉及金钱报酬的支付。</p>
+</blockquote>
+
+<p>此外，下列行为被视作非商业用途：</p>
+
+<ul>
+<li>使用我们的作品的作品之获利行为与我们的作品没有直接关联的，例如在含有广告的网站上使用我们的作品。</li>
+</ul>
+
+<p>下列行为被视作商业用途：</p>
+
+<ul>
+<li>我们的作品与获利直接关联的，例如将我们的作品包含在付费获取的其它作品内，或是利用我们的作品进行引流以牟取流量、广告利益的。</li>
+</ul>
+
+<h3>按现状提供</h3>
+
+<p>在适用法律允许的最大范围内，我们按"现状"提供作品，不作任何明示或默示担保。对因使用或无法使用作品导致的任何间接、附带、特殊或后果性损失，我们不承担责任。相关法律另有规定的除外。</p>
+
+<h3>此约定的终止</h3>
+<p>当您触发下列任意一类条件时，本约定自动终止，您使用我们的作品之许可被自动撤回：</p>
+
+<ul>
+<li>违反本约定的行为</li>
+</ul>
+
+<p>许可被撤回后，您应及时删除所使用的我们的作品并销毁全部副本。重新恢复本约定需我们的书面确认。</p>
+
+<h3>附加条款</h3>
+
+<ul>
+<li>此页面或约定的标题与样式仅用作辅助阅读之用，不可用作解释本约定的依据。</li>
+<li>此约定仅以简体中文版本为准，其余任何对此约定的官方或非官方译本都不能作为解释本约定的依据。</li>
+<li>本约定受中华人民共和国（大陆）法律管辖。因本约定产生的争议，双方同意向我们住所地人民法院提起诉讼解决。</li>
+</ul>
+
+<h2>SDK鸣谢</h2>
+<p>本网站使用了部分作品，对此表示鸣谢，并按授权协议特此说明。</p>
+
+<blockquote>
+<p><strong>MiSans</strong><br>
+Beijing Xiaomi Mobile Software Co.,Ltd &amp; Hanyi Fonts<br>
+ARR <a href="https://hyperos.mi.com/font/download">https://hyperos.mi.com/font/download</a></p>
+</blockquote>
+
+<blockquote>
+<p><strong>Page-markdown-reRender</strong><br>
+kdxiaoyi<br>
+MIT <a href="https://gitee.com/kdxiaoyi/Pages-md-reRender/">https://gitee.com/kdxiaoyi/Pages-md-reRender/</a></p>
+</blockquote>
+
+<blockquote>
+<p><strong>PagesSober</strong><br>
+kdxiaoyi<br>
+MIT <a href="https://github.com/kdxhub/PagesSober">https://github.com/kdxhub/PagesSober</a></p>
+</blockquote>
+
+<blockquote>
+<p><strong>Sober</strong><br>
+Apprat<br>
+MIT <a href="https://github.com/apprat/sober">https://github.com/apprat/sober</a></p>
+</blockquote>
+
+<p>其余另有作品仅在部分页面中使用，在相应页面内声明而不在此处列出。</p>
+<style>
+s-card [slot="text"] p,s-card [slot="text"] h1,s-card [slot="text"] h2,s-card [slot="text"] h3,s-card [slot="text"] h4,s-card [slot="text"] h5,s-card [slot="text"] h6 {font-size:revert;}
+</style>
+`;
 const config = {
-  title: "选择主题",
-  description: "选择一个主题以查看相关内容。点击选项卡逐层深入，直至找到你需要的详细信息。",
-  layerTitle: "请选择法律主题",
+  title: "法律信息",
+  description: "查找我们的产品与服务的法律信息和资源。",
+  layerTitle: "选择主题",
   options: [
     {
       label: "隐私政策",
       hint: "了解我们如何处理你的数据",
+      layerTitle: "选择适用地区",
       children: [
         {
-          label: "我们收集的信息",
-          hint: "数据收集类型与范围",
-          children: [
-            {
-              label: "账户信息",
-              result: {
-                title: "账户信息",
-                content: `<p>当你注册栈流Streack账户时，我们会收集以下信息：</p>
-                <ul>
-                  <li>用户名与邮箱地址</li>
-                  <li>加密后的密码（仅存储哈希值）</li>
-                  <li>注册时间与IP地址（用于安全审计）</li>
-                </ul>
-                <p>这些信息仅用于账户管理与身份验证，不会向第三方分享。</p>`
-              }
-            },
-            {
-              label: "游戏数据",
-              result: {
-                title: "游戏数据",
-                content: `<p>在游戏过程中，服务器会记录以下数据：</p>
-                <ul>
-                  <li>玩家位置、背包与游戏进度</li>
-                  <li>聊天消息（用于违规行为审查）</li>
-                  <li>登录/登出时间与在线时长</li>
-                </ul>
-                <p>这些数据存储在服务器数据库中，用于提供游戏服务与维护社区秩序。</p>`
-              }
-            }
-          ]
+          label: "全球",
+          result: {
+            content: `<a href="https://streack.top/doc/policy/privacy/">在文档站上查看</a>`
+          }
         },
-        {
-          label: "信息的使用",
-          // 仅一个子项 → 自动选中并继续
-          children: [
-            {
-              label: "使用方式",
-              result: {
-                title: "信息的使用方式",
-                content: `<p>我们收集的信息仅用于以下目的：</p>
-                <ol>
-                  <li><b>提供服务</b> — 运行游戏服务器、维护玩家数据</li>
-                  <li><b>安全保障</b> — 防止恶意行为、处理违规举报</li>
-                  <li><b>服务改进</b> — 分析使用趋势以优化体验</li>
-                </ol>
-                <p>我们绝不会将你的个人信息出售或用于商业广告目的。</p>`
-              }
-            }
-          ]
-        }
       ]
     },
     {
-      label: "服务条款",
-      hint: "使用我们的服务即表示你同意这些条款",
-      result: {
-        title: "服务条款",
-        content: `<p>欢迎使用栈流Streack。使用我们的服务器与服务即表示你接受以下条款：</p>
-        <ul>
-          <li>你必须遵守所有适用的法律法规</li>
-          <li>不得使用作弊客户端、外挂或利用游戏漏洞</li>
-          <li>尊重其他玩家，禁止骚扰、歧视或恶意行为</li>
-          <li>管理员保留对违规行为进行处罚的权利</li>
-        </ul>
-        <p>如对条款有疑问，请通过<a href="/about/contact">联系我们</a>页面获取帮助。</p>`
-      }
+      label: "用户协议",
+      hint: "了解您在使用我们的产品时应知悉而遵守的内容",
+      layerTitle: "选择适用产品",
+      children: [
+        {
+          label: "所有",
+          result: {
+            content: `<a href="https://streack.top/doc/policy/user/">在文档站上查看</a>`
+          }
+        },
+      ]
     },
     {
-      label: "免责声明",
-      hint: "服务可用性与责任限制",
-      result: {
-        title: "免责声明",
-        content: `<p>栈流Streack提供的服务按"现状"提供，不附带任何明示或暗示的保证。</p>
-        <ul>
-          <li>服务器可能因维护、故障或其他原因随时中断服务</li>
-          <li>因不可抗力导致的服务中断，我们不承担责任</li>
-          <li>玩家应自行备份重要游戏数据</li>
-          <li>对于因使用本服务而产生的任何间接损失，我们不承担责任</li>
-        </ul>`
-      }
-    }
+      label: "版权许可",
+      hint: "了解我们产出的内容如何与您共享",
+      layerTitle: "选择适用产品",
+      children: [
+        {
+          label: "所有",
+          result: {
+            title: `ARR 版权许可`,
+            content: `${license_text}`,
+          }
+        },
+      ]
+    },
   ]
 };
 ---
 
 <SelectorLayout
-  title="法律与隐私 — 栈流Streack"
-  description="栈流Streack隐私政策、服务条款与免责声明"
+  title="法律信息 — 栈流Streack"
+  description="栈流Streack隐私政策、服务条款与免责声明等法律信息的导览页"
   theme="light"
   config={config}
   id="legal"
