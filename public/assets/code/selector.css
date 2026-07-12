@@ -141,7 +141,10 @@ s-page[dark] .selector-wrap {
 
 /* === 响应式 === */
 @media (max-width: 600px) {
-  .contents .content.selector-content > .selector-wrap { padding: 1.5rem 1rem 3rem !important; }
+  .contents .content.selector-content > .selector-wrap {
+    padding: 1.5rem 1rem 3rem !important;
+    padding-top: calc(var(--safezone, 0px) + 1.5rem) !important;
+  }
   .selector-wrap .selector-title { font-size: 1.4rem; }
   .selector-wrap .selector-option { padding: 0.5rem 0.9rem; font-size: 0.9rem; }
   .selector-wrap s-card.selector-result-card { padding: 1.25rem 1rem; }
