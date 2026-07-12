@@ -26,25 +26,25 @@
 (function () {
   'use strict';
 
-  var ICON_CHEVRON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 6.71a1 1 0 0 0 0 1.41L13.17 12l-3.88 3.88a1 1 0 1 0 1.41 1.41l4.59-4.59a1 1 0 0 0 0-1.41L10.7 6.7a1 1 0 0 0-1.41 0z"/></svg>';
-  var ICON_RESET = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>';
+  let ICON_CHEVRON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 6.71a1 1 0 0 0 0 1.41L13.17 12l-3.88 3.88a1 1 0 1 0 1.41 1.41l4.59-4.59a1 1 0 0 0 0-1.41L10.7 6.7a1 1 0 0 0-1.41 0z"/></svg>';
+  let ICON_RESET = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>';
 
   /* === 实例注册表 & URL 同步 === */
-  var registry = []; /* { root, getPath, selectPath } */
-  var fromURLSync = false; /* true 时抑制 pushState（URL 驱动 / popstate） */
+  let registry = []; /* { root, getPath, selectPath } */
+  let fromURLSync = false; /* true 时抑制 pushState（URL 驱动 / popstate） */
 
   /**
    * 收集所有已注册实例的路径，构建 selector 参数并写入 URL
    * @param {boolean} usePush — true=pushState（用户交互），false=replaceState（初始化）
    */
   function syncURL(usePush) {
-    var parts = registry.filter(function (inst) {
+    let parts = registry.filter(function (inst) {
       return inst.root.id && inst.getPath().length > 0;
     }).map(function (inst) {
       return inst.root.id + ':' + inst.getPath().join('.');
     });
 
-    var url = new URL(window.location.href);
+    let url = new URL(window.location.href);
     if (parts.length > 0) {
       url.searchParams.set('selector', parts.join('|'));
     } else {
@@ -63,32 +63,32 @@
    * 使用 framework.js 的 getQueryString
    */
   function applyURLParam() {
-    var raw = null;
-  /*   if (window.streack && typeof window.streack.getQueryString === 'function') {
-      raw = window.streack.getQueryString('selector');
-    } */
-    if (!raw) {
-      var url = new URL(window.location.href);
+    let raw = null, url=null;
+    try {
+      url = new URL(window.location.href);
       raw = url.searchParams.get('selector');
+    } catch (error) {
+      console.error('[selector] 无法查询 URL 参数：', error);
+      raw = undefined;
     }
     if (!raw) return;
 
     fromURLSync = true;
 
     /* 按 | 分拆多个选择器规格 */
-    var specs = raw.split('|');
-    for (var i = 0; i < specs.length; i++) {
-      var spec = specs[i].trim();
+    let specs = raw.split('|');
+    for (let i = 0; i < specs.length; i++) {
+      let spec = specs[i].trim();
       /* 验证格式：id:path（至少一个冒号，两边非空） */
-      var match = spec.match(/^([^:]+):(.+)$/);
+      let match = spec.match(/^([^:]+):(.+)$/);
       if (!match) continue;
 
-      var id = match[1];
-      var pathStr = match[2];
-      var labels = pathStr.split('.');
+      let id = match[1];
+      let pathStr = match[2];
+      let labels = pathStr.split('.');
 
       /* 在注册表中查找匹配的实例 */
-      for (var j = 0; j < registry.length; j++) {
+      for (let j = 0; j < registry.length; j++) {
         if (registry[j].root.id === id) {
           registry[j].selectPath(labels);
           break;
@@ -101,13 +101,13 @@
 
   /* === 单实例初始化 === */
   function initInstance(root, config) {
-    var path = [];
-    var autoTimer = null;
-    var suppressAutoAdvance = false;
+    let path = [];
+    let autoTimer = null;
+    let suppressAutoAdvance = false;
 
-    var $bc = function () { return root.querySelector('[data-breadcrumb]'); };
-    var $layers = function () { return root.querySelector('[data-layers]'); };
-    var $result = function () { return root.querySelector('[data-result]'); };
+    let $bc = function () { return root.querySelector('[data-breadcrumb]'); };
+    let $layers = function () { return root.querySelector('[data-layers]'); };
+    let $result = function () { return root.querySelector('[data-result]'); };
 
     function renderLayer(options, depth, layerTitle) {
       if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
@@ -117,12 +117,12 @@
       $result().innerHTML = '';
       $result().classList.remove('visible');
 
-      var layer = document.createElement('div');
+      let layer = document.createElement('div');
       layer.className = 'selector-layer';
       layer.dataset.depth = depth;
 
       if (layerTitle) {
-        var heading = document.createElement('h2');
+        let heading = document.createElement('h2');
         heading.className = 'selector-layer-title';
         heading.textContent = layerTitle;
         layer.appendChild(heading);
@@ -138,19 +138,19 @@
       if (options.length === 1 && !suppressAutoAdvance) {
         autoTimer = setTimeout(function () {
           autoTimer = null;
-          var btn = layer.querySelector('.selector-option');
+          let btn = layer.querySelector('.selector-option');
           if (btn) selectOption(options[0], depth, btn);
         }, 700);
       }
     }
 
     function createOptionButton(option, depth) {
-      var btn = document.createElement('button');
+      let btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'selector-option';
       btn.dataset.selected = 'false';
       btn.dataset.label = option.label;
-      var hasChildren = option.children && option.children.length > 0;
+      let hasChildren = option.children && option.children.length > 0;
       btn.innerHTML = '<span class="selector-option-text"><span class="selector-option-label">'
         + option.label + '</span>'
         + (option.hint ? '<span class="selector-option-hint">' + option.hint + '</span>' : '')
@@ -161,7 +161,7 @@
     }
 
     function selectOption(option, depth, buttonEl) {
-      var layer = buttonEl.closest('.selector-layer');
+      let layer = buttonEl.closest('.selector-layer');
       layer.querySelectorAll('.selector-option').forEach(function (b) { b.dataset.selected = 'false'; });
       buttonEl.dataset.selected = 'true';
 
@@ -175,7 +175,7 @@
         $layers().querySelectorAll('.selector-layer').forEach(function (l) {
           if (parseInt(l.dataset.depth) > depth) l.remove();
         });
-        var result = option.result || { title: option.label, content: '<p>暂无详细内容。</p>' };
+        let result = option.result || { title: option.label, content: '<p>暂无详细内容。</p>' };
         showResult(result);
       }
       updateBreadcrumb();
@@ -184,10 +184,10 @@
     }
 
     function showResult(result) {
-      var el = $result();
+      let el = $result();
       el.innerHTML = '';
 
-      var card = document.createElement('s-card');
+      let card = document.createElement('s-card');
       card.type = 'outlined';
       card.classList.add('selector-result-card');
       let content = '';
@@ -212,7 +212,7 @@
       }
       el.appendChild(card);
 
-      var resetBtn = document.createElement('s-button');
+      let resetBtn = document.createElement('s-button');
       resetBtn.type = 'outlined';
       resetBtn.classList.add('selector-reset');
       resetBtn.innerHTML = '<s-icon slot="start">' + ICON_RESET + '</s-icon>重新选择';
@@ -224,9 +224,9 @@
     }
 
     function updateBreadcrumb() {
-      var bc = $bc();
+      let bc = $bc();
       if (path.length === 0) { bc.innerHTML = ''; return; }
-      var html = '<span class="bc-item" data-depth="0">全部</span>';
+      let html = '<span class="bc-item" data-depth="0">全部</span>';
       path.forEach(function (item, i) {
         html += '<span class="bc-sep">›</span>';
         if (i === path.length - 1) {
@@ -282,11 +282,11 @@
       /* 渲染根层 */
       renderLayer(config.options, 0, config.layerTitle || config.title);
 
-      var currentOptions = config.options;
-      for (var i = 0; i < labels.length; i++) {
-        var label = labels[i];
-        var found = null;
-        for (var j = 0; j < currentOptions.length; j++) {
+      let currentOptions = config.options;
+      for (let i = 0; i < labels.length; i++) {
+        let label = labels[i];
+        let found = null;
+        for (let j = 0; j < currentOptions.length; j++) {
           if (currentOptions[j].label === label) {
             found = currentOptions[j];
             break;
@@ -295,10 +295,10 @@
         if (!found) break;
 
         /* 在当前层中找到对应按钮 */
-        var layer = $layers().querySelector('.selector-layer[data-depth="' + i + '"]');
+        let layer = $layers().querySelector('.selector-layer[data-depth="' + i + '"]');
         if (!layer) break;
 
-        var btn = null;
+        let btn = null;
         layer.querySelectorAll('.selector-option').forEach(function (b) {
           if (b.dataset.label === label) btn = b;
         });
@@ -327,12 +327,12 @@
 
   /* === 扫描 & 初始化 === */
   function scanAndInit() {
-    var nodes = document.querySelectorAll('[data-selector]');
+    let nodes = document.querySelectorAll('[data-selector]');
     nodes.forEach(function (root) {
       if (root.dataset.selectorInit === 'true') return;
       root.dataset.selectorInit = 'true';
 
-      var configScript = root.querySelector('[data-selector-config]');
+      let configScript = root.querySelector('[data-selector-config]');
       if (!configScript) {
         configScript = document.getElementById('selector-config');
         if (!configScript) {
@@ -341,7 +341,7 @@
         }
       }
 
-      var config;
+      let config;
       try {
         config = JSON.parse(configScript.textContent);
       } catch (e) {

@@ -672,8 +672,24 @@ export async function initFramework() {
     }
   });
 
-  // 5. 移除非脚本提示（<noscript> 标签）
+  // 5. 移除一些元素
   if (DOM.noScript) DOM.noScript.remove();
+  let url = null;
+  try {
+    url = new URL(window.location.href);
+    if (url.searchParams.get('embed')) {
+      // 使用嵌入式模式，移除 toolbar 和 footer 的绘制
+      document.getElementById('toolbar-area').style.display = 'none';
+      document.querySelector('div.content[slot="footer"]').style.display = 'none';
+      // 顺带将 safezone 设置为0
+      const style = document.createElement('style');
+      style.innerText = `.contents .content * {--safezone:0.01px;}`;
+      style.dataset.note = `Inserted by [streack-app/embedding]`;
+      document.head.appendChild(style);
+    }
+  } catch (error) {
+    console.error('[streack-app/embedding] 无法查询 URL 参数：', error);
+  }
 
   // 6. 声明式命令绑定：将 data-cmd 属性转换为点击事件
   document.querySelectorAll('*[data-cmd]').forEach((ele) => {
