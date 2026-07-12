@@ -78,14 +78,32 @@ export function getQueryString(name) {
 
 /**
  * 打开链接（通过创建 <a> 元素触发，不产生多余 history 条目）
+ * @apiNote 兼容嵌套
  * @param {string} uri - 目标 URI
  * @param {boolean} stayInSameWindow - 是否在当前窗口打开（默认 false，新窗口）
  */
 export function openURL(uri, stayInSameWindow = false) {
+  try {
+    if (window.parent !== window.top) {
+      // 页面在嵌套
+      if (typeof window.top?.streack?.openURL === 'function') {
+        // 找到父页面的 openURL 方法了
+        window.top.streack.openURL(uri, stayInSameWindow);
+        return;
+      } else {
+        // 找不到
+        console.warn(`[streack-app/func.openUrl] 父页面的 openURL 方法无效：`, window.top?.streack?.openURL);
+        window.top.location.href = uri;
+        return;
+      }
+    }
+  } catch (error) {
+    console.error(`[streack-app/func.openUrl] 发现跨域，无法访问父页面属性。`);
+  }
   const a = document.createElement("a");
   a.target = stayInSameWindow ? "_self" : "_blank";
   a.href = uri;
-  a.click();   // 编程式触发导航
+  a.click();// 编程式触发导航
   return a;
 }
 
@@ -949,5 +967,4 @@ if (!Array.isArray(window?.streack?.meta?.initby)) {
   window.streack.closeAllDialogs = closeAllDialogs;
   window.streack.getCurrentTimeZone = getCurrentTimeZone;
   window.streack.getQueryString = getQueryString;
-
 };
