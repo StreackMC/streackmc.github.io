@@ -1,0 +1,71 @@
+---
+/**
+ * DocLayout — Markdown 文档页面布局
+ * 继承 FrameworkLayout（含工具栏 + 页脚），用于渲染 Markdown 内容
+ *
+ * 与站点样式保持一致：正文放入 .content 内容槽，prose 样式见
+ * public/assets/code/doc.css（标题、段落、列表、引用、代码、表格等）。
+ *
+ * Props:
+ *   title       - 页面标题
+ *   description - meta description
+ *   keywords    - meta keywords
+ *   theme       - s-page 主题（默认 light）
+ *   heading     - 可选，正文顶部的页头标题（由路由按需传入）
+ *
+ * Slots:
+ *   default     - Markdown 渲染结果（<Content />）
+ *   toolbar-nav / notes / dialogs — 透传给 FrameworkLayout
+ */
+import FrameworkLayout from './FrameworkLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string;
+  theme?: string;
+  heading?: string;
+}
+
+const {
+  title,
+  description,
+  keywords,
+  theme = 'light',
+  heading,
+} = Astro.props;
+---
+
+<FrameworkLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  theme={theme}
+>
+  <!-- 文档样式 -->
+  <link slot="head" rel="stylesheet" href="/assets/code/doc.css" />
+
+  <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
+  <div style="display: contents">
+    <div class="content doc-content" slot="0">
+      <article class="doc-article">
+        <div class="doc-body">
+          {heading && <h1 class="doc-heading">{heading}</h1>}
+          <slot />
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- 导航项模板（透传） -->
+  <slot name="toolbar-nav" slot="toolbar-nav" />
+
+  <!-- 弹窗（透传） -->
+  <slot name="dialogs" />
+
+  <!-- 页面注释（透传） -->
+  <slot name="notes" slot="notes" />
+
+  <!-- 页面脚本（透传） -->
+  <slot name="scripts" slot="scripts" />
+</FrameworkLayout>

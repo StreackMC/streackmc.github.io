@@ -1,0 +1,233 @@
+/* ============================================================
+   Doc CSS — Markdown 文档正文样式
+   配合 src/layouts/DocLayout.astro 使用
+   结构：.content.doc-content > .doc-article > .doc-body > (Markdown 内容)
+
+   注意：framework.css 中 `.contents .content *` 会把内容元素的
+   font-size / margin / line-height 重置为变量驱动值（默认 margin:0），
+   因此本文件以更高特异性（.doc-content .doc-body …）覆盖之。
+   ============================================================ */
+
+/* === 内容块：覆盖 .content 的居中/绝对定位，改为文档流 === */
+.contents .content.doc-content {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+  display: block;
+  text-align: left;
+  padding-bottom: 4rem;
+}
+
+.contents .content.doc-content > .doc-article {
+  position: static;
+  display: block;
+  width: min(768px, 92%);
+  margin: 0 auto;
+  padding-top: calc(var(--safezone, 0px) + 2.5rem);
+  box-sizing: border-box;
+}
+
+/* === 正文排版基准 === */
+.doc-content .doc-body {
+  --doc-text: var(--s-color-on-surface, #1c1b1f);
+  --doc-muted: var(--s-color-on-surface-variant, #5c5f62);
+  --doc-primary: var(--s-color-primary, #00687b);
+  --doc-outline: var(--s-color-outline, #c4c7c5);
+  --doc-surface: var(--s-color-surface-container, #f0f2f1);
+  --doc-code-bg: rgba(0, 0, 0, 0.055);
+
+  color: var(--doc-text);
+  font-size: 1rem;
+  line-height: 1.75;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* 自动页头（来自 frontmatter.title） */
+.doc-content .doc-body > .doc-heading {
+  font-size: 2rem;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--doc-outline);
+}
+
+/* === 标题 === */
+.doc-content .doc-body h1,
+.doc-content .doc-body h2,
+.doc-content .doc-body h3,
+.doc-content .doc-body h4,
+.doc-content .doc-body h5,
+.doc-content .doc-body h6 {
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--doc-text);
+  scroll-margin-top: calc(var(--safezone, 0px) + 1rem);
+}
+
+.doc-content .doc-body h1 { font-size: 1.9rem;  margin: 2.2rem 0 1rem; }
+.doc-content .doc-body h2 { font-size: 1.5rem;  margin: 2rem 0 0.9rem; padding-bottom: .4rem; border-bottom: 1px solid var(--doc-outline); }
+.doc-content .doc-body h3 { font-size: 1.25rem; margin: 1.7rem 0 0.75rem; }
+.doc-content .doc-body h4 { font-size: 1.1rem;  margin: 1.4rem 0 0.6rem; }
+.doc-content .doc-body h5 { font-size: 1rem;    margin: 1.2rem 0 0.5rem; }
+.doc-content .doc-body h6 { font-size: .9rem;   margin: 1.2rem 0 0.5rem; color: var(--doc-muted); }
+
+.doc-content .doc-body > :first-child { margin-top: 0; }
+
+/* === 段落 === */
+.doc-content .doc-body p {
+  font-size: 1rem;
+  line-height: 1.75;
+  margin: 0.95rem 0;
+}
+
+/* === 链接 === */
+.doc-content .doc-body a {
+  color: var(--doc-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  transition: opacity 200ms;
+}
+.doc-content .doc-body a:hover { opacity: .72; }
+
+/* === 强调 === */
+.doc-content .doc-body strong { font-weight: 700; }
+.doc-content .doc-body em { font-style: italic; }
+.doc-content .doc-body del { color: var(--doc-muted); }
+
+/* === 列表 === */
+.doc-content .doc-body ul,
+.doc-content .doc-body ol {
+  margin: 0.95rem 0;
+  padding-inline-start: 1.6rem;
+}
+.doc-content .doc-body li {
+  margin: 0.35rem 0;
+  line-height: 1.7;
+}
+.doc-content .doc-body li > ul,
+.doc-content .doc-body li > ol { margin: 0.35rem 0; }
+.doc-content .doc-body ul { list-style: disc; }
+.doc-content .doc-body ol { list-style: decimal; }
+.doc-content .doc-body li::marker { color: var(--doc-muted); }
+/* GFM 任务列表 */
+.doc-content .doc-body li.task-list-item { list-style: none; margin-inline-start: -1.4rem; }
+.doc-content .doc-body li.task-list-item input { margin-right: .5em; }
+
+/* === 引用块 === */
+.doc-content .doc-body blockquote {
+  margin: 1.1rem 0;
+  padding: 0.6rem 1.1rem;
+  border-inline-start: 3px solid var(--doc-primary);
+  background: var(--doc-code-bg);
+  border-radius: 0 10px 10px 0;
+  color: var(--doc-muted);
+}
+.doc-content .doc-body blockquote > :first-child { margin-top: 0; }
+.doc-content .doc-body blockquote > :last-child { margin-bottom: 0; }
+
+/* === 行内代码 === */
+.doc-content .doc-body code {
+  font-family: "SF Mono", "Menlo", "Monaco", "Consolas", "Liberation Mono", monospace;
+  font-size: 0.875em;
+  background: var(--doc-code-bg);
+  padding: 0.15em 0.4em;
+  border-radius: 6px;
+  word-break: break-word;
+}
+
+/* === 代码块 === */
+.doc-content .doc-body pre {
+  margin: 1.1rem 0;
+  padding: 1rem 1.2rem;
+  background: #1e1f22;
+  color: #e6e6e6;
+  border-radius: 12px;
+  overflow-x: auto;
+  line-height: 1.6;
+  font-size: 0.85rem;
+}
+.doc-content .doc-body pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* === 表格 === */
+.doc-content .doc-body table {
+  width: 100%;
+  margin: 1.2rem 0;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  display: block;
+  overflow-x: auto;
+}
+.doc-content .doc-body th,
+.doc-content .doc-body td {
+  border: 1px solid var(--doc-outline);
+  padding: 0.5rem 0.8rem;
+  text-align: left;
+  line-height: 1.6;
+}
+.doc-content .doc-body thead th {
+  background: var(--doc-code-bg);
+  font-weight: 600;
+}
+.doc-content .doc-body tbody tr:nth-child(even) { background: var(--doc-code-bg); }
+
+/* === 分隔线 === */
+.doc-content .doc-body hr {
+  border: none;
+  border-top: 1px solid var(--doc-outline);
+  margin: 2rem 0;
+}
+
+/* === 图片 === */
+.doc-content .doc-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin: 0.5rem 0;
+}
+
+/* === 键盘按键 === */
+.doc-content .doc-body kbd {
+  font-family: "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
+  font-size: 0.8em;
+  background: var(--doc-code-bg);
+  border: 1px solid var(--doc-outline);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  padding: 0.1em 0.45em;
+}
+
+/* ============================================================
+   暗色主题适配
+   ============================================================ */
+s-page[dark] .doc-content .doc-body {
+  --doc-text: rgba(255, 255, 255, 0.92);
+  --doc-muted: rgba(255, 255, 255, 0.62);
+  --doc-primary: var(--s-color-primary, #7fd6e6);
+  --doc-outline: rgba(255, 255, 255, 0.18);
+  --doc-surface: rgba(255, 255, 255, 0.06);
+  --doc-code-bg: rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   移动端
+   ============================================================ */
+@media (max-width: 600px) {
+  .contents .content.doc-content > .doc-article {
+    width: 92%;
+    padding-top: calc(var(--safezone, 0px) + 1.5rem);
+  }
+  .doc-content .doc-body { font-size: 0.95rem; }
+  .doc-content .doc-body h1 { font-size: 1.6rem; }
+  .doc-content .doc-body h2 { font-size: 1.3rem; }
+  .doc-content .doc-body h3 { font-size: 1.15rem; }
+}

@@ -1,0 +1,48 @@
+---
+/**
+ * Markdown 文档路由 — src/content 下的所有 .md 自动生成页面
+ *
+ * 路径映射：src/content/<路径>.md → /<路径>
+ *   · 目录形式的 index.md 去掉末尾 index 段
+ *   · 例：src/content/docs/aaa/index.md → /docs/aaa
+ *
+ * 由 DocLayout 渲染，样式与站点一致（见 /assets/code/doc.css）。
+ */
+import { getCollection, render } from 'astro:content';
+import DocLayout from '/src/layouts/DocLayout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('content');
+
+  return entries
+    .map((entry) => {
+      // entry.id 为相对 src/content 的路径（不含扩展名），如 "docs/aaa/index"
+      // 去掉目录形式的末尾 index 段；根级 index.md 映射为 ""（跳过，避免与首页冲突）
+      const slug = entry.id.replace(/(^|\/)index$/, '');
+      return { params: { slug }, props: { entry } };
+    })
+    // 过滤掉根路径（"" / "/"），避免与现有首页等静态路由冲突
+    .filter((p) => p.params.slug !== '' && p.params.slug !== '/');
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const data = entry.data;
+const fallbackTitle = entry.id.split('/').filter(Boolean).pop() ?? entry.id;
+const pageTitle = data.title ?? fallbackTitle;
+
+// 正文若已含顶级 # 标题，则不再重复渲染页头
+const hasTopHeading = /^\s*#\s+/m.test(entry.body ?? '');
+const heading = hasTopHeading ? undefined : data.title;
+---
+
+<DocLayout
+  title={`${pageTitle} — 栈流Streack`}
+  description={data.description}
+  keywords={data.keywords}
+  theme={data.theme ?? 'light'}
+  heading={heading}
+>
+  <Content />
+</DocLayout>
