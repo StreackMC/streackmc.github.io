@@ -30,6 +30,12 @@
  *   · 只总结“页面”——HTML 页面；.js/.css 等资源不处理
  *   · 自动跳过 dist/assets/**（框架片段/归档）与 404、以及纯跳转/内容过短的页面
  *   · 默认“合并”：本次未覆盖的旧条目（如外部文档站 /doc/**）原样保留
+ *
+ *  生成条目字段：
+ *    { link, keywords, title, summary }
+ *    · title   —— 真·文章标题，取自页面 <title> 并去除站点名后缀
+ *    · summary —— LLM 生成的全文概要
+ *    · keywords—— LLM 生成的搜索关键词
  */
 
 import { existsSync, readFileSync } from 'node:fs';
@@ -80,20 +86,27 @@ const SecretSchema = z.object({
   useResponseAPI: z.boolean().default(false),
 });
 
-/** LLM 结构化输出 */
+/** LLM 结构化输出：全文概要 + 搜索关键词（标题不由 LLM 生成，取自页面真实标题） */
 const ResultSchema = z.object({
-  title: z.string().describe('页面标题，简要概括该页主题（中文，不超过 20 字）'),
+  summary: z.string().describe('该页面的全文概要，用 2～3 句中文概括页面主要内容'),
   keywords: z
     .array(z.string())
     .min(1)
     .describe('用于站内搜索匹配的关键词与同义词，中英文混合，按相关性从高到低排列'),
 });
 
-/** 搜索数据条目（与 public/assets/search-suggestion.json 一致） */
+/**
+ * 搜索数据条目（写入 public/assets/search-suggestion.json，由 assets/app/search.js 消费）
+ *   link     — 站点路径
+ *   keywords — 搜索关键词
+ *   title    — 真·文章标题（取自页面 <title>，去除站点名后缀）
+ *   summary  — 全文概要（LLM 生成）
+ */
 const EntrySchema = z.object({
   link: z.string(),
   keywords: z.array(z.string()),
   title: z.string(),
+  summary: z.string(),
 });
 
 // ============================================================
@@ -159,6 +172,14 @@ function extractContent(html) {
   return { rawTitle, text };
 }
 
+/** 去掉页面 <title> 末尾的站点名后缀（如「— 栈流Streack」），得到真·文章标题 */
+function cleanTitle(raw) {
+  const t = String(raw || '').trim();
+  if (!t) return '';
+  const cleaned = t.replace(/\s*[—–\-|·]\s*(栈流\s*)?Streack\s*$/i, '').trim();
+  return cleaned || t;
+}
+
 // ============================================================
 // LLM 调用
 // ============================================================
@@ -169,8 +190,8 @@ function buildModel(provider, cfg) {
 }
 
 const SYSTEM_PROMPT = [
-  '你是网站内容编辑。请阅读给定的网页可见正文，输出该页面的简短标题，',
-  '以及一组用于站内搜索匹配的关键词/同义词（覆盖主题、别名、常见叫法，中英文兼顾）。',
+  '你是网站内容编辑。请阅读给定的网页可见正文，为该页面撰写一段全文概要（2～3 句中文），',
+  '并给出一组用于站内搜索匹配的关键词/同义词（覆盖主题、别名、常见叫法，中英文兼顾）。',
   '关键词应尽量避免与站点通用导航/品牌重复（例如“栈流”“Streack”“搜索”“文档”“首页”等），',
   '并只依据给定内容，不要编造页面中不存在的信息。',
 ].join('');
@@ -200,16 +221,16 @@ function extractJson(text) {
 }
 
 const JSON_ONLY_INSTRUCTION =
-  '\n\n请只输出一个 JSON 对象，形如 {"title":"...","keywords":["...","..."]}，不要输出任何解释或多余文字。';
+  '\n\n请只输出一个 JSON 对象，形如 {"summary":"...","keywords":["...","..."]}，不要输出任何解释或多余文字。';
 
 /**
- * 对单个页面调用 LLM，返回 { title, keywords }
+ * 对单个页面调用 LLM，返回 { summary, keywords }
  * 策略：优先结构化输出（generateObject / streamObject）；若端点（如部分 OpenAI 兼容服务）
  *       结构化输出不稳定导致解析失败，则回退为纯文本 + 提取 JSON + zod 校验。整体带重试。
  */
 async function summarizePage(page, model, cfg) {
   const prompt =
-    `页面标题：${page.rawTitle || '(无)'}\n` +
+    `文章标题：${page.title || page.rawTitle || '(无)'}\n` +
     `页面链接：${page.link}\n\n` +
     `页面可见正文：\n${page.text.slice(0, MAX_INPUT_CHARS)}`;
 
@@ -316,7 +337,7 @@ async function main() {
     const { rawTitle, text } = extractContent(await readFile(file, 'utf8'));
     if (text.length < MIN_TEXT_LENGTH) continue; // 跳转页 / 空壳页
 
-    pages.push({ link, rawTitle, text, file });
+    pages.push({ link, title: cleanTitle(rawTitle), rawTitle, text, file });
   }
   pages.sort((a, b) => a.link.localeCompare(b.link));
   if (LIMIT > 0 && pages.length > LIMIT) pages.length = LIMIT; // --limit 试跑
@@ -324,7 +345,7 @@ async function main() {
   console.log(`[summary] 构建产物：${relative(ROOT, DIST_DIR)}`);
   console.log(`[summary] 发现可读页面 ${pages.length} 个：`);
   for (const p of pages) {
-    console.log(`  · ${p.link}  (${p.text.length} 字)`);
+    console.log(`  · ${p.link}  (${p.text.length} 字)  ${p.title}`);
   }
 
   // 3. dry-run：到此为止
@@ -366,11 +387,12 @@ async function main() {
         const res = await summarizePage(page, model, cfg);
         done += 1;
         process.stdout.write(`\r[summary] 进度：${done}/${pages.length}`);
-        // 校验并规整输出（关键词去重、去空、截断到合理数量）
+        // 校验并规整输出（title 用页面真实标题；关键词去重、去空、截断）
         return EntrySchema.parse({
           link: page.link,
           keywords: [...new Set(res.keywords.map((k) => String(k).trim()).filter(Boolean))].slice(0, 20),
-          title: String(res.title).trim(),
+          title: page.title || page.rawTitle || page.link,
+          summary: String(res.summary ?? '').trim(),
         });
       } catch (err) {
         failed.push({ link: page.link, error: err?.message ?? String(err) });

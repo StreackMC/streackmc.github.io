@@ -54,8 +54,12 @@
 - 正文含顶级 `#` 时不重复渲染 frontmatter 页头
 
 ## 搜索数据生成脚本（summary.js，2026-09-15 新增）
-- 根目录 `summary.js`：扫描 `dist/**/*.html`（实际渲染页面），LLM 生成标题+关键词，更新
-  `public/assets/search-suggestion.json`（格式 `{ link, keywords[], title }`，由 `assets/app/search.js` 消费）
+- 根目录 `summary.js`：扫描 `dist/**/*.html`（实际渲染页面），LLM 生成 `summary`(全文概要)+`keywords`，
+  更新 `public/assets/search-suggestion.json`
+- 搜索数据条目字段：`{ link, keywords[], title, summary }`
+  - `title` = **真·文章标题**（取自页面 `<title>`，去站点名后缀；非 LLM 生成）
+  - `summary` = LLM 生成的全文概要；`keywords` = LLM 生成的搜索关键词
+  - 条目由 `assets/app/search.js` 消费（当前 UI 仅用到 `title`）
 - 密钥 `secret.json`（已 gitignore；对象或数组皆可）：`apiKey / baseURL / model / useStreamAPI / useResponseAPI`
 - 依赖（devDependencies）：`ai` / `@ai-sdk/openai` / `node-html-parser` / `zod`
 - LLM 策略：结构化输出优先，失败回退「文本 + 提取 JSON + zod」；整体重试 3 次
