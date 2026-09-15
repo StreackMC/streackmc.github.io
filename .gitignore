@@ -19,3 +19,6 @@ repo.sh
 
 # Local server config
 .httpserver
+
+# Secrets / 本地密钥（LLM 等，严禁提交）
+/secret.json

@@ -53,6 +53,16 @@
 - Frontmatter（可选）：title / description / keywords / theme
 - 正文含顶级 `#` 时不重复渲染 frontmatter 页头
 
+## 搜索数据生成脚本（summary.js，2026-09-15 新增）
+- 根目录 `summary.js`：扫描 `dist/**/*.html`（实际渲染页面），LLM 生成标题+关键词，更新
+  `public/assets/search-suggestion.json`（格式 `{ link, keywords[], title }`，由 `assets/app/search.js` 消费）
+- 密钥 `secret.json`（已 gitignore；对象或数组皆可）：`apiKey / baseURL / model / useStreamAPI / useResponseAPI`
+- 依赖（devDependencies）：`ai` / `@ai-sdk/openai` / `node-html-parser` / `zod`
+- LLM 策略：结构化输出优先，失败回退「文本 + 提取 JSON + zod」；整体重试 3 次
+- 写出默认“合并”（保留未覆盖旧条目，如外部 `/doc/**`）；选项 `--dry-run` / `--no-write` / `--replace` / `--limit` / `--dir`
+- VSCode 任务：`Generate Search Suggestions`（`astro build && node summary.js`）
+- 运行：`node summary.js`（需先 build）
+
 ## Sitemap 配置
 - 模式：`sitemap-index.xml` + `sitemap-0.xml` 分片输出（与用户其它项目保持一致）
 - customPages 自动扫描 `public/` 下所有 HTML，排除 `assets/app/includes/` 和 `assets/archived-file/`

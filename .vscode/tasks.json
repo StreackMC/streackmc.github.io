@@ -10,6 +10,38 @@
         "kind": "test",
         "isDefault": false
       }
+    },
+    {
+      "label": "Generate Search Suggestions",
+      "detail": "构建站点后运行 summary.js：调用 LLM 汇总各可读页面的标题与关键词，更新搜索数据",
+      "type": "shell",
+      "command": "ASTRO_TELEMETRY_DISABLED=1 npx astro build && node summary.js",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      }
+    },
+    {
+      "label": "Generate Search Suggestions (dry-run)",
+      "detail": "仅扫描 dist 并列出将处理的页面，不调用 LLM、不写文件",
+      "type": "shell",
+      "command": "ASTRO_TELEMETRY_DISABLED=1 npx astro build && node summary.js --dry-run",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      }
     }
   ]
 }
