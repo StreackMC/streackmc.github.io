@@ -1,77 +1,495 @@
 [
   {
     "link": "/doc/rule",
-    "keywords": ["规则","方针","规定","守则","管理","处罚","封禁","ban"],
+    "keywords": [
+      "规则",
+      "方针",
+      "规定",
+      "守则",
+      "管理",
+      "处罚",
+      "封禁",
+      "ban"
+    ],
     "title": "基本方针 / 服务器守则"
   },
   {
     "link": "/doc/policy/privacy",
-    "keywords": ["隐私","政策","协议","个人","信息","数据"],
+    "keywords": [
+      "隐私",
+      "政策",
+      "协议",
+      "个人",
+      "信息",
+      "数据"
+    ],
     "title": "隐私政策"
   },
   {
     "link": "/doc/policy/user",
-    "keywords": ["用户","协议","条款","服务","使用"],
+    "keywords": [
+      "用户",
+      "协议",
+      "条款",
+      "服务",
+      "使用"
+    ],
     "title": "用户协议"
   },
   {
     "link": "/doc/policy/donate",
-    "keywords": ["赞助","捐赠","支持","打赏","付款","support","sponsor","pay","contribute"],
+    "keywords": [
+      "赞助",
+      "捐赠",
+      "支持",
+      "打赏",
+      "付款",
+      "support",
+      "sponsor",
+      "pay",
+      "contribute"
+    ],
     "title": "赞助方针"
   },
   {
     "link": "/doc/help/qbot",
-    "keywords": ["QQ","机器人","Bot","群聊","自动","小可"],
+    "keywords": [
+      "QQ",
+      "机器人",
+      "Bot",
+      "群聊",
+      "自动",
+      "小可"
+    ],
     "title": "QQ机器人帮助"
   },
   {
     "link": "/doc/help/solution",
-    "keywords": ["解决","问题","故障","报错","无法","进服","常见问题"],
+    "keywords": [
+      "解决",
+      "问题",
+      "故障",
+      "报错",
+      "无法",
+      "进服",
+      "常见问题"
+    ],
     "title": "常见无法进服问题"
   },
   {
     "link": "/doc/updata/s1p1",
-    "keywords": ["更新","日志","版本","S1P1","历史"],
+    "keywords": [
+      "更新",
+      "日志",
+      "版本",
+      "S1P1",
+      "历史"
+    ],
     "title": "S1P1「樱飘雪霁月」更新日志"
   },
   {
     "link": "/doc/updata/s1p2",
-    "keywords": ["更新","日志","版本","S1P2","樱飘雪霁月"],
+    "keywords": [
+      "更新",
+      "日志",
+      "版本",
+      "S1P2",
+      "樱飘雪霁月"
+    ],
     "title": "S1P2「樱飘雪霁月」更新日志"
   },
   {
     "link": "/doc/updata/s2p1",
-    "keywords": ["更新","日志","版本","S2P1","岭回双壑风"],
+    "keywords": [
+      "更新",
+      "日志",
+      "版本",
+      "S2P1",
+      "岭回双壑风"
+    ],
     "title": "S2P1「岭回双壑风」更新日志"
   },
   {
     "link": "/doc/event/2025/0125",
-    "keywords": ["活动","事件","2025","春节","新年"],
+    "keywords": [
+      "活动",
+      "事件",
+      "2025",
+      "春节",
+      "新年"
+    ],
     "title": "2025 春节活动"
   },
   {
     "link": "/doc/event/2025/0401a",
-    "keywords": ["活动","愚人节","2025","娱乐"],
+    "keywords": [
+      "活动",
+      "愚人节",
+      "2025",
+      "娱乐"
+    ],
     "title": "2025 愚人节活动"
   },
   {
     "link": "/doc/info/feature",
-    "keywords": ["功能","特性","介绍","服务器","特色","featuring"],
+    "keywords": [
+      "功能",
+      "特性",
+      "介绍",
+      "服务器",
+      "特色",
+      "featuring"
+    ],
     "title": "服务器功能"
   },
   {
     "link": "/webtool/status.html",
-    "keywords": ["状态","在线","监控","服务器","检测","存活","online","offline","state","status","monitor"],
-    "title": "在线状态"
+    "keywords": [
+      "MC服务器状态查询",
+      "Minecraft服务器状态",
+      "服务器实时状态",
+      "MOTD查询",
+      "Minecraft server status",
+      "在线玩家查询",
+      "Java版服务器状态",
+      "基岩版服务器状态",
+      "服务器地址查询",
+      "SRV解析",
+      "mcstatus.io",
+      "服务器版本查询",
+      "协议版本",
+      "插件版本",
+      "MOD版本",
+      "Mojang屏蔽",
+      "被屏蔽服务器",
+      "在线人数查询",
+      "最大在线人数",
+      "默认游戏模式"
+    ],
+    "title": "MC服务器实时状态在线查询"
   },
   {
     "link": "/webtool/uuid.html",
-    "keywords": ["UUID","unique","universal","universe","id","生成","随机"],
-    "title": "UUID 工具"
+    "keywords": [
+      "UUID生成器",
+      "UUID",
+      "通用唯一识别码",
+      "GUID",
+      "生成UUID",
+      "在线UUID生成工具",
+      "UUID v4",
+      "随机UUID",
+      "V4",
+      "UUID V1",
+      "UUID V3",
+      "UUID V5",
+      "UUID V6",
+      "UUID V7",
+      "UUID V8",
+      "MD5 UUID",
+      "SHA-1 UUID",
+      "命名空间UUID",
+      "ns:dns",
+      "ns:url"
+    ],
+    "title": "UUID生成器（支持V1-V8）"
   },
   {
     "link": "#NeoNai",
-    "keywords": ["\u25A1","\uFFFD"],
-    "title": "\uFFFD"
+    "keywords": [
+      "□",
+      "�"
+    ],
+    "title": "�"
+  },
+  {
+    "link": "/",
+    "keywords": [
+      "岭回双壑风",
+      "全新版本",
+      "新篇章，新冒险",
+      "Java版 1.10～1.21.5",
+      "基岩版 1.21.50+",
+      "服务器",
+      "服务器地址",
+      "play.streack.top",
+      "streack.kdxiaoyi.top",
+      "端口 25882",
+      "25882",
+      "Apple M4",
+      "有限世界，无限可能",
+      "即刻体验",
+      "进一步了解",
+      "摄于服务器内",
+      "支持 Java版",
+      "支持 基岩版"
+    ],
+    "title": "「岭回双壑风」新版本介绍"
+  },
+  {
+    "link": "/about/career",
+    "keywords": [
+      "广纳贤士",
+      "加入我们",
+      "招聘",
+      "人才招募",
+      "招贤纳士",
+      "职业机会",
+      "工作机会",
+      "爱好者",
+      "创造力",
+      "团队",
+      "展现自我",
+      "careers",
+      "join us",
+      "hiring",
+      "jobs",
+      "opportunities"
+    ],
+    "title": "广纳贤士：加入我们"
+  },
+  {
+    "link": "/about/leadership",
+    "keywords": [
+      "团队成员",
+      "管理团队",
+      "领导团队",
+      "成员名单",
+      "leadership",
+      "team members",
+      "服主",
+      "游戏管理员",
+      "群聊管理员",
+      "开发者",
+      "吉祥物",
+      "admin",
+      "moderator",
+      "staff",
+      "Minecraft 服务器",
+      "NAMEMC",
+      "澪奈",
+      "Neonai",
+      "kdxiaoyi",
+      "hzcyq_Crazy"
+    ],
+    "title": "Streack Team 管理团队与成员"
+  },
+  {
+    "link": "/docs",
+    "keywords": [
+      "Markdown 内容管线",
+      "内容管线",
+      "路径映射规则",
+      "URL 映射",
+      "目录结构映射",
+      "src/content",
+      "index.md",
+      "guide/setup.md",
+      ".md 自动发布",
+      "保存即生效",
+      "Frontmatter",
+      "元数据",
+      "title",
+      "description",
+      "keywords",
+      "theme",
+      "light",
+      "dark",
+      "页面配色",
+      "meta description"
+    ],
+    "title": "Markdown 内容管线与路径映射"
+  },
+  {
+    "link": "/docs/guide",
+    "keywords": [
+      "编写指南",
+      "文档编写",
+      "新增文档",
+      "维护文档",
+      "Markdown 语法",
+      "md 文件",
+      "frontmatter",
+      "标题层级",
+      "DocLayout",
+      "样式说明",
+      "src/content",
+      "index.md",
+      "code/doc.css",
+      "authoring guide"
+    ],
+    "title": "文档编写指南"
+  },
+  {
+    "link": "/h5event/-100_110010001/1/a_must-see_introducing_page.html",
+    "keywords": [
+      "New Server Name",
+      "服务器安装成功",
+      "默认欢迎页",
+      "web server",
+      "welcome page",
+      "Nginx",
+      "online documentation",
+      "commercial support",
+      "rewards to redeem",
+      "安装成功",
+      "在线文档",
+      "商业支持",
+      "奖励兑换"
+    ],
+    "title": "服务器安装成功欢迎页"
+  },
+  {
+    "link": "/minecraft/main/s1",
+    "keywords": [
+      "S1",
+      "樱飘雪霁月",
+      "第一赛季",
+      "Season 1",
+      "Minecraft 服务器",
+      "周目",
+      "本周目",
+      "存档下载",
+      "服务器存档",
+      "支持结束",
+      "版本收官",
+      "版本迭代",
+      "543个日夜",
+      "2026年6月30日"
+    ],
+    "title": "S1「樱飘雪霁月」支持结束"
+  },
+  {
+    "link": "/minecraft/main/s1/download",
+    "keywords": [
+      "樱飘雪霁月",
+      "存档下载",
+      "S1存档",
+      "Minecraft存档",
+      "我的世界存档",
+      "Java版存档",
+      "P1版本",
+      "P2版本",
+      "Minecraft Java Edition 1.21.8",
+      "world save",
+      "map download",
+      "SHA256校验",
+      "外部下载",
+      "6.2GB"
+    ],
+    "title": "下载「樱飘雪霁月」S1 存档"
+  },
+  {
+    "link": "/minecraft/main/s2/play",
+    "keywords": [
+      "开始游戏",
+      "S2",
+      "岭回双壑风",
+      "第二赛季",
+      "Minecraft",
+      "我的世界",
+      "冒险",
+      "创意",
+      "游玩",
+      "开始",
+      "play",
+      "start",
+      "season 2",
+      "Minecraft服务器"
+    ],
+    "title": "S2岭回双壑风开始游戏"
+  },
+  {
+    "link": "/webtool/credits.html",
+    "keywords": [
+      "团队成员",
+      "鸣谢列表",
+      "鸣谢",
+      "致谢",
+      "团队成员名单",
+      "成员列表",
+      "鸣谢名单",
+      "团队鸣谢",
+      "感谢名单",
+      "贡献者",
+      "人员名单",
+      "credits",
+      "team members",
+      "acknowledgements",
+      "contributors",
+      "crew",
+      "staff",
+      "2024-12-25"
+    ],
+    "title": "团队成员与鸣谢列表"
+  },
+  {
+    "link": "/webtool/status_next__.html",
+    "keywords": [
+      "实时状态",
+      "状态页",
+      "状态页面",
+      "运行状态",
+      "服务状态",
+      "系统状态",
+      "状态监控",
+      "实时监控",
+      "当前状态",
+      "在线状态",
+      "服务可用性",
+      "status",
+      "real-time status",
+      "live status",
+      "system status",
+      "status page"
+    ],
+    "title": "实时状态"
+  },
+  {
+    "link": "/webtool/status_next.html",
+    "keywords": [
+      "在线状态查询",
+      "状态查询",
+      "服务在线状态",
+      "在线状态",
+      "状态页",
+      "页面升级维护",
+      "升级维护中",
+      "暂时无法提供服务",
+      "旧版查询页",
+      "更新日志",
+      "status query",
+      "online status",
+      "service status",
+      "maintenance",
+      "under maintenance"
+    ],
+    "title": "在线状态查询（升级维护中）"
+  },
+  {
+    "link": "/docs/guide/markdown-syntax",
+    "keywords": [
+      "Markdown",
+      "md",
+      "Markdown 语法",
+      "语法示例",
+      "渲染效果",
+      "文字与强调",
+      "加粗",
+      "粗体",
+      "斜体",
+      "删除线",
+      "行内代码",
+      "代码块",
+      "代码高亮",
+      "标题",
+      "三级标题",
+      "四级标题",
+      "五级标题",
+      "六级标题",
+      "列表",
+      "无序列表"
+    ],
+    "title": "Markdown 语法示例"
   }
 ]
