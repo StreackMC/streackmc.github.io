@@ -60,10 +60,11 @@
   - `title` = **真·文章标题**（取自页面 `<title>`，去站点名后缀；非 LLM 生成）
   - `summary` = LLM 生成的全文概要；`keywords` = LLM 生成的搜索关键词
   - 条目由 `assets/app/search.js` 消费（当前 UI 仅用到 `title`）
+- **输出格式**：`search-suggestion.json` 写为**压缩（单行）标准 JSON**；`--pretty` 可切换为缩进格式
 - 密钥 `secret.json`（已 gitignore；对象或数组皆可）：`apiKey / baseURL / model / useStreamAPI / useResponseAPI`
 - 依赖（devDependencies）：`ai` / `@ai-sdk/openai` / `node-html-parser` / `zod`
 - LLM 策略：结构化输出优先，失败回退「文本 + 提取 JSON + zod」；整体重试 3 次
-- 写出默认“合并”（保留未覆盖旧条目，如外部 `/doc/**`）；选项 `--dry-run` / `--no-write` / `--replace` / `--limit` / `--dir`
+- 写出默认“合并”（保留未覆盖旧条目，如外部 `/doc/**`）；选项 `--dry-run` / `--no-write` / `--replace` / `--limit` / `--pretty` / `--dir`
 - VSCode 任务：`Generate Search Suggestions`（`astro build && node summary.js`）
 - 运行：`node summary.js`（需先 build）
 

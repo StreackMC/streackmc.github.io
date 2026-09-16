@@ -19,17 +19,19 @@
  *     也兼容写成数组 [{...}]（取第一项）；baseURL 可指向任意 OpenAI 兼容端点（如 DeepSeek）。
  *
  *  用法：
- *    node summary.js                # 扫描 dist、调用 LLM、合并写入搜索数据
+ *    node summary.js                # 扫描 dist、调用 LLM、合并写入搜索数据（压缩 JSON）
  *    node summary.js --dry-run      # 只扫描并打印将被处理的页面，不调用 LLM、不写文件
  *    node summary.js --no-write     # 调用 LLM 并打印结果，但不写入文件
  *    node summary.js --replace      # 整体替换搜索数据（丢弃未覆盖的旧条目，默认是“合并保留”）
  *    node summary.js --limit 3      # 只处理前 N 个页面（试跑用）
+ *    node summary.js --pretty       # 以缩进格式写出（默认转为压缩的单行标准 JSON）
  *    node summary.js --dir <path>   # 指定构建产物目录（默认 dist）
  *
  *  说明：
  *   · 只总结“页面”——HTML 页面；.js/.css 等资源不处理
  *   · 自动跳过 dist/assets/**（框架片段/归档）与 404、以及纯跳转/内容过短的页面
  *   · 默认“合并”：本次未覆盖的旧条目（如外部文档站 /doc/**）原样保留
+ *   · 输出为**压缩过的标准 JSON**（无多余空白），--pretty 可切换为缩进格式
  *
  *  生成条目字段：
  *    { link, keywords, title, summary }
@@ -66,6 +68,8 @@ const argv = process.argv.slice(2);
 const DRY_RUN = argv.includes('--dry-run') || argv.includes('-n');
 const NO_WRITE = argv.includes('--no-write');
 const REPLACE = argv.includes('--replace');
+/** 默认写出压缩（单行）的标准 JSON；--pretty 切换为缩进格式 */
+const PRETTY = argv.includes('--pretty');
 const dirFlag = argv.findIndex((a) => a === '--dir' || a === '-d');
 const DIST_DIR = dirFlag >= 0 && argv[dirFlag + 1]
   ? resolve(ROOT, argv[dirFlag + 1])
@@ -420,7 +424,9 @@ async function main() {
     return;
   }
 
-  await writeFile(OUTPUT_PATH, JSON.stringify(merged, null, 2) + '\n', 'utf8');
+  // 写出：默认压缩为标准单行 JSON（--pretty 则缩进）
+  const body = JSON.stringify(merged, null, PRETTY ? 2 : undefined);
+  await writeFile(OUTPUT_PATH, PRETTY ? body + '\n' : body, 'utf8');
 
   console.log(
     `[summary] 完成：生成 ${newEntries.length} 条，写入 ${relative(ROOT, OUTPUT_PATH)} 共 ${merged.length} 条` +
