@@ -2,6 +2,10 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import rehypeDoc from './src/plugins/rehype-doc.mjs';
+
+/** 站点 origin，用于判定“站外链接” */
+const SITE_ORIGIN = 'https://streack.top';
 
 /**
  * 递归扫描目录下所有 .html 文件，返回相对于 base 的路径（以 / 开头）
@@ -53,6 +57,10 @@ export default defineConfig({
   server: {
     host: true,
     port: 4321,
+  },
+  // Markdown：注入站点级增强（标题锚点、外链箭头、代码复制按钮、引用提示框、图片标记）
+  markdown: {
+    rehypePlugins: [[rehypeDoc, { site: SITE_ORIGIN }]],
   },
   integrations: [
     sitemap({

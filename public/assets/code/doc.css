@@ -231,3 +231,159 @@ s-page[dark] .doc-content .doc-body {
   .doc-content .doc-body h2 { font-size: 1.3rem; }
   .doc-content .doc-body h3 { font-size: 1.15rem; }
 }
+
+/* ============================================================
+   构建期增强渲染（对应旧站 PagesSober 的 pmd）
+   标记由 src/plugins/rehype-doc.mjs 在构建期生成
+   ============================================================ */
+
+/* --- 标题锚点按钮 --- */
+.doc-content .doc-body .heading-anchor {
+  display: inline-block;
+  margin-inline-start: .35em;
+  color: var(--doc-muted);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity .15s ease, color .15s ease;
+  vertical-align: middle;
+}
+.doc-content .doc-body h1:hover > .heading-anchor,
+.doc-content .doc-body h2:hover > .heading-anchor,
+.doc-content .doc-body h3:hover > .heading-anchor,
+.doc-content .doc-body h4:hover > .heading-anchor,
+.doc-content .doc-body h5:hover > .heading-anchor,
+.doc-content .doc-body h6:hover > .heading-anchor { opacity: 1; }
+.doc-content .doc-body .heading-anchor:hover { color: var(--doc-primary); text-decoration: none; }
+.doc-content .doc-body .heading-anchor-icon { width: .78em; height: .78em; fill: currentColor; display: block; }
+
+/* --- 外链箭头 --- */
+.doc-content .doc-body a.ext-link::after {
+  content: "";
+  display: inline-block;
+  width: .68em;
+  height: .68em;
+  margin-inline-start: .18em;
+  vertical-align: -0.04em;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* --- 代码块复制按钮 --- */
+.doc-content .doc-body .code-block {
+  position: relative;
+  margin: 1.1rem 0;
+}
+.doc-content .doc-body .code-block pre { margin: 0; }
+.doc-content .doc-body .code-copy {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  font-family: inherit;
+  font-size: .75rem;
+  line-height: 1;
+  padding: .38em .7em;
+  color: #cfd3d6;
+  background: rgba(255, 255, 255, .12);
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 7px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .15s ease, background .15s ease, color .15s ease;
+}
+.doc-content .doc-body .code-block:hover .code-copy,
+.doc-content .doc-body .code-copy:focus-visible { opacity: 1; }
+.doc-content .doc-body .code-copy:hover { background: rgba(255, 255, 255, .22); color: #fff; }
+.doc-content .doc-body .code-copy.copied { opacity: 1; color: #7ee2b8; border-color: rgba(126, 226, 184, .5); }
+
+/* --- 引用块提示框（[i] [!] [！] [x] [@] [#hex$tip]） --- */
+.doc-content .doc-body blockquote.doc-callout {
+  --callout-color: var(--doc-primary);
+  border-inline-start: 3px solid var(--callout-color);
+  background: rgba(127, 127, 127, .08);
+  background: color-mix(in srgb, var(--callout-color) 8%, transparent);
+  border-radius: 0 10px 10px 0;
+  color: var(--doc-text);
+}
+.doc-content .doc-body blockquote.doc-callout .doc-callout-title {
+  display: flex;
+  align-items: center;
+  gap: .4em;
+  margin: 0 0 .35rem;
+  font-weight: 500;
+  color: var(--callout-color);
+}
+.doc-content .doc-body .doc-callout-icon { width: 1.15em; height: 1.15em; fill: currentColor; flex: none; }
+
+/* --- 目录（TOC） --- */
+.doc-content .doc-body .doc-toc {
+  margin: 0 0 1.6rem;
+  padding: .85rem 1.1rem;
+  background: var(--doc-code-bg);
+  border: 1px solid var(--doc-outline);
+  border-radius: 12px;
+}
+.doc-content .doc-body .doc-toc-title {
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  color: var(--doc-muted);
+  margin-bottom: .5rem;
+}
+.doc-content .doc-body .doc-toc-list {
+  margin: 0;
+  padding-inline-start: 0;
+  list-style: none;
+}
+.doc-content .doc-body .doc-toc-list .doc-toc-list {
+  padding-inline-start: 1.1rem;
+  margin-top: .15rem;
+}
+.doc-content .doc-body .doc-toc-item { margin: .18rem 0; line-height: 1.5; }
+.doc-content .doc-body .doc-toc-link { color: var(--doc-text); text-decoration: none; font-size: .92rem; }
+.doc-content .doc-body .doc-toc-link:hover { color: var(--doc-primary); text-decoration: underline; }
+
+/* --- 图片：可点开灯箱 --- */
+.doc-content .doc-body img.doc-img { cursor: zoom-in; }
+
+/* --- 图片灯箱 --- */
+.doc-lightbox {
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+}
+.doc-lightbox::backdrop { background: rgba(0, 0, 0, .72); }
+.doc-lightbox-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 92vw;
+  max-height: 92vh;
+  border-radius: 10px;
+  background: #fff;
+}
+.doc-lightbox-close {
+  position: absolute;
+  top: -.9rem;
+  right: -.9rem;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .92);
+  color: #222;
+  font-size: .95rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+}
+.doc-lightbox-close:hover { background: #fff; }
+
+/* 暗色适配 */
+s-page[dark] .doc-content .doc-body blockquote.doc-callout {
+  background: color-mix(in srgb, var(--callout-color) 18%, transparent);
+}
+

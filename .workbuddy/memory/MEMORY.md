@@ -53,6 +53,19 @@
 - Frontmatter（可选）：title / description / keywords / theme
 - 正文含顶级 `#` 时不重复渲染 frontmatter 页头
 
+## Markdown 增强渲染（rehype，2026-09-17 新增；源自旧站 pmd 的客户端增强）
+- `src/plugins/rehype-doc.mjs` — rehype 插件（`astro.config.mjs` 的 `markdown.rehypePlugins`）：
+  - 标题补 `id` + `.heading-anchor` 按钮；外链 `target/rel` + `.ext-link`；
+    代码块 `.code-block` 容器 + `.code-copy`；引用块 `.doc-callout`（`[i]/[!]/[！]/[x]/[@]/[#hex$tip]`）；
+    图片 `.doc-img`
+- `DocLayout.astro` — 由 `render()` 的 `headings` 服务端生成 TOC（`.doc-toc`）+ 图片灯箱 `<dialog>`
+- `public/assets/code/doc.js` — 仅客户端交互：代码复制、图片灯箱
+- `doc.css` — 上述增强的样式
+- **坑 1**：Astro 的 `rehypeHeadingIds` 在用户 rehype 插件**之后**运行 → 插件里标题还没有 id；
+  需自行生成 id（Astro 会尊重已有 id，且 `headings[].slug` 即取该 id，故 TOC 与锚点一致）
+- **坑 2**：改插件后需清 `.astro` 与 `node_modules/.vite` 缓存再构建，否则改动不生效
+- **坑 3**：遍历 blockquote 找标记时，首个文本节点常是空白，需跳过
+
 ## 搜索数据生成脚本（summary.js，2026-09-15 新增）
 - 根目录 `summary.js`：扫描 `dist/**/*.html`（实际渲染页面），LLM 生成 `summary`(全文概要)+`keywords`，
   更新 `public/assets/search-suggestion.json`

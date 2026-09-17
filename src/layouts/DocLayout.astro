@@ -6,18 +6,29 @@
  * 与站点样式保持一致：正文放入 .content 内容槽，prose 样式见
  * public/assets/code/doc.css（标题、段落、列表、引用、代码、表格等）。
  *
+ * 增强渲染由构建期完成（src/plugins/rehype-doc.mjs）：
+ *   标题锚点、外链箭头、代码块复制按钮、引用块提示框、图片标记；
+ * 本布局额外负责：服务端渲染目录（TOC）、图片灯箱结构、引入 doc.js 交互。
+ *
  * Props:
  *   title       - 页面标题
  *   description - meta description
  *   keywords    - meta keywords
  *   theme       - s-page 主题（默认 light）
  *   heading     - 可选，正文顶部的页头标题（由路由按需传入）
+ *   headings    - 可选，Astro render() 返回的标题列表，用于生成目录
  *
  * Slots:
  *   default     - Markdown 渲染结果（<Content />）
- *   toolbar-nav / notes / dialogs — 透传给 FrameworkLayout
+ *   toolbar-nav / notes / dialogs / scripts — 透传给 FrameworkLayout
  */
 import FrameworkLayout from './FrameworkLayout.astro';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
 
 interface Props {
   title: string;
@@ -25,6 +36,7 @@ interface Props {
   keywords?: string;
   theme?: string;
   heading?: string;
+  headings?: Heading[];
 }
 
 const {
@@ -33,7 +45,39 @@ const {
   keywords,
   theme = 'light',
   heading,
+  headings = [],
 } = Astro.props;
+
+/* === 目录（TOC）：由 Astro 的 headings 在服务端生成嵌套列表 === */
+const TOC_MAX_DEPTH = 3; // 目录收录的标题层级上限（h2 ~ h3）
+const esc = (s: string) =>
+  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+function buildToc(items: Heading[]): string {
+  const list = items.filter((h) => h.depth >= 2 && h.depth <= TOC_MAX_DEPTH);
+  if (list.length < 2) return '';
+  let html = '<ul class="doc-toc-list">';
+  let prev = list[0].depth;
+  list.forEach((h, i) => {
+    const d = h.depth;
+    const link = `<a class="doc-toc-link" href="#${esc(h.slug)}">${esc(h.text)}</a>`;
+    if (i === 0) {
+      html += `<li class="doc-toc-item">${link}`;
+    } else if (d > prev) {
+      html += `<ul class="doc-toc-list"><li class="doc-toc-item">${link}`;
+    } else if (d === prev) {
+      html += `</li><li class="doc-toc-item">${link}`;
+    } else {
+      html += `</li></ul></li>`.repeat(prev - d);
+      html += `<li class="doc-toc-item">${link}`;
+    }
+    prev = d;
+  });
+  html += `</li></ul>`.repeat(1 + (prev - list[0].depth));
+  return html;
+}
+
+const tocHtml = buildToc(headings);
 ---
 
 <FrameworkLayout
@@ -51,10 +95,22 @@ const {
       <article class="doc-article">
         <div class="doc-body">
           {heading && <h1 class="doc-heading">{heading}</h1>}
+          {tocHtml && (
+            <nav class="doc-toc" aria-label="目录">
+              <div class="doc-toc-title">目录</div>
+              <Fragment set:html={tocHtml} />
+            </nav>
+          )}
           <slot />
         </div>
       </article>
     </div>
+
+    <!-- 图片灯箱（点开正文图片时显示） -->
+    <dialog class="doc-lightbox" data-doc-lightbox>
+      <button type="button" class="doc-lightbox-close" data-doc-lightbox-close aria-label="关闭">✕</button>
+      <img class="doc-lightbox-img" data-doc-lightbox-img alt="" />
+    </dialog>
   </div>
 
   <!-- 导航项模板（透传） -->
@@ -65,6 +121,9 @@ const {
 
   <!-- 页面注释（透传） -->
   <slot name="notes" slot="notes" />
+
+  <!-- 文档交互脚本（代码复制、图片灯箱） -->
+  <script slot="scripts" is:inline type="module" src="/assets/code/doc.js"></script>
 
   <!-- 页面脚本（透传） -->
   <slot name="scripts" slot="scripts" />
