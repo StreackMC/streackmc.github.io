@@ -110,12 +110,35 @@ function enhanceHeading(h, slugger) {
     if (s.endsWith('-')) s = s.slice(0, -1);
     p.id = s;
   }
-  h.children.push({
-    type: 'element',
-    tagName: 'a',
-    properties: { href: '#' + p.id, className: ['heading-anchor'], title: '链接到此标题' },
-    children: [svgIcon('link', 'heading-anchor-icon')],
-  });
+  const icon = svgIcon('link', 'heading-anchor-icon');
+
+  // 标题内已含链接时，避免 <a> 嵌套 —— 回退为“仅图标可点”
+  if (hasElement(h, 'a')) {
+    h.children.push({
+      type: 'element',
+      tagName: 'a',
+      properties: { href: '#' + p.id, className: ['heading-anchor'], title: '链接到此标题' },
+      children: [icon],
+    });
+    return;
+  }
+
+  // 整个标题（文字 + 图标）包进一个锚点，使整块可点（对应旧站行为）
+  h.children = [
+    {
+      type: 'element',
+      tagName: 'a',
+      properties: { href: '#' + p.id, className: ['heading-link'], title: '链接到此标题' },
+      children: [...h.children, icon],
+    },
+  ];
+}
+
+/** 判断元素内是否存在指定标签（含自身） */
+function hasElement(node, tag) {
+  if (node.type === 'element' && node.tagName === tag) return true;
+  if (Array.isArray(node.children)) return node.children.some((c) => hasElement(c, tag));
+  return false;
 }
 
 /**

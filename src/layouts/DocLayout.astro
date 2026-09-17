@@ -109,7 +109,10 @@ const tocHtml = buildToc(headings);
           {heading && <h1 class="doc-heading">{heading}</h1>}
           {tocHtml && (
             <nav class="doc-toc" aria-label="目录">
-              <div class="doc-toc-title">目录</div>
+              <div class="doc-toc-head">
+                <span class="doc-toc-title">目录</span>
+                <s-switch class="doc-toc-switch" data-doc-toc-switch checked></s-switch>
+              </div>
               <Fragment set:html={tocHtml} />
             </nav>
           )}

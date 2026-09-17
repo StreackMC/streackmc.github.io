@@ -241,7 +241,30 @@ s-page[dark] .doc-content .doc-body {
    标记由 src/plugins/rehype-doc.mjs 在构建期生成
    ============================================================ */
 
-/* --- 标题锚点按钮 --- */
+/* --- 标题锚点：整个标题（文字 + 图标）可点 --- */
+.doc-content .doc-body .heading-link {
+  color: inherit;
+  text-decoration: none;
+}
+.doc-content .doc-body .heading-link:hover { text-decoration: underline; }
+.doc-content .doc-body .heading-anchor-icon {
+  display: inline-block;
+  width: .78em;
+  height: .78em;
+  fill: currentColor;
+  vertical-align: -0.05em;
+  margin-inline-start: .3em;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+.doc-content .doc-body h1:hover .heading-anchor-icon,
+.doc-content .doc-body h2:hover .heading-anchor-icon,
+.doc-content .doc-body h3:hover .heading-anchor-icon,
+.doc-content .doc-body h4:hover .heading-anchor-icon,
+.doc-content .doc-body h5:hover .heading-anchor-icon,
+.doc-content .doc-body h6:hover .heading-anchor-icon { opacity: .5; }
+
+/* 回退（标题内含链接时）：仅图标可点，避免 <a> 嵌套 */
 .doc-content .doc-body .heading-anchor {
   display: inline-block;
   margin-inline-start: .35em;
@@ -258,7 +281,7 @@ s-page[dark] .doc-content .doc-body {
 .doc-content .doc-body h5:hover > .heading-anchor,
 .doc-content .doc-body h6:hover > .heading-anchor { opacity: 1; }
 .doc-content .doc-body .heading-anchor:hover { color: var(--doc-primary); text-decoration: none; }
-.doc-content .doc-body .heading-anchor-icon { width: .78em; height: .78em; fill: currentColor; display: block; }
+.doc-content .doc-body .heading-anchor .heading-anchor-icon { margin-inline-start: 0; opacity: 1; }
 
 /* --- 外链箭头 --- */
 .doc-content .doc-body a.ext-link::after {
@@ -327,13 +350,23 @@ s-page[dark] .doc-content .doc-body {
   border: 1px solid var(--doc-outline);
   border-radius: 12px;
 }
+.doc-content .doc-body .doc-toc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: .5rem;
+}
 .doc-content .doc-body .doc-toc-title {
   font-size: .78rem;
   font-weight: 500;
   letter-spacing: .08em;
   color: var(--doc-muted);
-  margin-bottom: .5rem;
 }
+.doc-content .doc-body .doc-toc-switch { --fz: .9rem; }
+/* 折叠状态：隐藏目录列表（由页首开关控制；过高时默认折叠） */
+.doc-content .doc-body .doc-toc-collapsed .doc-toc-list { display: none; }
+.doc-content .doc-body .doc-toc-collapsed .doc-toc-head { margin-bottom: 0; }
 .doc-content .doc-body .doc-toc-list {
   margin: 0;
   padding-inline-start: 0;
