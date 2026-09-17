@@ -111,7 +111,9 @@ const tocHtml = buildToc(headings);
             <s-fold class="doc-toc" data-doc-toc role="navigation" aria-label="目录">
               <div slot="trigger" class="doc-toc-head">
                 <span class="doc-toc-title">目录</span>
-                <s-switch class="doc-toc-switch" data-doc-toc-switch checked="true"></s-switch>
+                <svg class="doc-toc-chevron" viewBox="0 -960 960 960" aria-hidden="true">
+                  <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+                </svg>
               </div>
               <div class="doc-toc-body" data-doc-toc-body>
                 <Fragment set:html={tocHtml} />

@@ -60,10 +60,10 @@
   - 代码块 `.code-block` 容器 + `.code-copy`；引用块 `.doc-callout`（`[i]/[!]/[！]/[x]/[@]/[#hex$tip]`）
   - 任务列表 `<input type=checkbox>` → Sober `<s-checkbox disabled="true" [checked="true"]>`
   - 图片仅加 `loading=lazy`（**图片查看器已移除**，不再有 `.doc-img`/灯箱）
-- `DocLayout.astro` — `render()` 的 `headings` 服务端生成 TOC（`.doc-toc`，**折叠复用 Sober `<s-fold>`**，
-  见下「Sober UI 组件约束」）；
+- `DocLayout.astro` — `render()` 的 `headings` 服务端生成 TOC（`.doc-toc`，**折叠复用 Sober `<s-fold>`** +
+  180° 旋转箭头，见下「Sober UI 组件约束」）；
   **frontmatter `nav` → 工具栏导航插槽**（`<template data-toolbar-nav>`，标题栏智能插槽）
-- `public/assets/code/doc.js` — 仅客户端交互：代码复制 + 目录折叠（s-fold 的 `folded` ↔ `s-switch` 同步）
+- `public/assets/code/doc.js` — 仅客户端交互：代码复制 + 目录自动折叠（≥40dvh 设 `folded='true'`）
 - `doc.css` — 上述增强的样式
 - **坑 1**：Astro 的 `rehypeHeadingIds` 在用户 rehype 插件**之后**运行 → 插件里标题还没有 id；
   需自行生成 id（Astro 尊重已有 id，且 `headings[].slug` 即取该 id，故 TOC 与锚点一致）
@@ -83,9 +83,9 @@
 - 唯一例外：`s-page` 的 `dark` 用 `:host([dark])`（**存在性**）→ `setAttribute("dark","")` 是对的。
 - 常用组件 API：`s-fold`(`folded`, 插槽 `trigger`+默认)、`s-switch`(`checked`,`disabled`)、
   `s-checkbox`(`checked`,`indeterminate`,`disabled`)、`s-button`(`disabled`,`type`)、`s-card`(`type`,`clickable`)
-- 目录折叠实现：`<s-fold class="doc-toc" data-doc-toc>` + `div[slot=trigger]`（标题+`s-switch`）
-  + 内容区；`doc.js` 判定 `≥40dvh` 设 `folded='true'`，`MutationObserver` 同步开关，
-  开关 `stopPropagation` 防止与 s-fold trigger 双重切换。
+- 目录折叠实现：`<s-fold class="doc-toc" data-doc-toc>` + `div[slot=trigger]`（标题 + 旋转箭头 SVG）
+  + 内容区；`doc.js` 仅需判定 `≥40dvh` 设 `folded='true'`。
+  **指示物选语义正确的**：折叠用 180° 旋转 chevron（CSS 按 `[folded]` 旋转），**不要用 `s-switch`**。
 
 ## 搜索数据生成脚本（summary.js，2026-09-15 新增）
 - 根目录 `summary.js`：扫描 `dist/**/*.html`（实际渲染页面），LLM 生成 `summary`(全文概要)+`keywords`，

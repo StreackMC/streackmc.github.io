@@ -364,9 +364,21 @@ s-page[dark] .doc-content .doc-body {
   letter-spacing: .08em;
   color: var(--doc-muted);
 }
-.doc-content .doc-body .doc-toc-switch { --fz: .9rem; }
-/* 折叠态由 Sober <s-fold> 组件负责（:host([folded=true])），此处仅收起标题栏下边距 */
+/* 折叠指示箭头：展开（默认）朝上，折叠时旋转 180° 朝下 */
+.doc-content .doc-body .doc-toc-chevron {
+  display: block;
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+  fill: var(--doc-muted);
+  transform: rotate(180deg);
+  transition: transform .2s ease-out, fill .15s ease;
+}
+.doc-content .doc-body .doc-toc-head:hover .doc-toc-title { color: var(--doc-text); }
+.doc-content .doc-body .doc-toc-head:hover .doc-toc-chevron { fill: var(--doc-primary); }
+/* 折叠态由 Sober <s-fold> 组件负责（:host([folded=true])），此处仅适配箭头与下边距 */
 .doc-content .doc-body .doc-toc[folded='true'] .doc-toc-head { margin-bottom: 0; }
+.doc-content .doc-body .doc-toc[folded='true'] .doc-toc-chevron { transform: rotate(0); }
 .doc-content .doc-body .doc-toc-list {
   margin: 0;
   padding-inline-start: 0;

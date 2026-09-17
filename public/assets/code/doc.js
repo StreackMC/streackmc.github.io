@@ -4,7 +4,7 @@
  * 增强标记（标题锚点、链接语法糖、代码复制按钮、引用提示框、任务列表 s-checkbox）
  * 均在构建期由 rehype 生成；本脚本负责必须的交互：
  *   1. 代码块「复制」按钮
- *   2. 目录：折叠交给 Sober <s-fold>（内容 ≥40dvh 时默认折叠，并同步开关状态）
+ *   2. 目录：折叠交给 Sober <s-fold>（内容 ≥40dvh 时默认折叠；箭头旋转由 CSS 负责）
  */
 (function () {
   'use strict';
@@ -46,45 +46,16 @@
 
   /* === 目录：折叠复用 Sober <s-fold>；内容过高（≥40dvh）时默认折叠 ===
    * s-fold 的属性 `folded="true"` 表示折叠（组件样式为 :host([folded=true])，
-   * 故必须带 ="true"，裸属性会被组件抹掉）。点击 trigger 区域（目录标题栏）
-   * 由 s-fold 自行切换 folded；开关作为独立控件，阻止冒泡以免双重切换。 */
+   * 故必须带 ="true"，裸属性会被组件抹掉）。点击标题栏（trigger 槽）由 s-fold
+   * 自行切换 folded，箭头方向由 CSS 依据 [folded] 自动旋转，无需在此同步。 */
   function initToc() {
     var fold = document.querySelector('[data-doc-toc]');
     if (!fold) return;
-    var sw = fold.querySelector('[data-doc-toc-switch]');
     var body = fold.querySelector('[data-doc-toc-body]');
     if (!body) return;
 
-    function setFolded(folded) {
-      if (folded) fold.setAttribute('folded', 'true');
-      else fold.removeAttribute('folded');
-    }
-
-    function syncSwitch() {
-      if (!sw) return;
-      var open = fold.getAttribute('folded') !== 'true';
-      try { sw.checked = open; } catch (e) { /* 组件未定义时忽略 */ }
-      if (open) sw.setAttribute('checked', 'true');
-      else sw.removeAttribute('checked');
-    }
-
-    if (sw) {
-      // 开关是独立控件：点击不应冒泡到 s-fold 的 trigger（否则双重切换）
-      sw.addEventListener('click', function (e) { e.stopPropagation(); });
-      sw.addEventListener('change', function () {
-        setFolded(sw.checked === false);
-      });
-    }
-
-    // 点击标题栏折叠 / 其它来源改变 folded 时，同步开关状态
-    new MutationObserver(syncSwitch).observe(fold, {
-      attributes: true,
-      attributeFilter: ['folded'],
-    });
-
     // 页面加载时一次性判定：目录过高则默认折叠，否则保持展开
-    if (body.scrollHeight >= window.innerHeight * 0.4) setFolded(true);
-    syncSwitch();
+    if (body.scrollHeight >= window.innerHeight * 0.4) fold.setAttribute('folded', 'true');
   }
 
   function init() {
