@@ -7,8 +7,9 @@
  * public/assets/code/doc.css（标题、段落、列表、引用、代码、表格等）。
  *
  * 增强渲染由构建期完成（src/plugins/rehype-doc.mjs）：
- *   标题锚点、外链箭头、代码块复制按钮、引用块提示框、图片标记；
- * 本布局额外负责：服务端渲染目录（TOC）、图片灯箱结构、引入 doc.js 交互。
+ *   标题锚点、链接语法糖、代码块复制按钮、引用块提示框、任务列表 s-checkbox、图片懒加载；
+ * 本布局额外负责：服务端渲染目录（TOC）、把 frontmatter 的 nav 桥接到工具栏导航插槽、
+ * 引入 doc.js 交互。
  *
  * Props:
  *   title       - 页面标题
@@ -17,6 +18,7 @@
  *   theme       - s-page 主题（默认 light）
  *   heading     - 可选，正文顶部的页头标题（由路由按需传入）
  *   headings    - 可选，Astro render() 返回的标题列表，用于生成目录
+ *   nav         - 可选，工具栏导航项 [{ label, href? , cmd? }]，渲染为“标题栏智能插槽”
  *
  * Slots:
  *   default     - Markdown 渲染结果（<Content />）
@@ -30,6 +32,12 @@ interface Heading {
   text: string;
 }
 
+interface NavItem {
+  label: string;
+  href?: string;
+  cmd?: string;
+}
+
 interface Props {
   title: string;
   description?: string;
@@ -37,6 +45,7 @@ interface Props {
   theme?: string;
   heading?: string;
   headings?: Heading[];
+  nav?: NavItem[];
 }
 
 const {
@@ -46,7 +55,10 @@ const {
   theme = 'light',
   heading,
   headings = [],
+  nav = [],
 } = Astro.props;
+
+const navItems = Array.isArray(nav) ? nav.filter((n) => n && n.label) : [];
 
 /* === 目录（TOC）：由 Astro 的 headings 在服务端生成嵌套列表 === */
 const TOC_MAX_DEPTH = 3; // 目录收录的标题层级上限（h2 ~ h3）
@@ -105,13 +117,22 @@ const tocHtml = buildToc(headings);
         </div>
       </article>
     </div>
-
-    <!-- 图片灯箱（点开正文图片时显示） -->
-    <dialog class="doc-lightbox" data-doc-lightbox>
-      <button type="button" class="doc-lightbox-close" data-doc-lightbox-close aria-label="关闭">✕</button>
-      <img class="doc-lightbox-img" data-doc-lightbox-img alt="" />
-    </dialog>
   </div>
+
+  <!-- frontmatter.nav → 工具栏导航插槽（标题栏智能插槽） -->
+  {navItems.length > 0 && (
+    <template slot="toolbar-nav" data-toolbar-nav>
+      {navItems.map((item) =>
+        item.cmd ? (
+          <div data-cmd={item.cmd} clickable>{item.label}</div>
+        ) : item.href ? (
+          <div data-cmd={`url:${item.href}|`} clickable>{item.label}</div>
+        ) : (
+          <div>{item.label}</div>
+        ),
+      )}
+    </template>
+  )}
 
   <!-- 导航项模板（透传） -->
   <slot name="toolbar-nav" slot="toolbar-nav" />
@@ -122,7 +143,7 @@ const tocHtml = buildToc(headings);
   <!-- 页面注释（透传） -->
   <slot name="notes" slot="notes" />
 
-  <!-- 文档交互脚本（代码复制、图片灯箱） -->
+  <!-- 文档交互脚本（代码复制） -->
   <script slot="scripts" is:inline type="module" src="/assets/code/doc.js"></script>
 
   <!-- 页面脚本（透传） -->

@@ -5,14 +5,16 @@
  * （见 public/assets/code/doc.js）：
  *
  *   1. 标题锚点按钮  —— 在每个 h1~h6 末尾追加「链接到此标题」按钮（旧站 hyper_markdown.header_link）
- *   2. 外链箭头      —— 站外 http(s) 链接追加 target/rel 与 .ext-link 类（旧站 link.arrow）
- *   3. 代码块复制按钮—— 在每个 <pre> 内插入 <button.code-copy>（旧站 code）
+ *   2. 链接语法糖    —— 链接文字中写 ↗ / $ / ฿ 时，改为新标签页打开并加外链箭头
+ *                        （默认链接在当前窗口打开；旧站 link.arrow）
+ *   3. 代码块复制按钮—— 用 .code-block 包裹 <pre> 并插入 <button.code-copy>（旧站 code）
  *   4. 引用块提示框  —— [i] / [!] / [！] / [x] / [@] / [#hex$tip] → 带色边框与标题的 callout（旧站 hyper_markdown.quotepro）
- *   5. 图片标记      —— 给 <img> 加 .doc-img + 懒加载，供灯箱使用（旧站 img.view）
- *
- * 选项：
- *   { site }  站点 origin（如 "https://streack.top"），用于判定“站外链接”
+ *   5. 任务列表      —— GFM 复选框 <input type=checkbox> → Sober 的 <s-checkbox disabled>（站点 UI 统一）
+ *   6. 图片          —— <img> 追加 loading=lazy / decoding=async
  */
+
+/** 链接语法糖标记：↗（U+2197）、$（U+0024）、฿（U+0E3F） */
+const LINK_SUGAR = /[\u2197\u0024\u0e3f]/;
 
 const ICONS = {
   info: 'M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z',
@@ -116,14 +118,37 @@ function enhanceHeading(h, slugger) {
   });
 }
 
-/** 2. 链接：站外链接加 target/rel 与 .ext-link */
-function enhanceLink(a, site) {
-  const href = a.properties && a.properties.href;
-  if (typeof href !== 'string' || !/^https?:\/\//i.test(href)) return;
-  if (site && href.startsWith(site)) return; // 站内绝对链接不算外链
-  a.properties.target = '_blank';
-  a.properties.rel = 'noopener noreferrer';
+/**
+ * 2. 链接语法糖：链接文字含 ↗ / $ / ฿ 时 → 移除标记、改为新标签页打开、加 .ext-link（CSS 箭头）。
+ *    默认（无标记）链接保持在当前窗口打开。已带 target="_blank" 的链接同样补箭头。
+ */
+function enhanceLink(a) {
+  const p = a.properties || (a.properties = {});
+  const alreadyBlank = p.target === '_blank';
+  const sugar = stripLinkSugar(a);
+  if (!sugar && !alreadyBlank) return; // 默认：当前窗口、无箭头
+  p.target = '_blank';
+  p.rel = 'noopener noreferrer';
   addClass(a, 'ext-link');
+}
+
+/** 在链接文本中移除首个语法糖标记，返回是否命中 */
+function stripLinkSugar(node) {
+  let hit = false;
+  const walk = (n) => {
+    if (hit) return;
+    if (n.type === 'text') {
+      const m = String(n.value).match(LINK_SUGAR);
+      if (m) {
+        n.value = n.value.slice(0, m.index) + n.value.slice(m.index + m[0].length);
+        hit = true;
+      }
+      return;
+    }
+    if (n.children) n.children.forEach(walk);
+  };
+  walk(node);
+  return hit;
 }
 
 /** 3. 代码块：包一层容器并插入复制按钮（容器不滚动，按钮定位稳定） */
@@ -190,15 +215,39 @@ function enhanceQuote(bq) {
   }
 }
 
-/** 5. 图片：加类与懒加载 */
+/** 6. 图片：懒加载与异步解码 */
 function enhanceImage(img) {
-  addClass(img, 'doc-img');
   if (!img.properties) img.properties = {};
   if (!img.properties.loading) img.properties.loading = 'lazy';
   if (!img.properties.decoding) img.properties.decoding = 'async';
 }
 
-function transform(node, site, slugger) {
+/** 5. 任务列表：把 GFM 的 <input type=checkbox> 换成 Sober 的 <s-checkbox disabled> */
+function hasClass(node, cls) {
+  const c = node.properties && node.properties.className;
+  const arr = Array.isArray(c) ? c : c ? String(c).split(/\s+/) : [];
+  return arr.includes(cls);
+}
+
+function fixTaskItem(li) {
+  li.children = (li.children || []).map((c) => {
+    const isCheckbox =
+      c.type === 'element' &&
+      c.tagName === 'input' &&
+      c.properties &&
+      String(c.properties.type).toLowerCase() === 'checkbox';
+    if (!isCheckbox) return c;
+    const checked = c.properties.checked === true || c.properties.checked === '';
+    return {
+      type: 'element',
+      tagName: 's-checkbox',
+      properties: { disabled: true, ...(checked ? { checked: true } : {}) },
+      children: [],
+    };
+  });
+}
+
+function transform(node, slugger) {
   if (!node || !Array.isArray(node.children)) return;
   const out = [];
   for (const child of node.children) {
@@ -206,24 +255,25 @@ function transform(node, site, slugger) {
       if (/^h[1-6]$/.test(child.tagName)) {
         enhanceHeading(child, slugger);
       } else if (child.tagName === 'a') {
-        enhanceLink(child, site);
+        enhanceLink(child);
       } else if (child.tagName === 'blockquote') {
         enhanceQuote(child);
       } else if (child.tagName === 'img') {
         enhanceImage(child);
+      } else if (child.tagName === 'li' && hasClass(child, 'task-list-item')) {
+        fixTaskItem(child);
       } else if (child.tagName === 'pre') {
         out.push(wrapCode(child)); // 用容器包裹
-        transform(child, site, slugger);
+        transform(child, slugger);
         continue;
       }
-      transform(child, site, slugger);
+      transform(child, slugger);
     }
     out.push(child);
   }
   node.children = out;
 }
 
-export default function rehypeDoc(options = {}) {
-  const site = options.site || '';
-  return (tree) => transform(tree, site, makeSlugger());
+export default function rehypeDoc() {
+  return (tree) => transform(tree, makeSlugger());
 }

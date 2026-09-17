@@ -27,6 +27,7 @@
  *   description — meta description
  *   keywords    — meta keywords
  *   theme       — 'light' | 'dark'，s-page 主题（默认 light）
+ *   nav         — 工具栏导航项 [{ label, href?, cmd? }]（标题栏智能插槽）
  */
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
@@ -39,6 +40,16 @@ const content = defineCollection({
     description: z.string().optional(),
     keywords: z.string().optional(),
     theme: z.enum(['light', 'dark']).optional(),
+    // 工具栏导航项（标题栏智能插槽）：label 必填，href 用 url 命令、cmd 用任意 data-cmd
+    nav: z
+      .array(
+        z.object({
+          label: z.string(),
+          href: z.string().optional(),
+          cmd: z.string().optional(),
+        }),
+      )
+      .optional(),
   }),
 });
 

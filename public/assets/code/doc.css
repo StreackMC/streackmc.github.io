@@ -113,9 +113,13 @@
 .doc-content .doc-body ul { list-style: disc; }
 .doc-content .doc-body ol { list-style: decimal; }
 .doc-content .doc-body li::marker { color: var(--doc-muted); }
-/* GFM 任务列表 */
+/* GFM 任务列表（复选框由 rehype 换成 Sober 的 <s-checkbox>） */
 .doc-content .doc-body li.task-list-item { list-style: none; margin-inline-start: -1.4rem; }
-.doc-content .doc-body li.task-list-item input { margin-right: .5em; }
+.doc-content .doc-body li.task-list-item s-checkbox {
+  margin-right: .5em;
+  vertical-align: middle;
+  --fz: 1rem;
+}
 
 /* === 引用块 === */
 .doc-content .doc-body blockquote {
@@ -342,45 +346,6 @@ s-page[dark] .doc-content .doc-body {
 .doc-content .doc-body .doc-toc-item { margin: .18rem 0; line-height: 1.5; }
 .doc-content .doc-body .doc-toc-link { color: var(--doc-text); text-decoration: none; font-size: .92rem; }
 .doc-content .doc-body .doc-toc-link:hover { color: var(--doc-primary); text-decoration: underline; }
-
-/* --- 图片：可点开灯箱 --- */
-.doc-content .doc-body img.doc-img { cursor: zoom-in; }
-
-/* --- 图片灯箱 --- */
-.doc-lightbox {
-  border: none;
-  padding: 0;
-  background: transparent;
-  max-width: none;
-  max-height: none;
-  overflow: visible;
-}
-.doc-lightbox::backdrop { background: rgba(0, 0, 0, .72); }
-.doc-lightbox-img {
-  display: block;
-  width: auto;
-  height: auto;
-  max-width: 92vw;
-  max-height: 92vh;
-  border-radius: 10px;
-  background: #fff;
-}
-.doc-lightbox-close {
-  position: absolute;
-  top: -.9rem;
-  right: -.9rem;
-  width: 2rem;
-  height: 2rem;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .92);
-  color: #222;
-  font-size: .95rem;
-  line-height: 1;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
-}
-.doc-lightbox-close:hover { background: #fff; }
 
 /* 暗色适配 */
 s-page[dark] .doc-content .doc-body blockquote.doc-callout {

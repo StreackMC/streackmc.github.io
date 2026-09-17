@@ -53,18 +53,23 @@
 - Frontmatter（可选）：title / description / keywords / theme
 - 正文含顶级 `#` 时不重复渲染 frontmatter 页头
 
-## Markdown 增强渲染（rehype，2026-09-17 新增；源自旧站 pmd 的客户端增强）
+## Markdown 增强渲染（rehype，2026-09-17；源自旧站 pmd 的客户端增强）
 - `src/plugins/rehype-doc.mjs` — rehype 插件（`astro.config.mjs` 的 `markdown.rehypePlugins`）：
-  - 标题补 `id` + `.heading-anchor` 按钮；外链 `target/rel` + `.ext-link`；
-    代码块 `.code-block` 容器 + `.code-copy`；引用块 `.doc-callout`（`[i]/[!]/[！]/[x]/[@]/[#hex$tip]`）；
-    图片 `.doc-img`
-- `DocLayout.astro` — 由 `render()` 的 `headings` 服务端生成 TOC（`.doc-toc`）+ 图片灯箱 `<dialog>`
-- `public/assets/code/doc.js` — 仅客户端交互：代码复制、图片灯箱
+  - 标题补 `id` + `.heading-anchor` 按钮
+  - **链接语法糖**：链接文字含 `↗`/`$`/`฿` → 新标签页 + `.ext-link`（CSS 箭头）；默认链接当前窗口
+  - 代码块 `.code-block` 容器 + `.code-copy`；引用块 `.doc-callout`（`[i]/[!]/[！]/[x]/[@]/[#hex$tip]`）
+  - 任务列表 `<input type=checkbox>` → Sober `<s-checkbox disabled [checked]>`
+  - 图片仅加 `loading=lazy`（**图片查看器已移除**，不再有 `.doc-img`/灯箱）
+- `DocLayout.astro` — `render()` 的 `headings` 服务端生成 TOC（`.doc-toc`）；
+  **frontmatter `nav` → 工具栏导航插槽**（`<template data-toolbar-nav>`，标题栏智能插槽）
+- `public/assets/code/doc.js` — 仅客户端交互：代码复制
 - `doc.css` — 上述增强的样式
 - **坑 1**：Astro 的 `rehypeHeadingIds` 在用户 rehype 插件**之后**运行 → 插件里标题还没有 id；
-  需自行生成 id（Astro 会尊重已有 id，且 `headings[].slug` 即取该 id，故 TOC 与锚点一致）
-- **坑 2**：改插件后需清 `.astro` 与 `node_modules/.vite` 缓存再构建，否则改动不生效
+  需自行生成 id（Astro 尊重已有 id，且 `headings[].slug` 即取该 id，故 TOC 与锚点一致）
+- **坑 2（高频）**：Astro 会缓存渲染结果（`node_modules/.astro` 数据存储）与配置插件模块
+  （`node_modules/.vite`）→ **改插件后必须 `npm run clean` 再 build/dev**，否则静默不生效
 - **坑 3**：遍历 blockquote 找标记时，首个文本节点常是空白，需跳过
+- **集成**：Markdown 里也可直接写原始 HTML `<template data-toolbar-nav>…</template>`（已验证生效）
 
 ## 搜索数据生成脚本（summary.js，2026-09-15 新增）
 - 根目录 `summary.js`：扫描 `dist/**/*.html`（实际渲染页面），LLM 生成 `summary`(全文概要)+`keywords`，

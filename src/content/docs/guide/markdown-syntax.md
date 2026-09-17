@@ -1,14 +1,25 @@
 ---
 title: Markdown 语法示例
 description: 展示本站点支持的 Markdown 语法及其渲染样式。
+nav:
+  - label: 文档中心
+    href: /docs
+  - label: 回到顶部
+    cmd: "slot:0"
 ---
 
 本文汇总常用 Markdown 语法在本站点的渲染效果，用于核对文档样式。
+（本页还演示了 frontmatter 的 `nav`：它会被渲染到工具栏的导航插槽。）
 
 ## 文字与强调
 
-普通段落文字。**加粗**、*斜体*、~~删除线~~、`行内代码`，
-以及 [站内链接](/docs) 与 [外部链接](https://astro.build)。
+普通段落文字。**加粗**、*斜体*、~~删除线~~、`行内代码`。
+
+## 链接
+
+- 默认链接在**当前窗口**打开：[站内链接](/docs)、[外部链接](https://astro.build)
+- **链接语法糖**：在链接文字中写 `↗`（或 `$` / `฿`），会改为**新标签页**打开并附外链箭头 ——
+  [Astro 官网↗](https://astro.build)、[Astro 文档$](https://docs.astro.build)
 
 ## 各级标题
 
