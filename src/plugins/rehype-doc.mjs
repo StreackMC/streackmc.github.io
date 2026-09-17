@@ -9,7 +9,7 @@
  *                        （默认链接在当前窗口打开；旧站 link.arrow）
  *   3. 代码块复制按钮—— 用 .code-block 包裹 <pre> 并插入 <button.code-copy>（旧站 code）
  *   4. 引用块提示框  —— [i] / [!] / [！] / [x] / [@] / [#hex$tip] → 带色边框与标题的 callout（旧站 hyper_markdown.quotepro）
- *   5. 任务列表      —— GFM 复选框 <input type=checkbox> → Sober 的 <s-checkbox disabled>（站点 UI 统一）
+ *   5. 任务列表      —— GFM 复选框 <input type=checkbox> → Sober 的 <s-checkbox disabled="true">（站点 UI 统一）
  *   6. 图片          —— <img> 追加 loading=lazy / decoding=async
  */
 
@@ -245,7 +245,16 @@ function enhanceImage(img) {
   if (!img.properties.decoding) img.properties.decoding = 'async';
 }
 
-/** 5. 任务列表：把 GFM 的 <input type=checkbox> 换成 Sober 的 <s-checkbox disabled> */
+/**
+ * 5. 任务列表：把 GFM 的 <input type=checkbox> 换成 Sober 的 <s-checkbox>。
+ *
+ * ⚠ Sober 组件的布尔属性必须写成 `attr="true"`（字符串 "true"），不能写成裸布尔属性。
+ *   原因（sober@1.0.6 内部）：组件基类对 props 走 syncProps，setter 用
+ *   `Ye(v, default)` 转换，布尔类型的转换是 `v === "true"`。裸属性 `checked` 的
+ *   属性值为空串 ""，转换得 false，恰等于默认值 → 组件随即 removeAttribute，
+ *   属性被抹掉；而组件样式用的是 `:host([checked=true])`（比较属性「值」），
+ *   于是既不勾选、也不禁用。写成 checked="true" / disabled="true" 才生效。
+ */
 function hasClass(node, cls) {
   const c = node.properties && node.properties.className;
   const arr = Array.isArray(c) ? c : c ? String(c).split(/\s+/) : [];
@@ -264,7 +273,7 @@ function fixTaskItem(li) {
     return {
       type: 'element',
       tagName: 's-checkbox',
-      properties: { disabled: true, ...(checked ? { checked: true } : {}) },
+      properties: { disabled: 'true', ...(checked ? { checked: 'true' } : {}) },
       children: [],
     };
   });

@@ -58,11 +58,12 @@
   - 标题补 `id` + `.heading-anchor` 按钮
   - **链接语法糖**：链接文字含 `↗`/`$`/`฿` → 新标签页 + `.ext-link`（CSS 箭头）；默认链接当前窗口
   - 代码块 `.code-block` 容器 + `.code-copy`；引用块 `.doc-callout`（`[i]/[!]/[！]/[x]/[@]/[#hex$tip]`）
-  - 任务列表 `<input type=checkbox>` → Sober `<s-checkbox disabled [checked]>`
+  - 任务列表 `<input type=checkbox>` → Sober `<s-checkbox disabled="true" [checked="true"]>`
   - 图片仅加 `loading=lazy`（**图片查看器已移除**，不再有 `.doc-img`/灯箱）
-- `DocLayout.astro` — `render()` 的 `headings` 服务端生成 TOC（`.doc-toc`）；
+- `DocLayout.astro` — `render()` 的 `headings` 服务端生成 TOC（`.doc-toc`，**折叠复用 Sober `<s-fold>`**，
+  见下「Sober UI 组件约束」）；
   **frontmatter `nav` → 工具栏导航插槽**（`<template data-toolbar-nav>`，标题栏智能插槽）
-- `public/assets/code/doc.js` — 仅客户端交互：代码复制
+- `public/assets/code/doc.js` — 仅客户端交互：代码复制 + 目录折叠（s-fold 的 `folded` ↔ `s-switch` 同步）
 - `doc.css` — 上述增强的样式
 - **坑 1**：Astro 的 `rehypeHeadingIds` 在用户 rehype 插件**之后**运行 → 插件里标题还没有 id；
   需自行生成 id（Astro 尊重已有 id，且 `headings[].slug` 即取该 id，故 TOC 与锚点一致）
@@ -70,6 +71,21 @@
   （`node_modules/.vite`）→ **改插件后必须 `npm run clean` 再 build/dev**，否则静默不生效
 - **坑 3**：遍历 blockquote 找标记时，首个文本节点常是空白，需跳过
 - **集成**：Markdown 里也可直接写原始 HTML `<template data-toolbar-nav>…</template>`（已验证生效）
+
+## Sober UI 组件约束（sober@1.0.6，**布尔属性必须写 `attr="true"`**）
+- 组件基类对 props 走 `syncProps`，setter 用 `Ye(v, default)` 转换；布尔转换 = `v === "true"`，
+  且 `attributeChangedCallback` 把属性**值**字符串赋给属性。
+- **裸布尔属性会失效**：`<s-checkbox checked>`（属性值 `""`）→ `Ye("",false)=false` = 默认值
+  → 组件立刻 `removeAttribute` 抹掉属性；而样式一律是 `:host([checked=true])`（比较属性**值**）
+  → 表现为「不勾选 / 不禁用 / 不折叠」。**必须写 `checked="true"` / `disabled="true"` / `folded="true"`。**
+- hast（rehype 插件）侧：`properties: { disabled: 'true' }` → `disabled="true"`（正确）；
+  `properties: { disabled: true }` → 裸 `disabled`（错误）。已用 hast-util-to-html 实测。
+- 唯一例外：`s-page` 的 `dark` 用 `:host([dark])`（**存在性**）→ `setAttribute("dark","")` 是对的。
+- 常用组件 API：`s-fold`(`folded`, 插槽 `trigger`+默认)、`s-switch`(`checked`,`disabled`)、
+  `s-checkbox`(`checked`,`indeterminate`,`disabled`)、`s-button`(`disabled`,`type`)、`s-card`(`type`,`clickable`)
+- 目录折叠实现：`<s-fold class="doc-toc" data-doc-toc>` + `div[slot=trigger]`（标题+`s-switch`）
+  + 内容区；`doc.js` 判定 `≥40dvh` 设 `folded='true'`，`MutationObserver` 同步开关，
+  开关 `stopPropagation` 防止与 s-fold trigger 双重切换。
 
 ## 搜索数据生成脚本（summary.js，2026-09-15 新增）
 - 根目录 `summary.js`：扫描 `dist/**/*.html`（实际渲染页面），LLM 生成 `summary`(全文概要)+`keywords`，

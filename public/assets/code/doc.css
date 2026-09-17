@@ -356,6 +356,7 @@ s-page[dark] .doc-content .doc-body {
   justify-content: space-between;
   gap: .75rem;
   margin-bottom: .5rem;
+  cursor: pointer; /* 整条标题栏是 s-fold 的 trigger（点击切换折叠） */
 }
 .doc-content .doc-body .doc-toc-title {
   font-size: .78rem;
@@ -364,9 +365,8 @@ s-page[dark] .doc-content .doc-body {
   color: var(--doc-muted);
 }
 .doc-content .doc-body .doc-toc-switch { --fz: .9rem; }
-/* 折叠状态：隐藏目录列表（由页首开关控制；过高时默认折叠） */
-.doc-content .doc-body .doc-toc-collapsed .doc-toc-list { display: none; }
-.doc-content .doc-body .doc-toc-collapsed .doc-toc-head { margin-bottom: 0; }
+/* 折叠态由 Sober <s-fold> 组件负责（:host([folded=true])），此处仅收起标题栏下边距 */
+.doc-content .doc-body .doc-toc[folded='true'] .doc-toc-head { margin-bottom: 0; }
 .doc-content .doc-body .doc-toc-list {
   margin: 0;
   padding-inline-start: 0;

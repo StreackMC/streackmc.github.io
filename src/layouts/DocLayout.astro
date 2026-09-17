@@ -8,8 +8,8 @@
  *
  * 增强渲染由构建期完成（src/plugins/rehype-doc.mjs）：
  *   标题锚点、链接语法糖、代码块复制按钮、引用块提示框、任务列表 s-checkbox、图片懒加载；
- * 本布局额外负责：服务端渲染目录（TOC）、把 frontmatter 的 nav 桥接到工具栏导航插槽、
- * 引入 doc.js 交互。
+ * 本布局额外负责：服务端渲染目录（TOC，折叠交给 Sober 的 <s-fold> 组件）、
+ * 把 frontmatter 的 nav 桥接到工具栏导航插槽、引入 doc.js 交互。
  *
  * Props:
  *   title       - 页面标题
@@ -108,13 +108,15 @@ const tocHtml = buildToc(headings);
         <div class="doc-body">
           {heading && <h1 class="doc-heading">{heading}</h1>}
           {tocHtml && (
-            <nav class="doc-toc" aria-label="目录">
-              <div class="doc-toc-head">
+            <s-fold class="doc-toc" data-doc-toc role="navigation" aria-label="目录">
+              <div slot="trigger" class="doc-toc-head">
                 <span class="doc-toc-title">目录</span>
-                <s-switch class="doc-toc-switch" data-doc-toc-switch checked></s-switch>
+                <s-switch class="doc-toc-switch" data-doc-toc-switch checked="true"></s-switch>
               </div>
-              <Fragment set:html={tocHtml} />
-            </nav>
+              <div class="doc-toc-body" data-doc-toc-body>
+                <Fragment set:html={tocHtml} />
+              </div>
+            </s-fold>
           )}
           <slot />
         </div>
