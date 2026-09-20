@@ -55,6 +55,22 @@
 - 其他工具：openURL（含嵌套页面识别）、msg、getQueryString、CopyText、存储 API pmdStorage
 - 全部导出到 `window.streack.*`
 
+## loop-cards 循环卡片组件（自研轮播，无文档、当前未使用）
+- 位置：`public/assets/app/framework.js` 的 `export function initLoopCards()`（约 865 行）
+  + `public/assets/app/framework.css` 的 `.loop-cards` / `.loop-cards-track`（约 478–519 行）
+- **用法**：容器 `<div class="loop-cards" data-speed="1">`，**直接子元素即卡片**
+  （框架会把它们搬进自动生成的 `.loop-cards-track`，并在需要时克隆一份做无缝回绕）
+  - `data-speed` = 速度倍率（实际速度 = `1.2 * 倍率` px/帧）；缺省 1.0
+- **行为**：rAF 每帧 `translateX(-offset)` 向左无限滚动；内容宽度 ≤ 容器宽度时居中且不滚；
+  hover 暂停；点击经事件委托映射回**原始**卡片（克隆体点击等价原点）；
+  `window.streack.flag.noAnimation` 可全局停动画；`document.hidden` 时暂停
+- **初始化入口**：首页脚本 `public/assets/code/home.js`（`requestInitFunc` 内调用）；
+  另 framework.js 监听 window resize（防抖 300ms）重新初始化
+- ⚠️ 它**只导出为 ES module**，没有挂到 `window.streack.*`
+- **现状：没有文档，也没有页面在用**（`src/pages/index.astro` 里已无 `.loop-cards`）。
+  历史：`825c083`(2026-07-04「添加循环卡片组件」)首页启用 → 之后被注释掉 →
+  Astro 迁移(`71f26ed`)时 HTML 用法彻底丢失，只剩 JS/CSS，于是「记得有但找不到」
+
 ## Selector 分层选择器（public/assets/code/selector.js + selector.css）
 - 双模式：整页（`SelectorLayout`）/ 嵌入（`Selector.astro`），共享同一 JS，扫描所有 `[data-selector]` 支持多实例
 - 配置结构：`{ title, description?, layerTitle?, options:[{label,hint?,layerTitle?,children?|result?}] }`
