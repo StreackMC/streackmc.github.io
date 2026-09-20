@@ -41,6 +41,12 @@
 - URL 同步：`?selector=id:a.b.c|id2:x.y`（pushState/popstate）；给 `.selector-wrap` 设 id 才启用；
   `data-selector-history="false"` → replaceState 仅改地址栏
 - 初始化后移除 DOM 中的 `[data-selector-config]` 脚本
+- **配置字段可含 HTML**（如 `title` 内联 `<s-icon><svg>…</svg></s-icon>`；`s-icon` 模板就是 `<slot>`，支持自定义 SVG）：
+  `title`/`description` 在 `SelectorLayout` 里**必须用 `set:html`** —— Astro 文本插值 `{x}` 会转义成
+  `&lt;s-icon…&gt;`，图标就变成可见源码；`label`/`hint`/`result.content`/面包屑由 `selector.js`
+  以 `innerHTML` 注入，天然支持；**层标题**也曾用 `textContent`（已改 `innerHTML`，因 layerTitle 会
+  fallback 到 `config.title`/`option.label`）
+- 提醒：`dist/` 是构建产物，**改了源码要先 build 再查产物**（曾因看到旧产物而差点误判）
 
 ## Markdown 内容管线（2026-09-15 新增）
 - **映射规则**：内容根目录 `src/content/`，其下目录结构原样映射为 URL

@@ -70,10 +70,10 @@ const {
   <div style="display: contents">
     <div class="content selector-content" slot="0">
       <div class="selector-wrap" data-selector {...(id ? { id } : {})} {...(history === false ? { 'data-selector-history': 'false' } : {})}>
-        <!-- 标题 + 描述（服务端渲染） -->
+        <!-- 标题 + 描述（服务端渲染；用 set:html 以支持内联图标等 HTML） -->
         <header class="selector-header">
-          <h1 class="selector-title">{config.title}</h1>
-          <p class="selector-description">{config.description}</p>
+          <h1 class="selector-title" set:html={config.title} />
+          {config.description && <p class="selector-description" set:html={config.description} />}
         </header>
 
         <!-- 面包屑（选择后出现） -->

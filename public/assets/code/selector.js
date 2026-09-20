@@ -137,7 +137,9 @@
       if (layerTitle) {
         let heading = document.createElement('h2');
         heading.className = 'selector-layer-title';
-        heading.textContent = layerTitle;
+        // 用 innerHTML：layerTitle 可能来自 config.title / option.label，
+        // 二者都可能含内联图标等 HTML（label 本就以 innerHTML 渲染）
+        heading.innerHTML = layerTitle;
         layer.appendChild(heading);
       }
 
