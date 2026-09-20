@@ -1,0 +1,25 @@
+---
+/**
+ * PageIcon — 首栏标题上方的图标（DownloadLayout / SelectorLayout 共用）
+ *
+ * 由调用方的 icon_svg / icon_src 参数驱动（两者都透过 layout 透传）：
+ *   · icon_svg —— 内联 SVG 源码，包进 Sober 的 <s-icon>（s-icon 模板就是 <slot>，支持自定义 SVG）
+ *   · icon_src —— 图片地址，包成 <img>
+ *   · 两者都提供时以 icon_svg 为准；都没提供则**什么都不渲染**
+ *
+ * 输出为「图标 + <br>」，因此调用方直接把它写在标题文字之前，图标就会独占标题上方一行。
+ * 尺寸用 em（1.5em）随标题字号缩放，与 contact 首栏的写法一致。
+ */
+interface Props {
+  icon_svg?: string;
+  icon_src?: string;
+}
+
+const { icon_svg, icon_src } = Astro.props;
+const svg = String(icon_svg ?? '').trim();
+const src = svg ? '' : String(icon_src ?? '').trim();
+const style = 'width: 1.5em; margin-bottom: .5em;';
+---
+
+{svg ? <s-icon style={style} set:html={svg}></s-icon> : src ? <img src={src} alt="" style={style} /> : null}
+{svg || src ? <br /> : null}

@@ -17,7 +17,12 @@
  *      config={config}
  *      id="legal"           // 可选，用于 URL 同步
  *      history={true}       // 可选，默认 true；false 则仅 replaceState
+ *      icon_svg="<svg viewBox='0 -960 960 960'>…</svg>"  // 可选，标题上方图标（内联 SVG，包进 <s-icon>）
+ *      icon_src="/assets/img/xxx.svg"                    // 可选，标题上方图标（图片，包成 <img>）
  *    />
+ *
+ *    图标：icon_svg / icon_src 两者都提供时以 icon_svg 为准；都不提供则不渲染图标。
+ *    它渲染在标题（config.title）上方一行，首栏整体居中、字号与下载页一致。
  *
  *  ② 嵌入模式（Selector 组件）— 作为控件插入任意页面
  *  ─────────────────────────────────────────────────────────────

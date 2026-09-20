@@ -56,11 +56,12 @@ s-page[dark] .selector-wrap {
   --sel-hover: rgba(255,255,255,0.06);
 }
 
-/* === 标题 & 描述 === */
-.selector-wrap .selector-header { margin-bottom: 1.5rem; }
+/* === 标题 & 描述 ===
+   首栏（标题 + 描述）采用 about/contact 的首栏布局：整体居中；
+   标题字号不写死，随站点 .content * 的流式字号（由 --fs/--fl 驱动，见布局内联样式） */
+.selector-wrap .selector-header { margin-bottom: 1.5rem; --a: center; }
 .selector-wrap .selector-title {
-  font-size: 1.75rem; font-weight: 600; color: var(--sel-text);
-  margin: 0 0 0.5rem; line-height: 1.3;
+  font-weight: 600; color: var(--sel-text);
 }
 .selector-wrap .selector-description {
   font-size: 1rem; color: var(--sel-text-muted);
@@ -159,7 +160,6 @@ s-page[dark] .selector-wrap {
     padding: 1.5rem 1rem 3rem !important;
     padding-top: calc(var(--safezone, 0px) + 1.5rem) !important;
   }
-  .selector-wrap .selector-title { font-size: 1.4rem; }
   .selector-wrap .selector-option { padding: 0.5rem 0.9rem; font-size: 0.9rem; }
   .selector-wrap s-card.selector-result-card { padding: 1.25rem 1rem; }
 }

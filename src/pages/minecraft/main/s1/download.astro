@@ -5,15 +5,14 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
   title="下载「樱飘雪霁月」存档 — 栈流Streack"
   description="栈流Streack的旧版本展示页面，并提供对该已停止支持版本的存档数据的下载。"
   theme="light"
+  heading="下载「樱飘雪霁月」存档"
 >
   <!-- 导航项 -->
   <template slot="toolbar-nav" data-toolbar-nav>
     <div pc-only data-cmd="url:/minecraft/main/s1|" clickable>S1「樱飘雪霁月」</div>
   </template>
 
-  <!-- 区域 1：版本日志 / 说明 -->
-  <h2 style="--fs:24px;--fl:42px; --a:center; margin: 4rem auto 1.5rem;">下载「樱飘雪霁月」存档</h2>
-
+  <!-- 区域 1：版本日志 / 说明（标题由 DownloadLayout 的 heading 参数渲染） -->
   <time datetime="2026-07-09" style="opacity:.6; font-size:.85rem;">2026-07-09</time>
   <p>该存档为S1「樱飘雪霁月」的P1与P2两个版本的存档文件，与原始存档略有出入。</p>
 

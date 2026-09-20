@@ -4,15 +4,20 @@
  * 继承 FrameworkLayout（含工具栏 + 页脚），专用于下载类页面
  *
  * 布局结构：
- *   [版本日志 / 说明文本]  ← default slot
- *   [下载按钮]              ← buttons slot
- *   [淡化附加信息]          ← additional-info slot（含 SHA256、需求等）
+ *   [首栏：图标 + 标题]      ← heading / icon_svg / icon_src
+ *   [版本日志 / 说明文本]    ← default slot
+ *   [下载按钮]               ← buttons slot
+ *   [淡化附加信息]           ← additional-info slot（含 SHA256、需求等）
  *
- * Props（全部透传给 FrameworkLayout）:
- *   title       - 页面标题
+ * Props（除首栏外全部透传给 FrameworkLayout）:
+ *   title       - 页面标题（<title>）
  *   description - meta description
  *   keywords    - meta keywords
  *   theme       - s-page 主题（默认 light）
+ *   heading     - 可选，首栏标题文本（渲染为 <h1>；不传则不渲染首栏）
+ *   icon_svg    - 可选，标题上方图标的**内联 SVG 源码**，会被包进 <s-icon>
+ *   icon_src    - 可选，标题上方图标的**图片地址**，会被包成 <img>
+ *                 （icon_svg 与 icon_src 同时提供时以 icon_svg 为准；都不传则不渲染图标）
  *
  * Slots:
  *   default         - 版本日志 + 说明文本区域
@@ -25,12 +30,16 @@
  *   head            - 额外 <head> 资源（透传给 FrameworkLayout）
  */
 import FrameworkLayout from './FrameworkLayout.astro';
+import PageIcon from '../components/PageIcon.astro';
 
 interface Props {
   title: string;
   description?: string;
   keywords?: string;
   theme?: string;
+  heading?: string;
+  icon_svg?: string;
+  icon_src?: string;
 }
 
 const {
@@ -38,6 +47,9 @@ const {
   description,
   keywords,
   theme = 'light',
+  heading,
+  icon_svg,
+  icon_src,
 } = Astro.props;
 ---
 
@@ -53,9 +65,17 @@ const {
 
   <!-- 正文内容（下载页专用布局） -->
   <div style="display: contents">
-    <div class="content" slot="0" style="height: max-content; padding-top: calc(var(--safezone, 0) * 1.2);">
+    <div class="content" slot="0" style="height: max-content; padding-top: calc(var(--safezone, 0) * 1);">
       <div
         style="position: static; width: min(1024px, calc(var(--w) * 0.6)); margin: 0 auto;">
+
+        <!-- 首栏：图标（可选）+ 标题（可选）—— 布局取自 about/contact 的首栏，字号沿用下载页 -->
+        {heading && (
+          <h1 style="--fs:24px;--fl:42px; --a:center; margin: 4rem auto 1.5rem;">
+            <PageIcon icon_svg={icon_svg} icon_src={icon_src} />
+            <span set:html={heading} />
+          </h1>
+        )}
 
         <!-- 区域 1：版本日志 / 说明文本（一句话页面描述，无需拆多段） -->
         <section class="download-hero" style="margin-bottom: 2rem; --fs:1rem; --fl:1.2rem;">

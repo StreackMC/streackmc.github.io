@@ -18,6 +18,9 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
   description=""
   keywords=""
   theme="light"
+  heading="下载「  」"
+  icon_svg=""
+  icon_src=""
 >
   <!-- 导航项 -->
   <template slot="toolbar-nav" data-toolbar-nav>
@@ -25,8 +28,9 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
   </template>
 
   <!-- ========== 区域 1：版本日志 / 说明 ========== -->
-  <!-- ※ 修改 h2 标题、time 日期、p 说明内容 ※ -->
-  <h2 style="--fs:24px;--fl:42px; --a:center; margin: 4rem auto 1.5rem;">下载「  」</h2>
+  <!-- ※ 标题改上面 heading 参数；这里只写 time 日期、p 说明内容。
+       icon_svg（内联 SVG 源码，包进 <s-icon>）/ icon_src（图片地址，包成 <img>）
+       用于在标题上方放图标，可选；两者都给时以 icon_svg 为准 ※ -->
   <time datetime="" style="opacity:.6; font-size:.85rem;"></time>
   <p></p>
 

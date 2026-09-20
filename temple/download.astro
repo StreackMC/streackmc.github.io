@@ -6,14 +6,17 @@
  * 使用方式：复制此文件到目标目录，替换占位内容即可
  *
  * 布局：
+ *   [图标 + 标题]        ← heading / icon_svg / icon_src
  *   [版本日志 / 说明]   ← default slot
  *   [下载按钮]           ← buttons slot
  *   [淡化附加信息]       ← additional-info slot
  *
  * 所需替换：
  *   - title / description / keywords → 页面 meta
+ *   - heading → 下载页标题（渲染为 <h1>，居中；图标独占其上方一行）
+ *   - icon_svg（内联 SVG 源码，包进 <s-icon>）或 icon_src（图片地址，包成 <img>）
+ *     → 首栏图标，可选；两者都给时以 icon_svg 为准，都不给则不渲染图标
  *   - 导航栏 template → 返回链接
- *   - <h2> → 下载页标题
  *   - <time> → 发行日期
  *   - <p> → 版本说明
  *   - s-button data-cmd → 下载链接
@@ -28,15 +31,16 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
   description="存档下载页面的描述"
   keywords="关键词,英文逗号,分隔"
   theme="light"
+  heading="下载「存档名称」"
+  icon_svg=""
+  icon_src=""
 >
   <!-- 导航项：返回上级页面 -->
   <template slot="toolbar-nav" data-toolbar-nav>
     <div pc-only data-cmd="url:/返回路径|" clickable>返回主页</div>
   </template>
 
-  <!-- 区域 1：版本日志 / 说明 -->
-  <h2 style="--fs:24px;--fl:42px; --a:center; margin: 4rem auto 1.5rem;">下载「存档名称」</h2>
-
+  <!-- 区域 1：版本日志 / 说明（标题由 heading 渲染，这里只写日期与说明） -->
   <time datetime="YYYY-MM-DD" style="opacity:.6; font-size:.85rem;">YYYY-MM-DD</time>
   <p>在这里撰写版本说明。包含运营时间、版本周期、更新内容、停止支持说明等。</p>
 

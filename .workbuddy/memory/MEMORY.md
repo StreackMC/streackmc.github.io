@@ -16,10 +16,22 @@
   - `BaseLayout` — HTML 骨架 + Sober UI CDN + 字体 + favicon
   - `FrameworkLayout`（继承 BaseLayout）— s-page + Toolbar + Footer + `.contents` 内容槽系统；
     桥接 pmd.js 的 `conf` 到 `window.streack.conf`，加载 `assets/app/entry.js`
-  - `DownloadLayout`（继承 FrameworkLayout）— 下载页三段式（hero/actions/meta）
+  - `DownloadLayout`（继承 FrameworkLayout）— 下载页：**首栏标题** + 三段式（hero/actions/meta）
   - `SelectorLayout`（继承 FrameworkLayout）— 分层选择器整页模式
+- **首栏标题（2026-09-20 转正）**：`DownloadLayout` 的 `heading` / `SelectorLayout` 的 `config.title`
+  渲染为 `<h1>`，布局取自 `about/contact.astro` 首栏（整体居中、图标独占标题上方一行），
+  但**字号沿用下载页** `--fs:24px; --fl:42px; margin: 4rem auto 1.5rem;`
+  - 图标：两个布局都提供可选参数 `icon_svg`（内联 SVG 源码 → 包进 `<s-icon>`，s-icon 模板即
+    `<slot>`，支持自定义 SVG）与 `icon_src`（图片地址 → 包成 `<img>`）；
+    两者都给以 **svg** 为准，都不给**不渲染**；由共用组件 `src/components/PageIcon.astro` 实现
+    （输出「图标 + `<br>`」，尺寸 `width:1.5em; margin-bottom:.5em` 随标题字号缩放）
+  - ⚠ 别把图标塞进标题字符串：Astro 文本插值 `{x}` 会转义 HTML → 图标变成源码文本；
+    也不要用 `textContent` 注入含 HTML 的标题（`selector.js` 层标题已改 `innerHTML`）
+- **`.content *` 布局变量**（framework.css）：子元素统一吃
+  `text-align: var(--a, left)` / `font-size: clamp(var(--fs), …, var(--fl))` / `margin: var(--my,0) var(--mx,0)`；
+  要覆盖就用**元素内联样式**（内联 > 类选择器，可盖掉写死的 font-size 与 `.content *` 的 margin）
 - **`ToolLayout` / `Sidebar` 已不存在**：全部页面统一到 FrameworkLayout 体系
-- `src/components/`：Toolbar、Footer（服务端渲染）、Selector（嵌入选择器）
+- `src/components/`：Toolbar、Footer（服务端渲染）、Selector（嵌入选择器）、PageIcon（首栏图标）
 - `temple/` 为**顶层源模板目录**（5 文件），不在 src/pages，不参与构建
 - `public/`：静态资源；`public/webtool/*.html` 与 `public/h5event/` 为原始静态 HTML（仅 SoberJS，Astro 静态透传）
 - `dist/` 已提交入 git

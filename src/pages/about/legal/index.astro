@@ -1,8 +1,12 @@
 ---
 import SelectorLayout from '/src/layouts/SelectorLayout.astro';
-const icon = `<s-icon style="width: 1em;"><svg viewBox="0 -960 960 960"><path d="M200-280v-280h80v280h-80Zm240 0v-280h80v280h-80ZM80-120v-80h800v80H80Zm600-160v-280h80v280h-80ZM80-640v-80l400-200 400 200v80H80Zm178-80h444-444Zm0 0h444L480-830 258-720Z"></path></svg></s-icon>`;
+
+// 首栏图标：内联 SVG 源码。交给 SelectorLayout 的 icon_svg 参数，
+// 它会包进 Sober 的 <s-icon> 并渲染到标题上方一行（不再塞进 config.title）
+const iconSvg = `<svg viewBox="0 -960 960 960"><path d="M200-280v-280h80v280h-80Zm240 0v-280h80v280h-80ZM80-120v-80h800v80H80Zm600-160v-280h80v280h-80ZM80-640v-80l400-200 400 200v80H80Zm178-80h444-444Zm0 0h444L480-830 258-720Z"></path></svg>`;
+
 const config = {
-  title: `${icon}法律信息`,
+  title: "法律信息",
   description: "查找我们的产品与服务的法律信息和资源。",
   layerTitle: "选择主题",
   options: [
@@ -80,6 +84,7 @@ const config = {
   theme="light"
   config={config}
   id="legal"
+  icon_svg={iconSvg}
 >
   <template slot="toolbar-nav" data-toolbar-nav></template>
 </SelectorLayout>
