@@ -37,14 +37,18 @@
  *       about/legal         # 该目录及其下的页面
  *       /webtool/*          # 通配符：webtool 下任意一层
  *       /doc/policy/privacy # 单个页面也可以
+ *       !doc/event/**       # 以 ! 开头：强制排除（优先级高于纳入）
  *
  *  · 模式匹配的是**网站路径**（如 /doc/policy/donate，而非 dist 里的文件路径）
  *  · 开头的 / 可省略；以 / 结尾（如 `doc/policy/`）等价于 `doc/policy/**`
  *  · 通配符：`*` 匹配任意多个字符（不含 /）、`**` 跨层级、`?` 匹配单个字符
  *  · 只写目录名（如 `doc/policy`）时，该目录**及其下所有页面**都会被纳入
+ *  · **`!` 前缀 = 强制排除**：命中任一排除模式的页面一律不总结，
+ *    且**无论它在不在纳入范围内、也不论书写顺序**（排除始终优先）
+ *  · 只写排除项（没有纳入项）时，基准是「全部可读页面」，即「除了这些，其余都总结」
  *  · 名单为空或文件不存在 → 不做过滤，照旧处理全部可读页面
  *  · 名单里某个模式没命中任何页面时会告警，便于发现笔误
- *  · `--only` 传入的模式会**覆盖**名单文件（临时试跑用）
+ *  · `--only` 传入的模式会**覆盖**名单文件（临时试跑用），同样支持 `!` 前缀
  *
  *  说明：
  *   · 只总结“页面”——HTML 页面；.js/.css 等资源不处理
@@ -214,6 +218,16 @@ function cleanTitle(raw) {
 // 名单（只总结指定目录的文件，支持通配符）
 // ============================================================
 
+/** 把名单里的一行拆成 { negated, pattern }；`!` 前缀表示强制排除 */
+function parseListEntry(raw) {
+  const s = String(raw || '').trim();
+  if (!s) return null;
+  const negated = s.startsWith('!');
+  const body = negated ? s.slice(1).trim() : s;
+  if (!body) return null;
+  return { negated, pattern: body };
+}
+
 /** 规范化名单模式：补开头的 /；`dir/` 视作 `dir/**` */
 function normalizePattern(raw) {
   const p = String(raw || '').trim();
@@ -255,7 +269,7 @@ function matchesPattern(link, pattern) {
 
 /**
  * 读取名单：优先 --only（覆盖），否则读 summary-list.txt。
- * 返回 { patterns, fromCli }；patterns 为空表示不过滤。
+ * 返回 { include, exclude, fromCli }；两者皆空表示不过滤。
  */
 function loadAllowList() {
   const fromCli = ONLY.length > 0;
@@ -268,12 +282,17 @@ function loadAllowList() {
           .filter((line) => line && !line.startsWith('#'))
       : [];
 
-  const patterns = [];
+  const include = [];
+  const exclude = [];
   for (const item of raw) {
-    const p = normalizePattern(item);
-    if (p && !patterns.includes(p)) patterns.push(p);
+    const entry = parseListEntry(item);
+    if (!entry) continue;
+    const p = normalizePattern(entry.pattern);
+    if (!p) continue;
+    const bucket = entry.negated ? exclude : include;
+    if (!bucket.includes(p)) bucket.push(p);
   }
-  return { patterns, fromCli };
+  return { include, exclude, fromCli };
 }
 
 // ============================================================
@@ -436,24 +455,44 @@ async function main() {
     pages.push({ link, title: cleanTitle(rawTitle), rawTitle, text, file });
   }
 
-  // 2b. 名单过滤：只保留命中名单模式的页面（名单为空则不过滤）
-  const { patterns, fromCli } = loadAllowList();
-  if (patterns.length > 0) {
-    const hits = new Map(patterns.map((p) => [p, 0]));
-    pages = pages.filter((page) => {
-      let hit = false;
-      for (const p of patterns) {
-        if (matchesPattern(page.link, p)) {
-          hits.set(p, hits.get(p) + 1);
-          hit = true;
+  // 2b. 名单过滤：纳入范围 − 强制排除（名单为空则不过滤）
+  const { include, exclude, fromCli } = loadAllowList();
+  if (include.length > 0 || exclude.length > 0) {
+    // 各模式独立统计命中数，便于发现笔误
+    const countHits = (patterns) => {
+      const map = new Map(patterns.map((p) => [p, 0]));
+      for (const page of pages) {
+        for (const p of patterns) {
+          if (matchesPattern(page.link, p)) map.set(p, map.get(p) + 1);
         }
       }
-      return hit;
+      return map;
+    };
+    const incHits = countHits(include);
+    const excHits = countHits(exclude);
+
+    pages = pages.filter((page) => {
+      // 排除始终优先：命中任一排除模式即剔除（不看顺序、也不管是否在纳入范围内）
+      for (const p of exclude) {
+        if (matchesPattern(page.link, p)) return false;
+      }
+      if (include.length === 0) return true; // 只写了排除项 → 基准为全部可读页面
+      for (const p of include) {
+        if (matchesPattern(page.link, p)) return true;
+      }
+      return false;
     });
+
     const source = fromCli ? '--only' : relative(ROOT, LIST_PATH);
-    console.log(`[summary] 名单（${source}）：${patterns.length} 条模式命中 ${pages.length} 个页面`);
-    for (const p of patterns) {
-      if (hits.get(p) === 0) console.warn(`  ! 该模式未命中任何页面，请检查写法：${p}`);
+    const parts = [];
+    if (include.length > 0) parts.push(`纳入 ${include.length} 条`);
+    if (exclude.length > 0) parts.push(`排除 ${exclude.length} 条`);
+    console.log(`[summary] 名单（${source}）：${parts.join(' / ')} → 命中 ${pages.length} 个页面`);
+    for (const p of include) {
+      if (incHits.get(p) === 0) console.warn(`  ! 该纳入模式未命中任何页面，请检查写法：${p}`);
+    }
+    for (const p of exclude) {
+      if (excHits.get(p) === 0) console.warn(`  ! 该排除模式未命中任何页面，请检查写法：${p}`);
     }
   }
 
