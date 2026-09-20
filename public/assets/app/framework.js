@@ -859,8 +859,15 @@ export function initVideoBg() {
 /**
  * 初始化循环卡片组件
  * 将卡片列表放入滚动轨道中，复制一份以实现无缝循环滚动
- * 鼠标悬停停止滚动，点击触发原始卡片的点击事件
+ * 页面切到后台（document.hidden）时暂停滚动，回到前台继续
  * 容器支持 data-speed 属性控制滚动速度倍率
+ *
+ * 两处与旧注释不符的现状（改动前请先确认是否需要保留）：
+ *   · 鼠标悬停暂停**未实现** —— running 只由 visibilitychange 控制
+ *   · 点击经事件委托映射回原始卡片，但 framework.css 的
+ *     .loop-cards-track { pointer-events: none } 会被子元素继承，
+ *     卡片收不到指针事件，故该委托实际不会触发
+ * 需要可点击/悬停暂停时，先放开上述限制再实现。
  */
 export function initLoopCards() {
   document.querySelectorAll('.loop-cards').forEach((container) => {

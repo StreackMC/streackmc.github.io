@@ -62,12 +62,22 @@
   （框架会把它们搬进自动生成的 `.loop-cards-track`，并在需要时克隆一份做无缝回绕）
   - `data-speed` = 速度倍率（实际速度 = `1.2 * 倍率` px/帧）；缺省 1.0
 - **行为**：rAF 每帧 `translateX(-offset)` 向左无限滚动；内容宽度 ≤ 容器宽度时居中且不滚；
-  hover 暂停；点击经事件委托映射回**原始**卡片（克隆体点击等价原点）；
-  `window.streack.flag.noAnimation` 可全局停动画；`document.hidden` 时暂停
+  `window.streack.flag.noAnimation` 可全局停动画；`document.hidden` 时暂停（回前台继续）
+- ⚠️ **两处「文档说有、实际没有」的行为**（改之前先确认要不要保留）：
+  - **鼠标悬停暂停：未实现** —— `running` 只由 `visibilitychange` 控制
+    （原 JSDoc 写着「鼠标悬停停止滚动」，是过时描述，已订正）
+  - **点击卡片：实际点不到** —— 代码里有事件委托把克隆体点击映射回原始卡片，
+    但 `framework.css` 给 `.loop-cards-track` 加了 `pointer-events: none`，
+    而该属性**会被子元素继承**（`.loop-cards-track > div` 没有重开）→ 卡片收不到指针事件，
+    委托是死代码。`pointer-events: none` 是 `93c4ff3`（2026-07-05 解耦合 Jekyll/H5）引入的，
+    初版(`825c083`)没有 —— 疑似那次重构的副产物（也可能是为了让点击穿透到父级可点横幅）
 - **初始化入口**：首页脚本 `public/assets/code/home.js`（`requestInitFunc` 内调用）；
-  另 framework.js 监听 window resize（防抖 300ms）重新初始化
+  另 framework.js 监听 window resize（防抖 300ms）重新初始化。
+  `requestInitFunc` 在框架已就绪时会**立即执行**，故页面脚本注册时机不会有问题
 - ⚠️ 它**只导出为 ES module**，没有挂到 `window.streack.*`
-- **现状：没有文档，也没有页面在用**（`src/pages/index.astro` 里已无 `.loop-cards`）。
+- **用法文档**：已写入 `temple/page.astro`（详细版）与 `temple/page-clean.astro`（精简版）的
+  「内容块示例 5」+ 页面脚本里的 `initLoopCards()` 调用
+- **现状：没有任何页面在用**（`src/pages/index.astro` 里已无 `.loop-cards`）。
   历史：`825c083`(2026-07-04「添加循环卡片组件」)首页启用 → 之后被注释掉 →
   Astro 迁移(`71f26ed`)时 HTML 用法彻底丢失，只剩 JS/CSS，于是「记得有但找不到」
 

@@ -69,8 +69,43 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
       </div>
     </div>
 
+    <!-- 内容块示例 5：循环滚动卡片（loop-cards）
+         直接子元素即卡片；data-speed 控制速度倍率；需在页面脚本调用 initLoopCards()
+         卡片文案为示例（取自当前版本 S2「岭回双壑风」的更新亮点），按实际页面替换 -->
+    <div class="content" slot="4" style="background: #15151f; color: #ddd; height: auto; min-height: 40vh;">
+      <div style="position: static; width: 100%; padding: 2.5rem 0;">
+        <h2 style="--fs:24px;--fl:36px; --a:center; margin: 0 0 1.5rem;">循环滚动卡片</h2>
+        <div class="loop-cards" data-speed="1">
+          <div class="glass">
+            <h3 style="--fs:16px;--fl:20px; margin: 0 0 .4em;">皎月祝赐</h3>
+            <p style="--fs:13px;--fl:15px; margin: 0;">新增「皎月祝赐」等 14 项附魔。</p>
+          </div>
+          <div class="glass">
+            <h3 style="--fs:16px;--fl:20px; margin: 0 0 .4em;">图腾眷顾</h3>
+            <p style="--fs:13px;--fl:15px; margin: 0;">主手使用不死图腾后，12 秒内免疫绝大多数伤害。</p>
+          </div>
+          <div class="glass">
+            <h3 style="--fs:16px;--fl:20px; margin: 0 0 .4em;">连锁采集</h3>
+            <p style="--fs:13px;--fl:15px; margin: 0;">连锁采集相邻方块，探测半径 1。</p>
+          </div>
+          <div class="glass">
+            <h3 style="--fs:16px;--fl:20px; margin: 0 0 .4em;">扫地姬</h3>
+            <p style="--fs:13px;--fl:15px; margin: 0;">定期清理掉落物，顶部进度条显示倒计时。</p>
+          </div>
+          <div class="glass">
+            <h3 style="--fs:16px;--fl:20px; margin: 0 0 .4em;">假人</h3>
+            <p style="--fs:13px;--fl:15px; margin: 0;">可召唤的假人，单次持续 36 小时。</p>
+          </div>
+          <div class="glass">
+            <h3 style="--fs:16px;--fl:20px; margin: 0 0 .4em;">多版本支持</h3>
+            <p style="--fs:13px;--fl:15px; margin: 0;">Java 版 1.10～1.21.5，基岩版 1.21.50+。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 注释引用示例 -->
-    <div class="content" slot="4" style="background: #1a1a2e; color: #ccc; height: auto; min-height: 30vh;">
+    <div class="content" slot="5" style="background: #1a1a2e; color: #ccc; height: auto; min-height: 30vh;">
       <div style="position: static; width: 80%; max-width: 800px; padding: 3rem 0;">
         <h2 style="--fs:24px;--fl:36px; color: #eee;">注释引用示例</h2>
         <p>
@@ -88,7 +123,11 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
 
   <!-- 页面独有逻辑 -->
   <script slot="scripts" is:inline type="module">
-    import { requestInitFunc, registerToolbarSlot } from '/assets/app/framework.js';
+    import { requestInitFunc, initLoopCards, registerToolbarSlot } from '/assets/app/framework.js';
+
+    requestInitFunc(() => {
+      initLoopCards();
+    });
 
   </script>
 </FrameworkLayout>
