@@ -133,6 +133,10 @@ s-dialog div.dialog {
 }
 
 /* Toolbar2 滚动条 */
+#toolbar2.toolbar2-disallow-scroll, #toolbar2.toolbar2-disallow-scroll * {
+  overflow: hidden;
+}
+
 #toolbar2::-webkit-scrollbar {
   width: 4px;
 }
@@ -248,6 +252,10 @@ s-page:not([dark]) .toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="sea
   white-space: nowrap;
   transition: background 200ms;
   text-align: left;
+}
+
+.toolbar2-slot[data-toolbar-slot="nav"] > *:not([impossible]) {
+  text-align: right;
 }
 
 .toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"])>*[clickable]:hover {

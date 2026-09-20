@@ -543,15 +543,16 @@ export function expandToolbar(slotName) {
   // 等 grid 展开动画（600ms）结束后再显示滚动条，避免动画过程中出现
   const toolbar2 = DOM.toolbar.actions.root;
   clearTimeout(toolbar2._expandTimer);
+  toolbar2.classList.add('toolbar2-disallow-scroll');
   DOM.toolbar.root.addEventListener('mouseleave', shrinkToolbar);
   toolbar2._expandTimer = setTimeout(() => {
     if (!toolbarExpanded) return;  // 动画期间已被收起，不处理
     // 注册事件并设置样式
     document.addEventListener('click', onOutsideClick);
     if (slotName && toolbarSlots[slotName]?.dataset.noscroll) {
-      toolbar2.style.overflow = 'hidden';
+      toolbar2.classList.add('toolbar2-disallow-scroll');
     } else {
-      toolbar2.style.overflow = 'auto';
+      toolbar2.classList.remove('toolbar2-disallow-scroll');
     }
   }, 600);
 }
