@@ -503,6 +503,11 @@ export let toolbarExpanded = false;
  */
 export function shrinkToolbar() {
   if (!DOM.toolbar) return;
+  // 清除未完成的展开结束处理（transitionend），防止动画期间快速操作
+  if (DOM.toolbar.root._expandEndHandler) {
+    DOM.toolbar.root.removeEventListener('transitionend', DOM.toolbar.root._expandEndHandler);
+    DOM.toolbar.root._expandEndHandler = null;
+  }
   DOM.toolbar.root.removeEventListener('mouseleave', shrinkToolbar);
   document.removeEventListener('click', onOutsideClick);
   DOM.toolbar.root.classList.remove('expanded');
@@ -522,7 +527,8 @@ export function shrinkToolbar() {
 /**
  * 展开 Toolbar 并激活指定插槽
  * - 先取消所有插槽的激活状态，再激活目标插槽
- * - 添加 expanded 类触发 CSS 展带动画（内容随 grid 高度同步揭示）
+ * - 添加 expanded 类触发 CSS 展带动画
+ * - 动画期间禁滚（toolbar2-disallow-scroll），过渡结束再按 noscroll 恢复滚动
  * @param {string} [slotName] - 要激活的插槽名称
  */
 export function expandToolbar(slotName) {
@@ -535,10 +541,26 @@ export function expandToolbar(slotName) {
   }
   DOM.toolbar.root.classList.add('expanded');
 
-  // overflow 恒 hidden（无滚动条），无需等待动画切换，立即注册关闭事件即可，
-  // 因而也无需 setTimeout(600) 魔法数字
+  // 动画期间禁滚，避免 grid 展开过程中滚动条闪现
+  const toolbar2 = DOM.toolbar.actions.root;
+  toolbar2.classList.add('toolbar2-disallow-scroll');
   DOM.toolbar.root.addEventListener('mouseleave', shrinkToolbar);
-  document.addEventListener('click', onOutsideClick);
+
+  // 用 transitionend 替代 setTimeout(600) 魔法数字：等高度展开过渡结束再切换滚动
+  const onExpanded = (e) => {
+    if (e.target !== DOM.toolbar.root || e.propertyName !== 'grid-template-rows') return;
+    DOM.toolbar.root.removeEventListener('transitionend', onExpanded);
+    DOM.toolbar.root._expandEndHandler = null;
+    if (!toolbarExpanded) return;  // 动画期间已被收起，不处理
+    document.addEventListener('click', onOutsideClick);
+    if (slotName && toolbarSlots[slotName]?.dataset.noscroll) {
+      toolbar2.classList.add('toolbar2-disallow-scroll');
+    } else {
+      toolbar2.classList.remove('toolbar2-disallow-scroll');
+    }
+  };
+  DOM.toolbar.root._expandEndHandler = onExpanded;
+  DOM.toolbar.root.addEventListener('transitionend', onExpanded);
 }
 
 /** 切换 Toolbar 的展开/收起状态 */
