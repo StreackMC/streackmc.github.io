@@ -57,28 +57,35 @@
 
 ## Toolbar 预设与品牌后缀 loc（2026-09-20）
 - 品牌拆分：Toolbar.astro 里 `#toolbar-brand` > `#toolbar-brand-en`(英文 Streack，窄屏可隐藏) + `#toolbar-brand-loc`(loc 后缀位)
-- framework.js 新增导出：`setToolbarLoc(text)`（自动补「·」）、`fitToolbarBrand()`（品牌响应式适配，见下）、
-  `applyToolbarNavTemplates()`（解析 `<template data-toolbar-nav>`）、
+- framework.js 新增导出：`setToolbarLoc(text)`（自动补「·」）、`setToolbarLocIndex(url)`（点击 loc 跳转）、
+  `fitToolbarBrand()`（品牌响应式适配，见下）、`applyToolbarNavTemplates()`（解析 `<template data-toolbar-nav>`）、
   `parseReplaceset` / `fillPlaceholders`（`%xxx%` 替换，未提供的占位符原样保留）、
   `mergeNavNodes(presetNodes, ownNodes)`（导航合并，见下）
+- **loc-index**：与 loc 配套，点击 loc 后缀文字跳转到指定地址（取代「点击品牌默认跳首页」）。
+  优先级元素自身 > 预设；未设置则点击冒泡到品牌、恢复跳首页。
+  预设字段 `locIndex`（如 `document` 预设 `locIndex:'/doc/'`），frontmatter 字段 `loc-index`
 - `fitToolbarBrand()` 三级降级（仅配置 loc 时介入）：
   ① 全显示「栈流Streack·loc」→ ② 放不下隐藏英文名 → ③ 还放不下隐藏整个品牌（只留按钮）
   宽度判定用**全角字符估算**：每个「字」（去空白）按 1em 计，半角英文也按全角算 → 留设计冗余，
   避免实测宽度（半角偏窄）导致的误判；节流用 **rAF**（非 setTimeout）
+- **⚠️ setToolbarLoc 必须用 rAF 调度 fitToolbarBrand，不能同步调用**：同步调用时 s-tooltip
+  （搜索/汉堡按钮）尚未完成内部渲染，`getBoundingClientRect().width` 为 0，可用宽度被高估、
+  降级判断不足（只到「隐藏英文」、到不了「隐藏整个品牌」）——这是「极窄品牌未隐藏」的根因
 - **响应式断点约定**：移动端 ≤833px、桌面 ≥834px（两者错开 1px）——
   framework.css 里 `[pc-only]` 用 `max-width:833px` 隐藏、`[mobile-only]` 用 `min-width:834px` 隐藏，
   **不可都用 834px**（否则 834px 处两者同时隐藏、导航项全部消失）
-- 预设表 `public/assets/app/toolbar-presets.js`：`Map<名称, { loc, nav }>`，现含
+- 预设表 `public/assets/app/toolbar-presets.js`：`Map<名称, { loc, locIndex, nav }>`，现含
   `document` / `about` / `example-of-section`（后者用 `%section%` 演示占位符）；
   `registerToolbarPreset` / `getToolbarPreset` 可运行时扩展；**预设按钮都带 id**（doc-* / about-* / ex-*）
-- 用法两种：Astro `<template slot="toolbar-nav" data-toolbar-nav toolbar-set="document" replaceset='…'>`；
-  Markdown frontmatter `nav-preset: document`（简写）或 `{ set, loc, replaceset }`（对象）
+- 用法两种：Astro `<template slot="toolbar-nav" data-toolbar-nav toolbar-set="document" loc-index="…">`；
+  Markdown frontmatter `nav-preset: document`（简写）或 `{ set, loc, loc-index, replaceset }`（对象）
 - 合并规则：
-  · loc：元素自身 loc 属性有值用自身，否则继承预设（两者都做占位符替换）
+  · loc / loc-index：元素自身属性有值用自身，否则继承预设（两者都做占位符替换）
   · nav：preset 按钮与 template 按钮**合并**（都显示）——template 按钮带 id 且命中
     preset 同 id → 覆写（保持 preset 原位置）；否则（无 id / 未命中）→ 追加到末尾；
     占位符替换同时作用于 preset 与 template
-- `content.config.ts` 加 `nav-preset` schema 与 `nav` 项可选 `id` 字段；`DocLayout.astro` 转成 template 三属性
+- `content.config.ts` 加 `nav-preset` schema（含 loc-index）与 `nav` 项可选 `id` 字段；
+  `DocLayout.astro` 转成 template 属性（toolbar-set / loc / loc-index / replaceset）
 
 ## loop-cards 循环卡片组件（自研轮播，无文档、当前未使用）
 - 位置：`public/assets/app/framework.js` 的 `export function initLoopCards()`（约 865 行）
