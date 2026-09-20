@@ -701,7 +701,35 @@ export function setToolbarLoc(text) {
   const t = String(text ?? '');
   // 若使用者自带前导分隔符（·/・/| 等），不再重复添加
   el.textContent = !t.trim() ? '' : /^[·・|｜/]/.test(t.trim()) ? t.trimEnd() : ' · ' + t;
-  fitToolbarBrand();
+  // 用 rAF 调度而非同步调用：此时 s-tooltip（搜索/汉堡按钮）可能尚未完成内部渲染，
+  // 同步测量其 getBoundingClientRect().width 会得 0，导致可用宽度被高估、降级判断不足
+  scheduleToolbarBrandFit();
+}
+
+/**
+ * 设置 loc 后缀的点击跳转地址（loc-index 设置）
+ * 点击 loc 文字时跳转到该地址，取代「点击品牌默认跳首页」；
+ * 未设置（传空）时，点击 loc 会冒泡到品牌，恢复默认跳首页
+ * @param {string} [url] 传空则清除
+ */
+export function setToolbarLocIndex(url) {
+  const el = document.getElementById('toolbar-brand-loc');
+  if (!el) return;
+  const u = String(url ?? '').trim();
+  // 清除旧的点击处理
+  if (el._locIndexClick) {
+    el.removeEventListener('click', el._locIndexClick);
+    el._locIndexClick = null;
+    el.removeAttribute('data-loc-index');
+  }
+  if (!u) return;
+  el.setAttribute('data-loc-index', u);
+  el._locIndexClick = (e) => {
+    e.stopPropagation(); // 阻止冒泡到品牌（否则会跳首页）
+    e.preventDefault();
+    openURL(u, true);
+  };
+  el.addEventListener('click', el._locIndexClick);
 }
 
 /** 节流：多处（resize / 字体加载 / 导航注入）都会触发品牌适配。
@@ -836,6 +864,13 @@ export function applyToolbarNavTemplates() {
       setToolbarLoc(locText);
       locApplied = true;
     }
+
+    // ②b loc-index：点击 loc 文字的跳转地址（元素自身优先，否则继承预设；同样做占位符替换）
+    const ownLocIndex = tmpl.getAttribute('loc-index');
+    const locIndex = ownLocIndex != null
+      ? fillPlaceholders(ownLocIndex, replaceset)
+      : fillPlaceholders(preset?.locIndex, replaceset);
+    setToolbarLocIndex(locIndex || '');
 
     // ③ nav：preset 与 template 的按钮**合并**（template 优先）
     //   · template 按钮带 id 且命中 preset 同 id → 覆写（保持 preset 原位置）
@@ -1212,6 +1247,7 @@ if (!Array.isArray(window?.streack?.meta?.initby)) {
     expandToolbar: expandToolbar,
     switchToolbar: switchToolbar,
     setToolbarLoc: setToolbarLoc,
+    setToolbarLocIndex: setToolbarLocIndex,
     toolbarPresets: toolbarPresets,
     registerToolbarPreset: registerToolbarPreset,
     CopyText: CopyText,
@@ -1233,6 +1269,7 @@ if (!Array.isArray(window?.streack?.meta?.initby)) {
   window.streack.expandToolbar = expandToolbar;
   window.streack.switchToolbar = switchToolbar;
   window.streack.setToolbarLoc = setToolbarLoc;
+  window.streack.setToolbarLocIndex = setToolbarLocIndex;
   window.streack.toolbarPresets = toolbarPresets;
   window.streack.registerToolbarPreset = registerToolbarPreset;
   window.streack.CopyText = CopyText;

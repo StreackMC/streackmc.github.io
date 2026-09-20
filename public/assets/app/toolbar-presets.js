@@ -2,9 +2,10 @@
  * toolbar 预设表 —— Map<String, ToolbarTemplateLike>
  *
  * ■ ToolbarTemplateLike
- *   等价于「填进 <template slot="toolbar-nav" data-toolbar-nav> 里的内容」，即两项设置：
+ *   等价于「填进 <template slot="toolbar-nav" data-toolbar-nav> 里的内容」，即三项设置：
  *     · loc — 品牌后缀文本，渲染为「栈流Streack·<loc>」
  *             （框架会自动补「·」；若你已自带前导分隔符也不会重复）
+ *     · locIndex — 点击 loc 文字时的跳转地址（取代「点击品牌默认跳首页」；可选）
  *     · nav — 注入 #toolbar-nav-slot 的 HTML，也就是 template 的 innerHTML
  *             （写法与页面里手写的导航项完全一致，支持 pc-only / data-cmd 等）
  *
@@ -38,6 +39,7 @@ export const toolbarPresets = new Map([
     'document',
     {
       loc: '文档',
+      locIndex: '/doc/',
       nav: [
         '<div pc-only id="doc-home" data-cmd="url:/doc/|" clickable>文档</div>',
         '<div pc-only id="doc-event" data-cmd="url:/doc/event/|" clickable>活动</div>',

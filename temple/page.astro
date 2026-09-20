@@ -28,14 +28,14 @@
  *     优先级：元素自身的 loc 属性 / template 内部内容 优先于预设；
  *             replaceset 的替换对两者都生效
  *
- *     四种用法（复制到正文的 display:contents 包裹层里使用）：
+ *     五种用法（复制到正文的 display:contents 包裹层里使用）：
  *       // ① 手写导航项
  *       <template slot="toolbar-nav" data-toolbar-nav>
  *         <div pc-only data-cmd="url:/doc/news/|" clickable>新闻</div>
  *       </template>
  *
- *       // ② 只加品牌后缀
- *       <template slot="toolbar-nav" data-toolbar-nav loc="文档"></template>
+ *       // ② 只加品牌后缀（可选 loc-index：点击 loc 文字跳转到指定地址，取代跳首页）
+ *       <template slot="toolbar-nav" data-toolbar-nav loc="文档" loc-index="/doc/"></template>
  *
  *       // ③ 引用预设：继承 loc，template 内按钮与预设按钮**合并**（都显示；
  *       //    template 带 id 且命中预设同 id → 覆写，否则追加到末尾）
@@ -83,14 +83,15 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
   <!-- 导航项模板（可选）—— 五种用法，取消注释其一即可：
        ① 手写导航项（下面这份）
        ② 只加品牌后缀：模板上加 loc="文档"            → 品牌显示「栈流Streack·文档」
+          可选 loc-index="/doc/" → 点击 loc 文字跳转到该地址（取代跳首页）
        ③ 引用预设：模板上加 toolbar-set="document"
-           → 继承 loc；template 内按钮与预设按钮**合并**（都显示）
+           → 继承 loc / loc-index；template 内按钮与预设按钮**合并**（都显示）
        ④ 预设 + 占位符：再加 replaceset='{"section":"活动"}'
           预设值里写 %section% 的地方会被替换成「活动」
        ⑤ 覆写预设里某个按钮：template 内按钮加 id，命中预设同 id 即覆写，其余保留
 
        ②③④⑤ 的可复制写法（预设表见 public/assets/app/toolbar-presets.js）：
-         <template slot="toolbar-nav" data-toolbar-nav loc="文档"></template>
+         <template slot="toolbar-nav" data-toolbar-nav loc="文档" loc-index="/doc/"></template>
          <template slot="toolbar-nav" data-toolbar-nav toolbar-set="document"></template>
          <template slot="toolbar-nav" data-toolbar-nav toolbar-set="example-of-section" replaceset='{"section":"活动"}'></template>
          <template slot="toolbar-nav" data-toolbar-nav toolbar-set="document">

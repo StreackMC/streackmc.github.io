@@ -68,8 +68,9 @@ nav-preset: document  # 引用预设（简写）
 | 写法 | 含义 |
 | --- | --- |
 | `nav-preset: document` | 简写，等于只写 `set: document` |
-| `nav-preset: { set: 预设名 }` | 引用预设，继承其 `loc`；`nav`（若有）与预设按钮**合并** |
+| `nav-preset: { set: 预设名 }` | 引用预设，继承其 `loc` / `loc-index`；`nav`（若有）与预设按钮**合并** |
 | `nav-preset: { loc: 文档 }` | 不引用预设，只给品牌加后缀 |
+| `nav-preset: { loc: 文档, loc-index: /doc/ }` | 加后缀，且点击后缀文字跳转到 `/doc/` |
 | `nav-preset: { set: 预设名, loc: 覆盖值 }` | 引用预设并覆盖其后缀 |
 | `nav-preset: { set: 预设名, replaceset: { 键: 值 } }` | 预设里可写 `%键%` 占位符，由 `replaceset` 替换 |
 
@@ -83,8 +84,10 @@ nav-preset:
 ---
 ```
 
-- 预设表定义在 `public/assets/app/toolbar-presets.js`（`Map<名称, { loc, nav }>`），
+- 预设表定义在 `public/assets/app/toolbar-presets.js`（`Map<名称, { loc, locIndex, nav }>`），
   可按站点需要增删；预设按钮都带 `id`，便于页面按 id 覆写某一项。
+- **`loc-index`**：点击 loc 后缀文字时的跳转地址（取代「点击品牌默认跳首页」）；
+  未设置时点击 loc 会冒泡到品牌、恢复跳首页。
 - **nav 的合并规则（template 优先）**：`nav` 里的每一项与预设按钮**合并**（都显示）；
   `nav` 项带 `id` 且命中预设同 `id` → **覆写**（保持预设原位置），否则追加到末尾。
   例：预设含 `id="doc-news"` 的「新闻博客」，页面写

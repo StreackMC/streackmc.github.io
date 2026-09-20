@@ -65,6 +65,7 @@ const content = defineCollection({
         z.object({
           set: z.string().optional(),
           loc: z.string().optional(),
+          'loc-index': z.string().optional(),
           replaceset: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
         }),
       ])
