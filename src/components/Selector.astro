@@ -13,13 +13,16 @@
  *
  * Props:
  *   config  - 选择器配置对象 { title, layerTitle?, options: [...] }
- *   id      - 可选，实例唯一 ID（多实例时用于区分）
- *   history - 是否添加历史记录条目（默认 true；false 则仅 replaceState 改地址栏）
+ *   id      - 可选。**设了才参与 URL 同步**（?selector=id:path）；
+ *             不设 = 完全不使用该功能：不读参数、不写 URL、不产生历史条目。
+ *             多实例时也用它区分（同页多个 id 不能重复）
+ *   history - 仅在设了 id 时有意义。默认 true（pushState，可按后退回退选择过程）；
+ *             false → 一律 replaceState，只改地址栏、不增加历史条目
  *   class   - 可选，额外 CSS 类名（控制宽度/边距等）
  *
  * 与 SelectorLayout 的区别：
  *   - 不包含 FrameworkLayout 包裹，不是整页布局
- *   - 不渲染标题/描述 header（由宿主页面提供上下文）
+ *   - 不渲染标题/描述 header（由宿主页面提供上下文），因此**没有 icon_svg / icon_src**
  *   - 不覆盖 .content 布局，仅作为普通块级元素
  *   - CSS/JS 由组件自行引入，浏览器自动去重
  */

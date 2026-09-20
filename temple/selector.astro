@@ -15,35 +15,61 @@
  *      description="页面描述"
  *      theme="light"
  *      config={config}
- *      id="legal"           // 可选，用于 URL 同步
- *      history={true}       // 可选，默认 true；false 则仅 replaceState
- *      icon_svg="<svg viewBox='0 -960 960 960'>…</svg>"  // 可选，标题上方图标（内联 SVG，包进 <s-icon>）
- *      icon_src="/assets/img/xxx.svg"                    // 可选，标题上方图标（图片，包成 <img>）
+ *      id="legal"                    // 可选：参与 URL 同步；不写则完全不使用该功能
+ *      history={false}               // 可选：仅在设了 id 时有意义；false = 只改地址栏、不加历史条目
+ *      icon_svg="<svg …>…</svg>"     // 可选：标题上方图标（内联 SVG，包进 <s-icon>）
+ *      icon_src="/assets/img/x.svg"  // 可选：标题上方图标（图片，包成 <img>）
  *    />
- *
- *    图标：icon_svg / icon_src 两者都提供时以 icon_svg 为准；都不提供则不渲染图标。
- *    它渲染在标题（config.title）上方一行，首栏整体居中、字号与下载页一致。
  *
  *  ② 嵌入模式（Selector 组件）— 作为控件插入任意页面
  *  ─────────────────────────────────────────────────────────────
  *    import Selector from '/src/components/Selector.astro';
  *
- *    <Selector config={config} id="faq" history={false} />
+ *    <Selector config={config} />                            // 不参与 URL 同步
+ *    <Selector config={config} id="faq" />                   // 参与 URL 同步
+ *    <Selector config={config} id="faq" history={false} />   // 同步参数、但不加历史条目
+ *
+ *  嵌入模式不渲染标题/描述（上下文由宿主页面提供），因此**没有图标参数** ——
+ *  图标只属于整页模式的首栏。
  *
  *  ═══════════════════════════════════════════════════════════════
- *  URL 同步（需要设置 id 属性）
+ *  可选图标（仅整页模式；渲染在标题上方一行）
  *  ═══════════════════════════════════════════════════════════════
  *
- *  页面加载时读取 ?selector= 参数，格式：
- *    id:label.sublabel|id2:label2.sublabel2
+ *    <!-- 内联 SVG（推荐：无额外请求，颜色随主题） -->
+ *    icon_svg="<svg viewBox='0 -960 960 960'><path d='M200-280v-280h80v280h-80Z'/></svg>"
  *
- *  示例：?selector=legal:隐私政策.我们收集的信息.账户信息
- *  多控件：?selector=legal:隐私政策|faq:退款.方式
+ *    <!-- 或图片地址 -->
+ *    icon_src="/assets/img/legal.svg"
  *
- *  - 按 . 分隔的路径逐层选中对应 label 的按钮
- *  - 用户交互后自动 pushState 更新参数
- *  - 浏览器前进/后退时 popstate 重新应用
- *  - history=false 时用 replaceState 仅改地址栏，不增加历史条目
+ *  · 两者都提供时以 icon_svg 为准；都不提供（或传空串）则不渲染图标，也不多余换行
+ *  · 由 src/components/PageIcon.astro 统一处理，图标自带 <br> 故独占标题上方一行
+ *  · 尺寸 1.5em，随标题字号缩放
+ *  · 图标请走这个参数，**不要写进 config.title**：虽然标题用 set:html 渲染、
+ *    写 HTML 也能显示，但那样用不了 icon_src，描述里也会带上标签
+ *
+ *  ═══════════════════════════════════════════════════════════════
+ *  URL 同步 / 历史记录：两级开关
+ *  ═══════════════════════════════════════════════════════════════
+ *
+ *  ① 不设 id —— **完全不使用该功能**
+ *     不读 ?selector、不写 URL、不产生任何历史条目（连 replaceState 都不调）。
+ *     纯展示、或不需要分享 / 回退状态的选择器，不写 id 即可。
+ *     多实例页面里，未设 id 的实例不影响其它实例的参数。
+ *
+ *  ② 设了 id —— 参与同步
+ *     ?selector=id:label.sublabel|id2:label2.sublabel2
+ *       单控件：?selector=legal:隐私政策.我们收集的信息.账户信息
+ *       多控件：?selector=legal:隐私政策|faq:退款.方式
+ *     · 页面加载时按 . 分隔的路径逐层选中对应 label 的按钮
+ *     · 用户交互后更新参数；浏览器前进/后退（popstate）重新应用
+ *     · 默认 pushState —— 新增历史条目，可按后退键逐步回退选择过程
+ *     · history={false} → 一律 replaceState：只改地址栏、不增加历史条目
+ *       （「重新选择」与面包屑回退同样如此，不会把历史记录撑大）
+ *
+ *     怎么选：要能按后退回退选择过程 → 设 id（默认）
+ *             只想让地址栏体现/可分享当前选择，但不污染历史 → id + history={false}
+ *             完全不需要 → 不设 id
  *
  *  ═══════════════════════════════════════════════════════════════
  *  配置结构
@@ -120,11 +146,14 @@ const config = {
 };
 ---
 
-/*
- * 整页模式示例（取消注释以使用）：
+{/*
+ * 整页模式示例（去掉本段注释标记即可使用）：
+ * 注：此处必须整体写成 JSX 注释的形式 —— Astro 模板体里的普通块注释
+ *     并不能阻止其中的 <组件 /> 被编译，未导入时会报 "xxx is not defined"。
  *
  * import SelectorLayout from '/src/layouts/SelectorLayout.astro';
  *
+ * <!-- ① 默认：设 id，可用后退键回退选择过程 -->
  * <SelectorLayout
  *   title="法律与隐私 — 栈流Streack"
  *   description="选择法律主题以查看相关条款"
@@ -132,12 +161,34 @@ const config = {
  *   config={config}
  *   id="legal"
  * />
- */
+ *
+ * <!-- ② 带图标 + 不污染历史记录：设 id 但 history={false} -->
+ * <SelectorLayout
+ *   title="法律与隐私 — 栈流Streack"
+ *   theme="light"
+ *   config={config}
+ *   id="legal"
+ *   history={false}
+ *   icon_svg="<svg viewBox='0 -960 960 960'><path d='M200-280v-280h80v280h-80Z'/></svg>"
+ * />
+ *
+ * <!-- ③ 完全不用 URL 功能：不写 id（连地址栏都不会被改） -->
+ * <SelectorLayout
+ *   title="法律与隐私 — 栈流Streack"
+ *   theme="light"
+ *   config={config}
+ * />
+ *
+ * <!-- 图标也可以换成图片 -->
+ * <SelectorLayout config={config} icon_src="/assets/img/legal.svg" />
+ */}
 
-/*
- * 嵌入模式示例（取消注释以使用）：
+{/*
+ * 嵌入模式示例（去掉本段注释标记即可使用）：
  *
  * import Selector from '/src/components/Selector.astro';
  *
- * <Selector config={config} id="legal" />
- */
+ * <Selector config={config} />                          // 不参与 URL 同步
+ * <Selector config={config} id="faq" />                 // 参与 URL 同步
+ * <Selector config={config} id="faq" history={false} /> // 同步参数但不加历史条目
+ */}

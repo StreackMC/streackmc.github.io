@@ -16,13 +16,16 @@
  *   - 用户主动的「重新选择」与面包屑回退，即便回到第 0 层也**要滚动**
  *     （是明确的用户意图，不滚会让用户停在「结果卡已消失」的空位置上）。
  *
- * URL 同步：
- *   通过 ?selector=id:path.subpath|id2:path2 参数控制选择器状态。
- *   - 页面加载时解析参数，自动选中对应路径
- *   - 用户交互后 pushState 更新参数
- *   - 浏览器前进/后退时 popstate 重新应用
- *   需要给 .selector-wrap 设置 id 属性才能参与 URL 同步
- *   data-selector-history="false" → replaceState 仅改地址栏，不增加历史条目
+ * URL 同步（两级开关）：
+ *   ① 不设 id —— **完全不使用该功能**：不读取 ?selector、不写 URL、不产生历史条目。
+ *      多实例页面里，未设 id 的实例也不影响其它实例的参数。
+ *   ② 设了 id —— 参与同步：?selector=id:path.subpath|id2:path2
+ *      - 页面加载时解析参数，自动选中对应路径
+ *      - 用户交互后更新参数
+ *      - 浏览器前进/后退时 popstate 重新应用
+ *      - 默认 pushState（增加历史条目，可回退）
+ *      - data-selector-history="false" → 一律 replaceState，
+ *        只改地址栏、不增加历史条目（含「重新选择」与面包屑回退）
  *
  * 配置结构：
  *   config = { title, description?, layerTitle?, options: [...] }
@@ -46,15 +49,23 @@
    * 收集所有已注册实例的路径，构建 selector 参数并写入 URL
    * @param {boolean} usePush — true=用户交互（受 addHistory 控制），false=初始化/URL驱动
    *
+   * 参与规则（「不使用 URL 功能」= 不设 id）：
+   *   - 只有**设了 id** 的实例参与 URL 同步；
+   *   - 一个都没设 id → 完全不碰 URL（不 push 也不 replace）；
+   *   - 未完成选择的实例不写入参数（但不影响它参与 addHistory 的判断）。
+   *
    * addHistory 规则：
-   *   当 usePush=true 时，若所有参与同步的实例 addHistory=false → replaceState
-   *   否则 → pushState（只要有任一实例需要历史记录，就保留）
+   *   usePush=true 时，若所有参与实例的 addHistory 均为 false → replaceState，
+   *   否则 → pushState（只要有一个实例需要历史记录，就保留）。
    */
   function syncURL(usePush) {
-    let active = registry.filter(function (inst) {
-      return inst.root.id && inst.getPath().length > 0;
-    });
-    let parts = active.map(function (inst) {
+    /* 没设 id 的实例完全不参与 URL 同步 */
+    let participants = registry.filter(function (inst) { return inst.root.id; });
+    if (participants.length === 0) return;
+
+    let parts = participants.filter(function (inst) {
+      return inst.getPath().length > 0; /* 尚未选择的实例不写入参数 */
+    }).map(function (inst) {
       return inst.root.id + ':' + inst.getPath().join('.');
     });
 
@@ -65,12 +76,11 @@
       url.searchParams.delete('selector');
     }
 
-    /* 判断实际操作：pushState 还是 replaceState */
-    let shouldPush = usePush;
-    if (usePush && active.length > 0) {
-      /* 只要有一个实例 addHistory=true，就 pushState */
-      shouldPush = active.some(function (inst) { return inst.addHistory; });
-    }
+    /* 只要有一个参与实例需要历史记录，就 pushState；否则仅 replaceState。
+       注意：这里必须按 participants 而非「有路径的实例」判断 ——
+       否则 path 清空（点「重新选择」/ 回退到根层）时会退化成无条件 pushState，
+       使 history=false 失效。 */
+    let shouldPush = usePush && participants.some(function (inst) { return inst.addHistory; });
 
     if (shouldPush) {
       history.pushState({}, '', url);

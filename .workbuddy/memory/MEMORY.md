@@ -56,8 +56,18 @@
   - **用户主动的「重新选择」与面包屑回退，回到第 0 层也必须显式传 `true`**
     （曾用 `depth > 0` 一刀切，把这俩的滚动一起掐掉 → 点「重新选择」后停在空白处）
   - 教训：用 depth 推断「是不是初始化」不可靠，第 0 层既有初始化也有用户回退，必须由调用方显式表达意图
-- URL 同步：`?selector=id:a.b.c|id2:x.y`（pushState/popstate）；给 `.selector-wrap` 设 id 才启用；
-  `data-selector-history="false"` → replaceState 仅改地址栏
+- URL 同步是**两级开关**（`syncURL` 只认「设了 id 的实例」= participants）：
+  - **不设 id → 完全不使用该功能**：`participants.length === 0` 时直接 return，
+    不读参数、不写 URL、不产生任何历史条目（连 replaceState 都不调）
+  - **设了 id → 参与**：`?selector=id:a.b.c|id2:x.y`，加载时逐层选中 + popstate 重新应用；
+    默认 pushState；`data-selector-history="false"` → 一律 replaceState
+  - **坑**：判断 push/replace 必须按 **participants** 而非「有路径的实例」。
+    曾用后者 → `path` 清空时（点「重新选择」/ 回退到根层）退化成无条件 pushState，
+    使 `history=false` 失效，且不设 id 的页面也会被塞进一条历史记录
+- 首栏图标参数（两个布局共用 `src/components/PageIcon.astro`）：
+  `icon_svg`（内联 SVG，包进 `<s-icon>`，优先）/ `icon_src`（图片，包成 `<img>`）；
+  都不给（或空串）则不渲染；渲染在标题上方一行（自带 `<br>`），1.5em 随字号缩放。
+  **只属于整页模式** —— 嵌入组件 `Selector.astro` 不渲染首栏，故无此参数
 - 初始化后移除 DOM 中的 `[data-selector-config]` 脚本
 - **配置字段可含 HTML**（如 `title` 内联 `<s-icon><svg>…</svg></s-icon>`；`s-icon` 模板就是 `<slot>`，支持自定义 SVG）：
   `title`/`description` 在 `SelectorLayout` 里**必须用 `set:html`** —— Astro 文本插值 `{x}` 会转义成
@@ -155,3 +165,8 @@
 - 构建命令：`ASTRO_TELEMETRY_DISABLED=1 npx astro build`
 - 所有引用 public/ 或外部 URL 的 `<script>` 必须加 `is:inline`
 - HTML `slot` 属性与 Astro 插槽指令冲突，需用 `display:contents` 包裹层隔离
+- **模板体里的普通块注释保护不了 JSX**：在 `---` 之后的模板区写 `/* … <Foo /> … */`，
+  Astro 仍会把 `<Foo />` 编译成组件调用 → 未导入时报 `Foo is not defined`。
+  模板区必须用 **JSX 注释 `{/* … */}`**（前台的 `---` 里才是真 JS 块注释，那里写 `/* */` 没问题）。
+  `temple/*.astro` 不参与构建，所以这类错误平时看不见 —— **改完 temple 要临时复制到
+  `src/pages/<目录>/` 再 build 校验一次**；注意目录名不能以 `_` 开头（Astro 忽略下划线开头的路径）。

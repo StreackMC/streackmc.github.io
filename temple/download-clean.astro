@@ -13,6 +13,10 @@
 import DownloadLayout from '/src/layouts/DownloadLayout.astro';
 ---
 
+<!-- 可选图标（渲染在标题上方一行）。二选一，也可都留空：
+     icon_svg="<svg viewBox='0 -960 960 960'><path d='M200-280v-280h80v280h-80Z'/></svg>"
+     icon_src="/assets/img/download.svg"
+     两者都给时以 icon_svg 为准；都不给则不渲染图标。 -->
 <DownloadLayout
   title="下载「  」 — 栈流Streack"
   description=""

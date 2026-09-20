@@ -13,8 +13,10 @@
  *   keywords    - meta keywords
  *   theme       - s-page 主题（默认 light）
  *   config      - 选择器配置对象 { title, description, options: [...] }
- *   id          - 选择器实例 ID（用于 URL 同步 ?selector=id:path）
- *   history     - 是否添加历史记录条目（默认 true；false 则仅 replaceState 改地址栏）
+ *   id          - 选择器实例 ID。**设了才参与 URL 同步**（?selector=id:path）；
+ *                 不设 = 完全不使用该功能：不读参数、不写 URL、不产生历史条目
+ *   history     - 仅在设了 id 时有意义。默认 true（pushState，可按后退回退选择过程）；
+ *                 false → 一律 replaceState，只改地址栏、不增加历史条目
  *   icon_svg    - 可选，首栏标题上方图标的**内联 SVG 源码**，会被包进 <s-icon>
  *   icon_src    - 可选，首栏标题上方图标的**图片地址**，会被包成 <img>
  *                 （icon_svg 与 icon_src 同时提供时以 icon_svg 为准；都不传则不渲染图标）

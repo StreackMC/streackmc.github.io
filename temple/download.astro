@@ -13,9 +13,12 @@
  *
  * 所需替换：
  *   - title / description / keywords → 页面 meta
- *   - heading → 下载页标题（渲染为 <h1>，居中；图标独占其上方一行）
- *   - icon_svg（内联 SVG 源码，包进 <s-icon>）或 icon_src（图片地址，包成 <img>）
- *     → 首栏图标，可选；两者都给时以 icon_svg 为准，都不给则不渲染图标
+ *   - heading → 下载页标题（渲染为 <h1>，居中）
+ *   - 图标（可选，渲染在标题上方一行，由 src/components/PageIcon.astro 处理）：
+ *       icon_svg="<svg viewBox='0 -960 960 960'><path d='…'/></svg>"  // 内联 SVG，包进 <s-icon>
+ *       icon_src="/assets/img/x.svg"                                   // 图片地址，包成 <img>
+ *     两者都给时以 icon_svg 为准；都不给（或留空串）则不渲染图标，也不多余换行。
+ *     图标请走这个参数，不要写进 heading —— heading 是纯文本，会被转义。
  *   - 导航栏 template → 返回链接
  *   - <time> → 发行日期
  *   - <p> → 版本说明
@@ -26,6 +29,10 @@
 import DownloadLayout from '/src/layouts/DownloadLayout.astro';
 ---
 
+<!-- 可选图标（渲染在标题上方一行）。二选一，也可都留空：
+     icon_svg="<svg viewBox='0 -960 960 960'><path d='M200-280v-280h80v280h-80Z'/></svg>"
+     icon_src="/assets/img/download.svg"
+     两者都给时以 icon_svg 为准；都不给则不渲染图标。 -->
 <DownloadLayout
   title="下载「存档名称」 — 栈流Streack"
   description="存档下载页面的描述"
