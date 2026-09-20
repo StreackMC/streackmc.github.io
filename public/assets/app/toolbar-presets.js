@@ -52,6 +52,7 @@ export const toolbarPresets = new Map([
     'about',
     {
       loc: '关于我们',
+      locIndex: '/about/leadership',
       nav: [
         `<div pc-only id="about-team" onclick='window.streack.openURL("/about/leadership/",true)' clickable>团队</div>`,
         `<div pc-only id="about-career" onclick='window.streack.openURL("/about/career/",true)' clickable>广纳贤士</div>`,
