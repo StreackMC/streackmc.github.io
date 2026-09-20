@@ -3,7 +3,7 @@ title: Markdown 语法示例
 description: 展示本站点支持的 Markdown 语法及其渲染样式。
 nav:
   - label: 文档中心
-    href: /docs
+    href: /_md
   - label: 回到顶部
     cmd: "slot:0"
 ---
@@ -17,9 +17,11 @@ nav:
 
 ## 链接
 
-- 默认链接在**当前窗口**打开：[站内链接](/docs)、[外部链接](https://astro.build)
+- 默认链接在**当前窗口**打开：[站内链接](/_md)、[外部链接](https://astro.build)
 - **链接语法糖**：在链接文字中写 `↗`（或 `$` / `฿`），会改为**新标签页**打开并附外链箭头 ——
   [Astro 官网↗](https://astro.build)、[Astro 文档$](https://docs.astro.build)
+
+只要写好链接文字即可，无需手动加 `target` 或图标。
 
 ## 各级标题
 
@@ -30,6 +32,9 @@ nav:
 ##### 五级标题
 
 ###### 六级标题
+
+每个标题都会被自动赋予锚点，点击标题即可复制/跳转到该处；
+二、三级标题还会自动进入页首目录（本页顶部）。
 
 ## 列表
 
@@ -80,7 +85,7 @@ nav:
 
 行内代码示例：`npm run build`。
 
-代码块：
+代码块（右上角会自动出现「复制」按钮）：
 
 ```js
 // 路径映射示意：src/content/<路径>.md → /<路径>
@@ -107,8 +112,21 @@ ASTRO_TELEMETRY_DISABLED=1 npx astro build
 
 ![示例图片](/assets/img/cover.png)
 
+图片会自动懒加载，无需手写属性。
+
 ## 其他
 
 键盘按键：按 <kbd>Ctrl</kbd> + <kbd>K</kbd> 可以搜索。
 
 参考链接与脚注内容均按站点样式渲染。
+
+## 不需要页首目录时
+
+页首目录默认渲染（收集 2~3 级标题，少于 2 项则不显示），可折叠。
+若某页不需要，在 frontmatter 写一行即可，该页将完全不输出目录区块：
+
+```yaml
+---
+toc: false
+---
+```
