@@ -1,32 +1,126 @@
 ---
 import FrameworkLayout from '../../layouts/FrameworkLayout.astro';
 ---
-<FrameworkLayout title="捐赠与赞助 — 栈流Streack" description="404 Notfound Page" keywords="404,unknown,missingno"
+<FrameworkLayout title="捐赠与赞助 — 栈流Streack" description="支持栈流Streack的公益运营，每一份赞助都让这片天地走得更远。" keywords="捐赠,赞助,公益,支付宝,微信,QQ"
   theme="light">
 
   <template slot="toolbar-nav" data-toolbar-nav toolbar-set="about"></template>
 
   <div style="display: contents">
+    <!-- Hero：标题 + 一句价值主张 -->
     <div class="content" slot="0" style="height: max-content;">
       <div
-        style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: start; width: min(1024px, calc(var(--w) * 0.6));">
+        style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: center; width: min(1024px, calc(var(--w) * 0.6));">
         <h1 style="--fs:36px;--fl:52px; --a:center; margin: 4rem auto 0rem auto;">
           <s-icon style="width: 1.5em; margin-bottom: .5em;">
-            <svg data-v-49a22239="" viewBox="0 -960 960 960">
-              <path data-v-49a22239=""
+            <svg viewBox="0 -960 960 960">
+              <path
                 d="M668.5-531.5Q680-543 680-560t-11.5-28.5Q657-600 640-600t-28.5 11.5Q600-577 600-560t11.5 28.5Q623-520 640-520t28.5-11.5ZM320-600h200v-80H320v80ZM180-120q-34-114-67-227.5T80-580q0-92 64-156t156-64h200q29-38 70.5-59t89.5-21q25 0 42.5 17.5T720-820q0 6-1.5 12t-3.5 11q-4 11-7.5 22.5T702-751l91 91h87v279l-113 37-67 224H480v-80h-80v80H180Zm60-80h80v-80h240v80h80l62-206 98-33v-141h-40L620-720q0-20 2.5-38.5T630-796q-29 8-51 27.5T547-720H300q-58 0-99 41t-41 99q0 98 27 191.5T240-200Zm240-298Z">
               </path>
             </svg>
           </s-icon><br>
           捐赠与赞助
         </h1>
+        <p style="--fs:18px;--fl:28px; --lh:1.35em; max-width: 90%; margin: 1.5rem auto 0 auto;">
+          每一份支持，都让这片天地走得更远。
+        </p>
       </div>
     </div>
+
+    <!-- 支付二维码：支付宝 · 微信 · QQ -->
     <div class="content" slot="1" style="height: max-content;">
-      <div style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: start; width: 65%;">
-        <h2 style="--fs:24px;--fl:38px; margin: 1rem auto 2rem 0;">即将到来<br>Coming Soon...</h2>
+      <div
+        style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: center; width: min(1024px, calc(var(--w) * 0.6));">
+        <h2 style="--fs:24px;--fl:38px; --a:center; margin: 3rem auto 1.5rem;">扫码赞助</h2>
+        <figure class="donate-qr">
+          <img src="https://rs.kdxiaoyi.top/res/images/donate.jpg"
+            alt="捐赠二维码，图中从左到右依次为支付宝、微信、QQ" loading="lazy" />
+          <figcaption>
+            <span>支付宝</span>
+            <span>微信</span>
+            <span>QQ</span>
+          </figcaption>
+        </figure>
+        <p style="--fs:14px;--fl:16px; --lh:1.5em; color: var(--s-color-secondary, #6e6e73); margin: 1.5rem auto 0;">
+          图中二维码从左到右依次为支付宝、微信、QQ
+        </p>
+      </div>
+    </div>
+
+    <!-- 公益说明 + 赞助方针链接 -->
+    <div class="content" slot="2" style="height: max-content;">
+      <div
+        style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: center; width: min(1024px, calc(var(--w) * 0.6));">
+        <div class="donate-cards">
+          <s-card type="outlined">
+            <div slot="headline">公益运营</div>
+            <div slot="text">
+              栈流Streack 坚持公益运营——所有赞助仅用于服务器的必要支出与未来发展，不转化为游戏内权益。
+            </div>
+          </s-card>
+        </div>
+        <p style="--fs:16px;--fl:20px; --lh:1.5em; margin: 2.5rem auto 5rem;">
+          赞助前，请先阅读<a href="/doc/policy/donate/">《赞助方针》</a>。
+        </p>
       </div>
     </div>
   </div>
+
+  <style>
+    /* 二维码图：居中、圆角、柔和的投影 */
+    figure.donate-qr {
+      margin: 0 auto;
+      width: min(440px, 84%);
+    }
+
+    figure.donate-qr img {
+      width: 100%;
+      display: block;
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, .16);
+    }
+
+    /* 三个平台标签：与图中三个码的位置左右对齐 */
+    figure.donate-qr figcaption {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.25rem;
+      padding: 0 .25rem;
+    }
+
+    figure.donate-qr figcaption span {
+      --fs: 14px;
+      --fl: 16px;
+      font-weight: 500;
+    }
+
+    /* 说明卡片：居中单列 */
+    div.donate-cards {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    div.donate-cards s-card {
+      max-width: 420px;
+      width: 100%;
+      padding: 1.25rem 1.5rem;
+      background: transparent;
+      border-width: 0;
+    }
+
+    div.donate-cards s-card div[slot="headline"] {
+      font-size: 1.25rem;
+      margin-bottom: .5em;
+    }
+
+    div.donate-cards s-card div[slot="text"] {
+      --lh: 1.6em;
+      font-size: 1rem;
+      line-height: var(--lh);
+    }
+  </style>
 
 </FrameworkLayout>
