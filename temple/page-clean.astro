@@ -8,8 +8,8 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
   theme="dark"
 >
   <!-- 导航项模板
-       可选设置：loc="文档" 品牌后缀；toolbar-set="预设名" 继承预设的 loc 与导航项；
-                 replaceset='{"k":"v"}' 供预设里的 %xxx% 使用 -->
+       可选设置：loc="文档" 品牌后缀；toolbar-set="预设名" 继承预设 loc、且模板内按钮与
+       预设按钮合并（带 id 且同 id 覆写，否则追加）；replaceset='{"k":"v"}' 供 %xxx% 使用 -->
   <template slot="toolbar-nav" data-toolbar-nav>
     <div pc-only onclick='window.streack.openURL("/doc/news",true)' clickable>新闻</div>
   </template>

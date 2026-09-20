@@ -743,8 +743,47 @@ export function fitToolbarBrand() {
 }
 
 /**
+ * 把导航 HTML 字符串解析为顶层元素节点数组（忽略空白文本节点）
+ * @param {string} html
+ * @returns {HTMLElement[]}
+ */
+function parseNavNodes(html) {
+  if (!html || !String(html).trim()) return [];
+  const t = document.createElement('template');
+  t.innerHTML = String(html);
+  return Array.from(t.content.children);
+}
+
+/**
+ * 合并 preset 与 template 的导航按钮（template 优先）：
+ *   · template 按钮带 id 且命中 preset 同 id → 覆写（保持 preset 原位置）
+ *   · 否则（无 id 或 id 未命中）→ 追加到末尾
+ * 返回新数组；不修改传入的 presetNodes / ownNodes
+ * @param {HTMLElement[]} presetNodes
+ * @param {HTMLElement[]} ownNodes
+ * @returns {HTMLElement[]}
+ */
+export function mergeNavNodes(presetNodes, ownNodes) {
+  const result = (presetNodes || []).slice();
+  for (const node of ownNodes || []) {
+    const id = node && node.getAttribute && node.getAttribute('id');
+    if (id) {
+      const idx = result.findIndex(
+        (n) => n && n.getAttribute && n.getAttribute('id') === id
+      );
+      if (idx !== -1) {
+        result[idx] = node; // 同 id 覆写，保持位置
+        continue;
+      }
+    }
+    result.push(node); // 无 id 或 id 未命中 → 追加合并
+  }
+  return result;
+}
+
+/**
  * 处理页面里的 <template data-toolbar-nav>：解析 toolbar-set / loc / replaceset，
- * 继承预设设置后把导航项注入 #toolbar-nav-slot
+ * 合并 preset 与 template 的导航后注入 #toolbar-nav-slot
  * @returns {boolean} 是否设置了品牌 loc
  */
 export function applyToolbarNavTemplates() {
@@ -771,10 +810,13 @@ export function applyToolbarNavTemplates() {
       locApplied = true;
     }
 
-    // ③ nav：template 内部内容优先，否则继承预设的 nav
-    const ownHtml = (tmpl.innerHTML || '').trim();
-    const navHtml = ownHtml || fillPlaceholders(preset?.nav, replaceset);
-    if (navSlot && navHtml) navSlot.insertAdjacentHTML('beforeend', navHtml);
+    // ③ nav：preset 与 template 的按钮**合并**（template 优先）
+    //   · template 按钮带 id 且命中 preset 同 id → 覆写（保持 preset 原位置）
+    //   · 否则追加（合并）；两者都做占位符替换
+    const presetNodes = parseNavNodes(fillPlaceholders(preset?.nav, replaceset));
+    const ownNodes = parseNavNodes(fillPlaceholders((tmpl.innerHTML || '').trim(), replaceset));
+    const merged = mergeNavNodes(presetNodes, ownNodes);
+    if (navSlot) merged.forEach((n) => navSlot.appendChild(n));
 
     tmpl.remove();
   });

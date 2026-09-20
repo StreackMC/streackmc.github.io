@@ -68,7 +68,7 @@ nav-preset: document  # 引用预设（简写）
 | 写法 | 含义 |
 | --- | --- |
 | `nav-preset: document` | 简写，等于只写 `set: document` |
-| `nav-preset: { set: 预设名 }` | 引用预设，继承它的 `loc` 与导航项 |
+| `nav-preset: { set: 预设名 }` | 引用预设，继承其 `loc`；`nav`（若有）与预设按钮**合并** |
 | `nav-preset: { loc: 文档 }` | 不引用预设，只给品牌加后缀 |
 | `nav-preset: { set: 预设名, loc: 覆盖值 }` | 引用预设并覆盖其后缀 |
 | `nav-preset: { set: 预设名, replaceset: { 键: 值 } }` | 预设里可写 `%键%` 占位符，由 `replaceset` 替换 |
@@ -84,7 +84,11 @@ nav-preset:
 ```
 
 - 预设表定义在 `public/assets/app/toolbar-presets.js`（`Map<名称, { loc, nav }>`），
-  可按站点需要增删；页面里写的 `nav` / `nav-preset.loc` 优先于预设。
+  可按站点需要增删；预设按钮都带 `id`，便于页面按 id 覆写某一项。
+- **nav 的合并规则（template 优先）**：`nav` 里的每一项与预设按钮**合并**（都显示）；
+  `nav` 项带 `id` 且命中预设同 `id` → **覆写**（保持预设原位置），否则追加到末尾。
+  例：预设含 `id="doc-news"` 的「新闻博客」，页面写
+  `<div id="doc-news">最新资讯</div>` 即可只改这一项、其余预设按钮保留。
 - 品牌后缀渲染为「栈流Streack·活动」；当窗口宽度放不下时，会自动隐藏英文名
   「Streack」，退化为「栈流·活动」。
 - 未提供替换值的占位符会**原样保留**（便于发现拼写问题），并在控制台告警。

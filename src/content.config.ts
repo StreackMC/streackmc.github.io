@@ -45,13 +45,15 @@ const content = defineCollection({
     theme: z.enum(['light', 'dark']).optional(),
     // 是否渲染页首目录；缺省为 true，写 false 则不渲染该页目录
     toc: z.boolean().optional(),
-    // 工具栏导航项（标题栏智能插槽）：label 必填，href 用 url 命令、cmd 用任意 data-cmd
+    // 工具栏导航项（标题栏智能插槽）：label 必填，href 用 url 命令、cmd 用任意 data-cmd；
+    // id 可选——与预设按钮同 id 时覆写（保持预设位置），否则与预设按钮合并追加
     nav: z
       .array(
         z.object({
           label: z.string(),
           href: z.string().optional(),
           cmd: z.string().optional(),
+          id: z.string().optional(),
         }),
       )
       .optional(),

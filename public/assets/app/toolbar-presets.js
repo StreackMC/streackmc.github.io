@@ -25,8 +25,12 @@
  *                 replaceset:
  *                   section: 文档
  *
- *   继承规则：预设的设置全部继承；元素自身的 loc 属性 / template 内部内容优先；
- *   replaceset 的替换同时作用于「预设值」与「元素自身写的值」。
+ *   合并规则（template 优先）：
+ *     · loc：元素自身 loc 属性有值用自身，否则继承预设；两者都做占位符替换
+ *     · nav：preset 的按钮与 template 的按钮**合并**（都显示）——
+ *           template 按钮带 id 且命中 preset 同 id → 覆写（保持 preset 原位置）；
+ *           否则（无 id 或 id 未命中）→ 追加到末尾；两者都做占位符替换
+ *   （预设的按钮建议带 id，便于页面按 id 覆写某一项，而非整体重写）
  */
 
 export const toolbarPresets = new Map([
@@ -35,10 +39,10 @@ export const toolbarPresets = new Map([
     {
       loc: '文档',
       nav: [
-        '<div pc-only data-cmd="url:/doc/|" clickable>文档</div>',
-        '<div pc-only data-cmd="url:/doc/event/|" clickable>活动</div>',
-        '<div pc-only data-cmd="url:/doc/news/|" clickable>新闻博客</div>',
-        '<div pc-only data-cmd="url:/doc/updata/|" clickable>近期更新</div>',
+        '<div pc-only id="doc-home" data-cmd="url:/doc/|" clickable>文档</div>',
+        '<div pc-only id="doc-event" data-cmd="url:/doc/event/|" clickable>活动</div>',
+        '<div pc-only id="doc-news" data-cmd="url:/doc/news/|" clickable>新闻博客</div>',
+        '<div pc-only id="doc-updata" data-cmd="url:/doc/updata/|" clickable>近期更新</div>',
       ].join(''),
     },
   ],
@@ -47,10 +51,10 @@ export const toolbarPresets = new Map([
     {
       loc: '关于我们',
       nav: [
-        `<div pc-only onclick='window.streack.openURL("/about/leadership/",true)' clickable>团队</div>`,
-        `<div pc-only onclick='window.streack.openURL("/about/career/",true)' clickable>广纳贤士</div>`,
-        `<div pc-only onclick='window.streack.openURL("/about/contact/",true)' clickable>联系</div>`,
-        `<div pc-only onclick='window.streack.openURL("/about/donate/",true)' clickable>捐赠与赞助</div>`,
+        `<div pc-only id="about-team" onclick='window.streack.openURL("/about/leadership/",true)' clickable>团队</div>`,
+        `<div pc-only id="about-career" onclick='window.streack.openURL("/about/career/",true)' clickable>广纳贤士</div>`,
+        `<div pc-only id="about-contact" onclick='window.streack.openURL("/about/contact/",true)' clickable>联系</div>`,
+        `<div pc-only id="about-donate" onclick='window.streack.openURL("/about/donate/",true)' clickable>捐赠与赞助</div>`,
       ].join(''),
     },
   ],
@@ -66,9 +70,9 @@ export const toolbarPresets = new Map([
     {
       loc: '%section%',
       nav: [
-        '<div pc-only data-cmd="url:/doc/|" clickable>文档</div>',
-        '<div pc-only data-cmd="url:/doc/event/|" clickable>活动</div>',
-        '<div pc-only data-cmd="url:/doc/news/|" clickable>%section%</div>',
+        '<div pc-only id="ex-home" data-cmd="url:/doc/|" clickable>文档</div>',
+        '<div pc-only id="ex-event" data-cmd="url:/doc/event/|" clickable>活动</div>',
+        '<div pc-only id="ex-news" data-cmd="url:/doc/news/|" clickable>%section%</div>',
       ].join(''),
     },
   ],

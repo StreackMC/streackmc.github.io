@@ -37,12 +37,18 @@
  *       // ② 只加品牌后缀
  *       <template slot="toolbar-nav" data-toolbar-nav loc="文档"></template>
  *
- *       // ③ 引用预设，继承其 loc 与导航项（预设里若有 %xxx% 且未提供替换值，会原样保留并告警）
+ *       // ③ 引用预设：继承 loc，template 内按钮与预设按钮**合并**（都显示；
+ *       //    template 带 id 且命中预设同 id → 覆写，否则追加到末尾）
  *       <template slot="toolbar-nav" data-toolbar-nav toolbar-set="document"></template>
  *
  *       // ④ 预设 + 占位符替换
  *       <template slot="toolbar-nav" data-toolbar-nav toolbar-set="example-of-section"
  *                 replaceset='{"section":"活动"}'></template>
+ *
+ *       // ⑤ 覆写预设里的某个按钮（同 id 命中，其余预设按钮保留）
+ *       <template slot="toolbar-nav" data-toolbar-nav toolbar-set="document">
+ *         <div pc-only id="doc-news" data-cmd="url:/doc/news/|" clickable>最新资讯</div>
+ *       </template>
  *
  *   <template data-toolbar2-slot="xxx"></template>   — 向 toolbar2 注册自定义抽屉面板（自动处理）
  *   <template data-inject="notes"></template>        — 向页脚 #notes 注入注释条目
@@ -74,17 +80,22 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
   <!-- 页面特定样式（可选） -->
   <!-- <link slot="head" rel="stylesheet" href="/assets/code/your-page.css" /> -->
 
-  <!-- 导航项模板（可选）—— 四种用法，取消注释其一即可：
+  <!-- 导航项模板（可选）—— 五种用法，取消注释其一即可：
        ① 手写导航项（下面这份）
        ② 只加品牌后缀：模板上加 loc="文档"            → 品牌显示「栈流Streack·文档」
-       ③ 引用预设：模板上加 toolbar-set="document"         → 继承预设的 loc 与导航项
+       ③ 引用预设：模板上加 toolbar-set="document"
+           → 继承 loc；template 内按钮与预设按钮**合并**（都显示）
        ④ 预设 + 占位符：再加 replaceset='{"section":"活动"}'
           预设值里写 %section% 的地方会被替换成「活动」
+       ⑤ 覆写预设里某个按钮：template 内按钮加 id，命中预设同 id 即覆写，其余保留
 
-       ②③④ 的可复制写法（预设表见 public/assets/app/toolbar-presets.js）：
+       ②③④⑤ 的可复制写法（预设表见 public/assets/app/toolbar-presets.js）：
          <template slot="toolbar-nav" data-toolbar-nav loc="文档"></template>
          <template slot="toolbar-nav" data-toolbar-nav toolbar-set="document"></template>
          <template slot="toolbar-nav" data-toolbar-nav toolbar-set="example-of-section" replaceset='{"section":"活动"}'></template>
+         <template slot="toolbar-nav" data-toolbar-nav toolbar-set="document">
+           <div pc-only id="doc-news" data-cmd="url:/doc/news/|" clickable>最新资讯</div>
+         </template>
 
        ※ Astro 说明：直接作为页面 slot 内容的**顶层 HTML 注释会被整体剔除**（与内容无关，
          也不会漏成真元素）；要让它留在产物里就包进某个元素（如 display:contents 包裹层）。
