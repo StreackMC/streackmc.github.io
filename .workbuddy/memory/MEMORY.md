@@ -27,9 +27,18 @@
     （输出「图标 + `<br>`」，尺寸 `width:1.5em; margin-bottom:.5em` 随标题字号缩放）
   - ⚠ 别把图标塞进标题字符串：Astro 文本插值 `{x}` 会转义 HTML → 图标变成源码文本；
     也不要用 `textContent` 注入含 HTML 的标题（`selector.js` 层标题已改 `innerHTML`）
-- **`.content *` 布局变量**（framework.css）：子元素统一吃
-  `text-align: var(--a, left)` / `font-size: clamp(var(--fs), …, var(--fl))` / `margin: var(--my,0) var(--mx,0)`；
-  要覆盖就用**元素内联样式**（内联 > 类选择器，可盖掉写死的 font-size 与 `.content *` 的 margin）
+- **`.content *` 布局变量**（framework.css，站点排版的基石）：子元素统一吃
+  `text-align: var(--a, left)` / `font-size: <见下>` / `margin: var(--my,0) var(--mx,0)`
+  - 字号：`font-size: var(--fz, clamp(var(--fs), var(--fv), var(--fl)))`
+    - `--fs` / `--fl` = 端点字号；`--min-width: 320px`、`--max-width: 1352px`（视口宽）
+    - `--fv` 默认 = `--fs + (--fl - --fs) * (--w - --min-width) / (--max-width - --min-width)`
+      → 视口从 320px 到 1352px **线性插值**，超出则被 clamp 钉在端点上
+    - `--fz` 是**硬覆盖**，会完全绕过 clamp（需要「任何宽度都不变」时才用）
+  - **约定**：调字号一律给 `--fs`/`--fl`，**不要写 `font-size`** —— 类选择器写死的 `font-size`
+    会盖过 `.content *`，反而让内联的 `--fs` 失效。要覆盖就用**元素内联样式**
+    （内联 > 类选择器，可盖掉写死的 font-size 与 `.content *` 的 margin）
+  - 实例：下载页首栏 `--fs:24px;--fl:42px`、正文 `--fs:1rem;--fl:1.2rem`；
+    选择器页标题 `--fs:1.5rem;--fl:2.5rem`、描述 `--fs:1rem;--fl:1.2rem`（两者同机制）
 - **`ToolLayout` / `Sidebar` 已不存在**：全部页面统一到 FrameworkLayout 体系
 - `src/components/`：Toolbar、Footer（服务端渲染）、Selector（嵌入选择器）、PageIcon（首栏图标）
 - `temple/` 为**顶层源模板目录**（5 文件），不在 src/pages，不参与构建

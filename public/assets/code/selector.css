@@ -57,14 +57,24 @@ s-page[dark] .selector-wrap {
 }
 
 /* === 标题 & 描述 ===
-   首栏（标题 + 描述）采用 about/contact 的首栏布局：整体居中；
-   标题字号不写死，随站点 .content * 的流式字号（由 --fs/--fl 驱动，见布局内联样式） */
+   首栏（标题 + 描述）采用 about/contact 的首栏布局：整体居中。
+
+   两者字号统一走站点的**流体排版系统**：framework.css 的 .content *
+   用 clamp(var(--fs), 流式, var(--fl)) 计算（--w 从 --min-width 320px
+   线性插值到 --max-width 1352px），与 DownloadLayout 首栏同一套做法。
+   故这里只给 --fs / --fl 两个端点，不写死 font-size。
+   取值 = 当前视觉大小：--fl 即原先写死的值（标题 2.5rem、描述 1.2rem），
+   窄屏则按 --fs 收缩。 */
 .selector-wrap .selector-header { margin-bottom: 1.5rem; --a: center; }
 .selector-wrap .selector-title {
+  --fs: 1.5rem;   /* 窄屏（≤320px）→ 24px */
+  --fl: 2.5rem;   /* 宽屏（≥1352px）→ 40px */
   font-weight: 600; color: var(--sel-text);
 }
 .selector-wrap .selector-description {
-  font-size: 1.2rem; color: var(--sel-text-muted);
+  --fs: 1rem;     /* 窄屏（≤320px）→ 16px */
+  --fl: 1.2rem;   /* 宽屏（≥1352px）→ 19.2px */
+  color: var(--sel-text-muted);
   line-height: 1.6; margin: 0;
 }
 

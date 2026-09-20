@@ -81,9 +81,11 @@ const {
     <div class="content selector-content" slot="0">
       <div class="selector-wrap" data-selector {...(id ? { id } : {})} {...(history === false ? { 'data-selector-history': 'false' } : {})}>
         <!-- 首栏：图标（可选）+ 标题 + 描述
-             布局取自 about/contact 的首栏（居中、图标独占标题上方一行），字号沿用下载页 -->
+             布局取自 about/contact 的首栏（居中、图标独占标题上方一行）；
+             标题与描述的字号统一由 selector.css 用 --fs/--fl 交给站点流体排版系统，
+             此处只保留布局相关的内联样式，不写死字号 -->
         <header class="selector-header">
-          <h1 class="selector-title" style="--fz:2.5rem; --a:center; margin: 4rem auto .5rem;">
+          <h1 class="selector-title" style="--a:center; margin: 4rem auto .5rem;">
             <PageIcon icon_svg={icon_svg} icon_src={icon_src} />
             <span set:html={config.title} />
           </h1>
