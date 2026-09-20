@@ -59,6 +59,11 @@
   - **链接语法糖**：链接文字含 `↗`/`$`/`฿` → 新标签页 + `.ext-link`（CSS 箭头）；默认链接当前窗口
   - 代码块 `.code-block` 容器 + `.code-copy`；引用块 `.doc-callout`（`[i]/[!]/[！]/[x]/[@]/[#hex$tip]`）
   - 任务列表 `<input type=checkbox>` → Sober `<s-checkbox disabled="true" [checked="true"]>`
+  - **注释合并**（第 7 项）：两种注释写法都搬到页脚注释区 ——
+    A. `[^1]: …`（remark-gfm 脚注）→ 拆成 `li[data-note="1"]` + 正文 `sup[data-note="1"]`
+    B. 单独一行 `<!-- notes -->` + 紧随的 ul/ol → 列表整体搬走，token 为 `notes-1`、`notes-2`…
+    （必须显式标记：全站 17 篇的末尾块就是正文列表，自动判定会误伤）
+    产出 `<template data-inject="notes">`，由 `framework.js` 注入 `ol#notes` 并与 `sup` 双向绑定
   - 图片仅加 `loading=lazy`（**图片查看器已移除**，不再有 `.doc-img`/灯箱）
 - `DocLayout.astro` — `render()` 的 `headings` 服务端生成 TOC（`.doc-toc`，**折叠复用 Sober `<s-fold>`** +
   180° 旋转箭头，见下「Sober UI 组件约束」）；
@@ -70,6 +75,13 @@
 - **坑 2（高频）**：Astro 会缓存渲染结果（`node_modules/.astro` 数据存储）与配置插件模块
   （`node_modules/.vite`）→ **改插件后必须 `npm run clean` 再 build/dev**，否则静默不生效
 - **坑 3**：遍历 blockquote 找标记时，首个文本节点常是空白，需跳过
+- **坑 4**：**不能用 hast 的 `content` 构建 `<template>`**。Astro 在用户插件**之后**还跑 `rehype-raw`，
+  而 `hast-util-to-html` 对 template 只序列化 `node.content`；rehype-raw 的「序列化→重解析」往返
+  会把 content 清空 → 产物变空模板。**解法**：整段模板用 **raw 字符串节点**承载
+  （`{type:'raw', value:'<template data-inject="notes">…</template>'}`），交给 rehype-raw 解析。
+  另：`<!-- notes -->` 在此阶段是 **raw 节点**（非 comment），且与其后元素间夹着空白 text 节点。
+- **坑 5**：remark-gfm 的 `dataFootnoteBackref` 值是**空字符串**（`dataFootnoteRef` 才是 `true`），
+  判断存在性要用 `!== undefined`，否则漏掉 ↩ 返回链接。
 - **集成**：Markdown 里也可直接写原始 HTML `<template data-toolbar-nav>…</template>`（已验证生效）
 
 ## Sober UI 组件约束（sober@1.0.6，**布尔属性必须写 `attr="true"`**）

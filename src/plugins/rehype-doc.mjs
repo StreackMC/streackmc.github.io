@@ -328,5 +328,126 @@ function transform(node, slugger) {
 }
 
 export default function rehypeDoc() {
-  return (tree) => transform(tree, makeSlugger());
+  return (tree) => {
+    // 先做通用增强（注释条目里的链接/代码等也要享受到），再搬运注释
+    transform(tree, makeSlugger());
+    extractNotes(tree);
+  };
+}
+
+/* ============================================================
+ * 7. 注释合并：把 [^n]: 脚注 与 <!-- notes --> 标记的列表 搬到页脚注释区
+ * ============================================================ */
+
+/** 注释标记：单独一行 `<!-- notes -->`（大小写不敏感，允许空格） */
+const NOTES_MARKER = /^\s*<!--\s*notes\s*-->\s*$/i;
+
+function isTag(node, tag) {
+  return node && node.type === 'element' && node.tagName === tag;
+}
+
+/** 去掉脚注条目里 remark-gfm 生成的 ↩ 返回链接（改由框架统一补） */
+function stripBackrefs(node) {
+  if (!Array.isArray(node.children)) return;
+  node.children = node.children.filter((c) => {
+    // 注意：remark-gfm 把它写成 `dataFootnoteBackref: ""`（空串），不能用真值判断
+    if (isTag(c, 'a') && c.properties && c.properties.dataFootnoteBackref !== undefined) return false;
+    stripBackrefs(c);
+    return true;
+  });
+  // 清掉被删元素留下的行尾空白，以及末尾的空白文本节点
+  node.children = node.children.map((c) =>
+    c.type === 'text' ? { type: 'text', value: String(c.value).replace(/[ \t]+$/, '') } : c,
+  );
+  while (node.children.length > 0) {
+    const last = node.children[node.children.length - 1];
+    if (last.type === 'text' && !String(last.value).trim()) node.children.pop();
+    else break;
+  }
+}
+
+/** 正文脚注引用：<sup><a data-footnote-ref href="#user-content-fn-X">1</a></sup> → <sup data-note="X"></sup> */
+function rewriteNoteRefs(node) {
+  if (!Array.isArray(node.children)) return;
+  node.children = node.children.map((c) => {
+    if (isTag(c, 'sup')) {
+      const a = (c.children || []).find(
+        (x) => isTag(x, 'a') && x.properties && x.properties.dataFootnoteRef,
+      );
+      if (a) {
+        const m = String((a.properties && a.properties.href) || '').match(/#user-content-fn-(.+)$/);
+        if (m) {
+          return {
+            type: 'element',
+            tagName: 'sup',
+            properties: { 'data-note': decodeURIComponent(m[1]) },
+            children: [],
+          };
+        }
+      }
+    }
+    rewriteNoteRefs(c);
+    return c;
+  });
+}
+
+/**
+ * 把两种注释从正文中抽出，改写成「页脚注入模板 + 正文引用」两种标记。
+ * @returns {boolean} 是否抽到了注释
+ */
+function extractNotes(tree) {
+  if (!Array.isArray(tree.children)) return false;
+  const items = []; // 待放入 ol#notes 的 <li>
+
+  // A. remark-gfm 脚注：整段 <section data-footnotes> 移出正文
+  tree.children = tree.children.filter((node) => {
+    if (!isTag(node, 'section') || !node.properties || !node.properties.dataFootnotes) return true;
+    const ol = (node.children || []).find((c) => isTag(c, 'ol'));
+    ((ol && ol.children) || []).forEach((li) => {
+      if (!isTag(li, 'li')) return;
+      const m = String((li.properties && li.properties.id) || '').match(/^user-content-fn-(.+)$/);
+      if (!m) return;
+      li.properties = { 'data-note': decodeURIComponent(m[1]) };
+      stripBackrefs(li);
+      items.push(li);
+    });
+    return false;
+  });
+
+  // B. <!-- notes --> 标记 + 紧随其后的列表
+  const kept = [];
+  for (let i = 0; i < tree.children.length; i++) {
+    const node = tree.children[i];
+    if (node.type === 'raw' && NOTES_MARKER.test(String(node.value))) {
+      // 跳过空白文本，找到标记后第一个元素
+      let j = i + 1;
+      while (j < tree.children.length && tree.children[j].type === 'text' && !String(tree.children[j].value).trim()) j++;
+      const list = tree.children[j];
+      if (isTag(list, 'ul') || isTag(list, 'ol')) {
+        (list.children || [])
+          .filter((c) => isTag(c, 'li'))
+          .forEach((li, k) => {
+            li.properties = { 'data-note': 'notes-' + (k + 1) };
+            items.push(li);
+          });
+        i = j; // 连同标记一起消费掉
+        continue;
+      }
+      // 标记后不是列表：按普通注释保留，避免误删正文
+    }
+    kept.push(node);
+  }
+  tree.children = kept;
+
+  if (items.length === 0) return false;
+
+  rewriteNoteRefs(tree);
+
+  // 注入模板交给 rehype-raw 解析（需用 raw 节点承载，见文件头说明）
+  const inner = items.map((li) => toHtml(li)).join('');
+  tree.children.push({
+    type: 'raw',
+    value: `<template data-inject="notes">${inner}</template>`,
+  });
+  return true;
 }
