@@ -104,37 +104,21 @@ s-dialog div.dialog {
   flex-shrink: 0;
 }
 
-/* --- 第二行：抽屉内容（由内部元素撑开，grid 0fr→1fr 控制显隐 + 渐显） --- */
+/* --- 第二行：抽屉内容（由内部元素撑开，grid 0fr→1fr 控制显隐） ---
+   内容随 grid 高度同步「揭示」（裁剪），不再另做 opacity 延迟淡入；
+   overflow 恒 hidden：无滚动条，内容完整显示、高度由 grid 1fr 撑到自然高度 */
 #toolbar2 {
   min-height: 0;
   /* 0fr 折叠所需 */
   overflow: hidden;
-  /* 0fr 折叠所需 */
-  opacity: 0;
-  transition:
-    padding-top 300ms cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* 始终裁剪：无滚动条 */
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-start;
-  padding-top: 0;
+  padding-top: 0.5rem;
   gap: 0.3rem;
   border-radius: 12px;
-}
-
-/* 展开：内容渐显（延迟至 grid 行展开动画的后半段），高度由内部元素自然撑开 */
-#toolbar-area.expanded #toolbar2 {
-  opacity: 1;
-  padding-top: 0.5rem;
-  transition:
-    padding-top 400ms cubic-bezier(0.4, 0, 0.2, 1) 300ms,
-    opacity 400ms cubic-bezier(0.4, 0, 0.2, 1) 300ms;
-}
-
-/* Toolbar2 滚动条 */
-#toolbar2.toolbar2-disallow-scroll, #toolbar2.toolbar2-disallow-scroll * {
-  overflow: hidden;
 }
 
 #toolbar2::-webkit-scrollbar {
@@ -212,7 +196,6 @@ s-page:not([dark]) #toolbar2::-webkit-scrollbar-thumb:hover {
 /* --- 非搜索类的 toolbar2 插槽通用样式 --- */
 .toolbar2-slot[data-toolbar-slot]:not([data-toolbar-slot="search"]) {
   padding: 0.3rem 0;
-  overflow-y: auto;
 }
 
 /* 非搜索插槽滚动条 */

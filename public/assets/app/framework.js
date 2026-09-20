@@ -503,12 +503,8 @@ export let toolbarExpanded = false;
  */
 export function shrinkToolbar() {
   if (!DOM.toolbar) return;
-  // 取消展开延迟计时器，防止动画期间快速操作
-  clearTimeout(DOM.toolbar.actions.root._expandTimer);
-  // 在动画开始前隐藏滚动条并清空事件
   DOM.toolbar.root.removeEventListener('mouseleave', shrinkToolbar);
   document.removeEventListener('click', onOutsideClick);
-  DOM.toolbar.actions.root.style.overflow = '';
   DOM.toolbar.root.classList.remove('expanded');
   toolbarExpanded = false;
   Object.values(toolbarSlots).forEach((s) => {
@@ -525,9 +521,8 @@ export function shrinkToolbar() {
 
 /**
  * 展开 Toolbar 并激活指定插槽
- * - 先取消所有插槽的激活状态
- * - 然后激活目标插槽，根据 noscroll 属性控制滚动
- * - 最后添加 expanded 类触发 CSS 展带动画
+ * - 先取消所有插槽的激活状态，再激活目标插槽
+ * - 添加 expanded 类触发 CSS 展带动画（内容随 grid 高度同步揭示）
  * @param {string} [slotName] - 要激活的插槽名称
  */
 export function expandToolbar(slotName) {
@@ -540,21 +535,10 @@ export function expandToolbar(slotName) {
   }
   DOM.toolbar.root.classList.add('expanded');
 
-  // 等 grid 展开动画（600ms）结束后再显示滚动条，避免动画过程中出现
-  const toolbar2 = DOM.toolbar.actions.root;
-  clearTimeout(toolbar2._expandTimer);
-  toolbar2.classList.add('toolbar2-disallow-scroll');
+  // overflow 恒 hidden（无滚动条），无需等待动画切换，立即注册关闭事件即可，
+  // 因而也无需 setTimeout(600) 魔法数字
   DOM.toolbar.root.addEventListener('mouseleave', shrinkToolbar);
-  toolbar2._expandTimer = setTimeout(() => {
-    if (!toolbarExpanded) return;  // 动画期间已被收起，不处理
-    // 注册事件并设置样式
-    document.addEventListener('click', onOutsideClick);
-    if (slotName && toolbarSlots[slotName]?.dataset.noscroll) {
-      toolbar2.classList.add('toolbar2-disallow-scroll');
-    } else {
-      toolbar2.classList.remove('toolbar2-disallow-scroll');
-    }
-  }, 600);
+  document.addEventListener('click', onOutsideClick);
 }
 
 /** 切换 Toolbar 的展开/收起状态 */
