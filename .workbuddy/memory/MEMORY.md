@@ -57,10 +57,17 @@
 
 ## Toolbar 预设与品牌后缀 loc（2026-09-20）
 - 品牌拆分：Toolbar.astro 里 `#toolbar-brand` > `#toolbar-brand-en`(英文 Streack，窄屏可隐藏) + `#toolbar-brand-loc`(loc 后缀位)
-- framework.js 新增导出：`setToolbarLoc(text)`（自动补「·」）、`fitToolbarBrand()`（仅配置 loc 时介入，
-  一行放不下则隐藏英文名）、`applyToolbarNavTemplates()`（解析 `<template data-toolbar-nav>`）、
+- framework.js 新增导出：`setToolbarLoc(text)`（自动补「·」）、`fitToolbarBrand()`（品牌响应式适配，见下）、
+  `applyToolbarNavTemplates()`（解析 `<template data-toolbar-nav>`）、
   `parseReplaceset` / `fillPlaceholders`（`%xxx%` 替换，未提供的占位符原样保留）、
   `mergeNavNodes(presetNodes, ownNodes)`（导航合并，见下）
+- `fitToolbarBrand()` 三级降级（仅配置 loc 时介入）：
+  ① 全显示「栈流Streack·loc」→ ② 放不下隐藏英文名 → ③ 还放不下隐藏整个品牌（只留按钮）
+  宽度判定用**全角字符估算**：每个「字」（去空白）按 1em 计，半角英文也按全角算 → 留设计冗余，
+  避免实测宽度（半角偏窄）导致的误判；节流用 **rAF**（非 setTimeout）
+- **响应式断点约定**：移动端 ≤833px、桌面 ≥834px（两者错开 1px）——
+  framework.css 里 `[pc-only]` 用 `max-width:833px` 隐藏、`[mobile-only]` 用 `min-width:834px` 隐藏，
+  **不可都用 834px**（否则 834px 处两者同时隐藏、导航项全部消失）
 - 预设表 `public/assets/app/toolbar-presets.js`：`Map<名称, { loc, nav }>`，现含
   `document` / `about` / `example-of-section`（后者用 `%section%` 演示占位符）；
   `registerToolbarPreset` / `getToolbarPreset` 可运行时扩展；**预设按钮都带 id**（doc-* / about-* / ex-*）
