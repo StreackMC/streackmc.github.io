@@ -704,21 +704,28 @@ export function setToolbarLoc(text) {
   fitToolbarBrand();
 }
 
-/** 防抖：多处（resize / 字体加载 / 导航注入）都会触发品牌适配 */
-let _brandFitTimer = null;
+/** 节流：多处（resize / 字体加载 / 导航注入）都会触发品牌适配。
+    rAF 节流：合并到下一渲染帧执行，连续 resize 时只算一次，避免 setTimeout 写死的延迟与多余计算 */
+let _brandFitRaf = null;
 function scheduleToolbarBrandFit() {
-  clearTimeout(_brandFitTimer);
-  _brandFitTimer = setTimeout(fitToolbarBrand, 120);
+  if (_brandFitRaf) return;
+  _brandFitRaf = requestAnimationFrame(() => {
+    _brandFitRaf = null;
+    fitToolbarBrand();
+  });
 }
 
 /**
- * 按可用宽度适配品牌：
- * 仅当**配置了 loc** 时生效 —— 若一行放不下，隐藏英文名 Streack
- * （「栈流Streack·文档」→「栈流·文档」），保证 loc 文字与品牌中文名不被裁切。
+ * 按可用宽度适配品牌（三级降级）：
+ *   ① 全显示「栈流Streack·loc」
+ *   ② 放不下 → 隐藏英文名 Streack（「栈流·loc」）
+ *   ③ 还放不下 → 隐藏整个品牌（只留按钮，保证按钮可点）
  *
- * 判定方式：把 #toolbar1 各子元素宽度与间隔相加，和可用宽度比较。
- * （不能用 scrollWidth：行内有 flex-wrap，放不下时是换行而非溢出。）
- * 每次测量前都把英文名复原，因此反复调用结果稳定、不会来回抖动。
+ * 宽度判定用「全角字符估算」而非实测：品牌文本每个字符都按 1em（font-size）计，
+ * 半角英文同样按全角算 → 结果偏保守、天然留出设计冗余，避免半角实测偏窄导致的误判
+ * （如 268~299px 时英文本应隐藏，却因实测「放得下」而未隐藏）。
+ *
+ * 每次测量前都复原 display，因此反复调用结果稳定、不会来回抖动。
  */
 export function fitToolbarBrand() {
   const brand = document.getElementById('toolbar-brand');
@@ -726,19 +733,39 @@ export function fitToolbarBrand() {
   const loc = document.getElementById('toolbar-brand-loc');
   const row = document.getElementById('toolbar1');
   if (!brand || !en || !loc || !row) return;
-  // 没有 loc 时不介入
-  if (!loc.textContent) {
-    en.style.display = '';
-    return;
-  }
-  en.style.display = ''; // 先复原再测量，否则量到的是已隐藏后的宽度
 
+  // 先复原再估算，否则量到的是已隐藏后的宽度
+  en.style.display = '';
+  brand.style.display = '';
+
+  // 没有 loc 时不介入（保持默认「栈流Streack」完整显示）
+  if (!loc.textContent.trim()) return;
+
+  // 可用宽度 = row 内容宽 - 非品牌子元素宽 - 间隔
   const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
   const kids = Array.from(row.children);
-  const used = kids.reduce((sum, c) => sum + c.getBoundingClientRect().width, 0)
+  const othersWidth = kids
+    .filter((c) => c !== brand)
+    .reduce((s, c) => s + c.getBoundingClientRect().width, 0)
     + gap * Math.max(0, kids.length - 1);
-  if (used > row.clientWidth) {
-    en.style.display = 'none';
+  const avail = row.clientWidth - othersWidth;
+
+  // 全角估算：每个「字」（去除空白）按 1em 计（半角英文也按全角 → 留冗余）
+  const fontSize = parseFloat(getComputedStyle(row).fontSize) || 18;
+  const charWidth = (text) => Array.from(String(text || '').replace(/\s+/g, '')).length * fontSize;
+  const cnText = (brand.firstElementChild && brand.firstElementChild.textContent) || '';
+  const enText = en.textContent || '';
+  const locText = loc.textContent; // 已含前导「·」与空格
+
+  const fullWidth = charWidth(cnText + enText + locText);
+  const noEnWidth = charWidth(cnText + locText);
+
+  if (fullWidth > avail) {
+    if (noEnWidth <= avail) {
+      en.style.display = 'none'; // ② 隐藏英文
+    } else {
+      brand.style.display = 'none'; // ③ 隐藏整个品牌
+    }
   }
 }
 

@@ -160,7 +160,9 @@ s-page[dark] .main::-webkit-scrollbar-thumb {
     display: none !important;
   }
 }
-@media screen and (max-width: 834px) {
+/* 注意：移动端阈值是 833px（<834），与上方 min-width:834px 错开 1px，
+   避免在 834px 处 pc-only 与 mobile-only 同时被隐藏、导致导航项全部消失 */
+@media screen and (max-width: 833px) {
   [pc-only] {
     display: none !important;
   }
