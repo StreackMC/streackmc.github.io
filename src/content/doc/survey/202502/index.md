@@ -1,9 +1,17 @@
 ---
 title: "栈流Streack 2025年2月未来更新计划征集"
 description: "调研结果公示"
+nav:
+  - label: 文档
+    href: /doc
+  - label: 活动
+    href: /doc/event
+  - label: 新闻博客
+    href: /doc/news
+  - label: 近期更新
+    href: /doc/updata
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../../">←返回</a> |
- 创建：2025-03-05 | 最后更新：2025-03-05</small><br>
+<small>创建：2025-03-05 | 最后更新：2025-03-05</small><br>
 
 > [i] [调研问卷网址฿](https://docs.qq.com/form/page/DV0RTU1dhR3ZyRWRK)
 

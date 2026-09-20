@@ -1,9 +1,17 @@
 ---
 title: "将Bedrock账户绑定至Java版账户"
 description: "linkaccount"
+nav:
+  - label: 文档
+    href: /doc
+  - label: 活动
+    href: /doc/event
+  - label: 新闻博客
+    href: /doc/news
+  - label: 近期更新
+    href: /doc/updata
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="/doc">←返回</a> |
- 创建：2025-02-22 | 最后更新：2026-07-14</small><br>
+<small>创建：2025-02-22 | 最后更新：2026-07-14</small><br>
 
 ## 前言
 

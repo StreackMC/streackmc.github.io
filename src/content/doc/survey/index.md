@@ -1,9 +1,17 @@
 ---
 title: "用户调研结果公示"
 description: "Streack User Research"
+toc: false
+nav:
+  - label: 文档
+    href: /doc
+  - label: 活动
+    href: /doc/event
+  - label: 新闻博客
+    href: /doc/news
+  - label: 近期更新
+    href: /doc/updata
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../../">←返回</a> |
-</small><br>
 
 > [@] 我们承诺以下公开信息不含被调研用户的隐私信息；其*隐私信息收集知情与同意权*已在提交调研问卷时征得授权。
 

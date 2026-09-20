@@ -2,17 +2,7 @@
 title: "栈流Streack隐私政策"
 description: " "
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><br><small><a href="/doc">←返回</a></small><br>
 
-> [i] 历史版本一览：<br>
-> 
-> * [2025-06-20](./privacy_history/2025-06-20.html)
-> * [2025-02-03](./privacy_history/2025-02-03.html)
-> * [2025-01-13](./privacy_history/2025-01-13.html)
-> 
-> 请以最新版本为准；因技术限制，若有更新版本将在游戏服务器内通知。
-
-<h1>隐私政策</h1>
 <div>更新日期：<strong>2025年6月20日</strong></div>
 <div>生效日期：<strong>2025年6月21日</strong></div>
 

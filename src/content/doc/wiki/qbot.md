@@ -1,11 +1,21 @@
 ---
 title: "群智能体指南"
 description: "QQBOT"
+nav:
+  - label: 文档
+    href: /doc
+  - label: 活动
+    href: /doc/event
+  - label: 新闻博客
+    href: /doc/news
+  - label: 近期更新
+    href: /doc/updata
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../../">←返回</a> |
- 创建：2025-05-29 | 最后更新：2026-07-14</small><br>
+<small>创建：2025-05-29 | 最后更新：2026-09-20</small><br>
 
-[栈流Streack的交流群฿](https://streack.top/#qqun)内有QQ智能体，为您提供相关服务。
+# 澪奈Neonai
+
+> [i] **澪奈Neonai** 是由栈流 Streack 自主开发的虚拟聊天伙伴和 IP，并提供一些好玩的功能。[在Github上查看$](https://github.com/StreackMC/Neonai-Connector)
 
 # 小可
 
@@ -14,6 +24,8 @@ description: "QQBOT"
 
 > [!] **小可由第三方提供服务**，若使用即视为您额外同意[《茶馆工作室隐私政策》฿](https://teahouse.team/privacy/)。<br>
 > 您也不得利用漏洞或使用诱导等方式让小可输出违法违规言论。一经发现违背小可使用条款和[栈流Streack基本方针](https://streack.top/doc/policy/rule)中的内容，对Bot使用者进行相应惩罚。
+
+> [x] 2026年8月左右，由于第三方框架频繁出现问题，茶馆已经切换到 QQ 官方机器人接口；受限于某些限制，下列功能可能不可用。
 
 以下列出具有捷径别名的命令，详细可用模块命令请使用`~help`查看或前往[小可Wiki฿](https://bot.teahouse.team/)。<br>
 此处列出的命令用法可能过时，请以`~help <命令名>`的结果为准。

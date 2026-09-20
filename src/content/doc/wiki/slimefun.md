@@ -1,9 +1,17 @@
 ---
 title: "优化粘液科技体验"
 description: "需要修改的Java版"
+nav:
+  - label: 文档
+    href: /doc
+  - label: 活动
+    href: /doc/event
+  - label: 新闻博客
+    href: /doc/news
+  - label: 近期更新
+    href: /doc/updata
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../../">←返回</a> |
- 创建：2025-04-11 | 最后更新：2026-03-20</small><br>
+<small>创建：2025-04-11 | 最后更新：2026-03-20</small><br>
 
 > [x] 这篇文章的内容不受支持：<br>
 > 所有**粘液科技**相关内容在过去曾经存在，但在现行版本已被移除。

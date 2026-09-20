@@ -1,9 +1,17 @@
 ---
 title: "服务器支持特性一览"
 description: "拓展与协议支持"
+nav:
+  - label: 文档
+    href: /doc
+  - label: 活动
+    href: /doc/event
+  - label: 新闻博客
+    href: /doc/news
+  - label: 近期更新
+    href: /doc/updata
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="/doc">←返回</a> |
- 创建：2025-01-20 | 最后更新：2026-03-20</small><br>
+<small>创建：2025-01-20 | 最后更新：2026-03-20</small><br>
 
 > [x] 该文章或主题已不适用现行的 Streack ，仅供存档。
 

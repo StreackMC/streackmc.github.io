@@ -1,22 +1,30 @@
 ---
 title: "文档目录"
 description: "致力于解决您所想知道的一切"
+toc: false
+nav:
+  - label: 文档
+    href: /doc
+  - label: 活动
+    href: /doc/event
+  - label: 新闻博客
+    href: /doc/news
+  - label: 近期更新
+    href: /doc/updata
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><br><small><a href="/">←返回</a></small><br>
 
 ![栈流Streack的宣传图片，含有栈流Streack的基本信息](https://streack.top/assets/img/referral_1.png "宣传图")
 
-> [!] 由于产能不足，下述文档更新不一定及时。[更新日志](./updata)
-
 ## QuickStart
 * [资讯一览](./news/)
-* [更新日志](./updata)
+* [近期更新](./updata)
 
 ## 教程与百科
 * [无法连接到服务器的一般解决方案](./wiki/solution)
 * [将Bedrock账户绑定至Java版账户](./wiki/linkaccount)
 * [群智能体指南](./wiki/qbot)
 * [特有进度与挑战](./wiki/advancements)
+* [特有魔咒](./wiki/enchantments)
 
 ## 在线工具
 
@@ -35,24 +43,21 @@ description: "致力于解决您所想知道的一切"
 ## 信息公示
 * [栈流Streack团队成员](../webtool/credits.html)
 * [「熵流」概率公示](./policy/entroprix)
-* [历次调研结果公示](./survey/)
 
 ## 政策方针
 * [基本方针](./policy/rule)
 * [赞助方针](./policy/donate)
 * [备份与恢复方针](./policy/backup_and_restore)
-* [《栈流Streack隐私政策》](./policy/privacy)
-* [《栈流Streack用户协议》](./policy/user)
+* [其他法律信息](/about/legal)
 
 ## 其它链接
-* [MCMOD找服玩上的栈流Streack฿](https://play.mcmod.cn/sv20188495.html)
-* [MCLists.cn上的栈流Streack฿](https://www.mclists.cn/server/8373.html)
+* [“MCMOD找服玩”上的“栈流Streack”฿](https://play.mcmod.cn/sv20188495.html)
+* [“MCLists.cn”上的“栈流Streack”฿](https://www.mclists.cn/server/8373.html)
 
-## 已过时
+## 存档内容
 
 > [x] 以下文章或主题已不适用现行的 Streack ，仅供存档。
 
 * [优化粘液科技体验](./wiki/slimefun)
 * [服务器特性](./policy/feature)
-
-<div id="mdRender_config" data-sideship-hide="2"></div>
+* [历次调研结果公示](./survey/)

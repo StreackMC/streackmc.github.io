@@ -1,9 +1,17 @@
 ---
 title: "无法连接到服务器常见问题"
 description: "快速疑难解答"
+nav:
+  - label: 文档
+    href: /doc
+  - label: 活动
+    href: /doc/event
+  - label: 新闻博客
+    href: /doc/news
+  - label: 近期更新
+    href: /doc/updata
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="/doc">←返回</a> |
- 创建：2025-01-19 | 最后更新：2026-03-20</small><br>
+<small>创建：2025-01-19 | 最后更新：2026-03-20</small><br>
 
 > [@] 在左侧边栏可以找到目录树，您也可以使用`Ctrl/Command`+`F`快捷键打开「在网页上查找」等类似功能。<br>
 > 但本文列出的错误原因通常只列出关键字，请考虑搜索单词而不是输入整个错误提示。

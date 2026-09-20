@@ -11,7 +11,28 @@
  *   4. 引用块提示框  —— [i] / [!] / [！] / [x] / [@] / [#hex$tip] → 带色边框与标题的 callout（旧站 hyper_markdown.quotepro）
  *   5. 任务列表      —— GFM 复选框 <input type=checkbox> → Sober 的 <s-checkbox disabled="true">（站点 UI 统一）
  *   6. 图片          —— <img> 追加 loading=lazy / decoding=async
+ *   7. 注释合并      —— 把两种注释都搬到页脚注释区（见下）
+ *
+ * ── 7. 注释合并（语法糖）──────────────────────────────────────────
+ * 页脚注释区由框架提供：Footer.astro 的 `ol#notes`，framework.js 会
+ *   ① 把任意 `<template data-inject="notes">` 的内容注入到 `ol#notes`；
+ *   ② 把正文 `<sup data-note="token">` 与 `li[data-note="token"]` 双向绑定
+ *      （自动编号、点击互跳，并给条目补 ↩ 返回链接）。
+ * 因此本插件只需在构建期产出上面两种标记。支持两种写法：
+ *   A. `[^1]: 说明` —— 标准脚注语法（remark-gfm）。文末的脚注区块与正文引用
+ *      会被拆开，分别变成 `li[data-note="1"]` 与 `sup[data-note="1"]`。
+ *   B. `<!-- notes -->` 标记 + 紧随其后的无序/有序列表 —— 该列表整体搬入页脚，
+ *      条目编号为 `notes-1`、`notes-2` …（正文若需引用，写
+ *      `<sup data-note="notes-1"></sup>` 即可）。
+ * 注意：只有**显式**带 `<!-- notes -->` 标记的列表会被搬运——正文里以列表结尾
+ * （如「注意事项」）不会被误伤。
+ *
+ * ⚠ 实现约束：注入模板必须用 **raw 字符串节点** 承载。Astro 在用户 rehype 插件
+ *   **之后**还会跑 rehype-raw，而它以 `node.content` 序列化 `<template>`，
+ *   会把手写的 `content` 清空（实测 `<template></template>`）；改用 raw 节点
+ *   交回 rehype-raw 解析，才能得到带内容的模板。
  */
+import { toHtml } from 'hast-util-to-html';
 
 /** 链接语法糖标记：↗（U+2197）、$（U+0024）、฿（U+0E3F） */
 const LINK_SUGAR = /[\u2197\u0024\u0e3f]/;

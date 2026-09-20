@@ -1,9 +1,17 @@
 ---
 title: "栈流Streack 2025年6月用户调研"
 description: "调研结果公示"
+nav:
+  - label: 文档
+    href: /doc
+  - label: 活动
+    href: /doc/event
+  - label: 新闻博客
+    href: /doc/news
+  - label: 近期更新
+    href: /doc/updata
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../../">←返回</a> |
- 创建：2025-06-25 | 最后更新：2025-07-01</small><br>
+<small>创建：2025-06-25 | 最后更新：2025-07-01</small><br>
 
 > [i] [调研问卷网址฿](https://wj.qq.com/s2/22395825/n6st/)<br>
 > 调研时间为UTC+8 2025-06-26 00:01 至 2025-06-30 23:59，共收到4份回复。

@@ -1,8 +1,17 @@
 ---
 title: "活动一览"
 description: " "
+toc: false
+nav:
+  - label: 文档
+    href: /doc
+  - label: 活动
+    href: /doc/event
+  - label: 新闻博客
+    href: /doc/news
+  - label: 近期更新
+    href: /doc/updata
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><br><small><a href="/doc/">←返回</a></small><br>
 
 > [i] 关于现在正在进行的活动，请在[文档首页](../)查看。
 
@@ -15,4 +24,4 @@ description: " "
 * [「雨纷纷」限时掉落物倍增](./2025/0402)
 * [「幻境此间」新春活动](./2025/0125)
 
-<div id="mdRender_config" data-sideship-hide="4"></div>
+

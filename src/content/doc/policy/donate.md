@@ -1,9 +1,17 @@
 ---
 title: "赞助方针"
 description: " "
+nav:
+  - label: 文档
+    href: /doc
+  - label: 活动
+    href: /doc/event
+  - label: 新闻博客
+    href: /doc/news
+  - label: 近期更新
+    href: /doc/updata
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="../../">←返回</a> |
- 创建：2026-04-03 | 最后更新：2026-07-14</small><br>
+<small>创建：2026-04-03 | 最后更新：2026-07-14</small><br>
 
 > [@] 未成年小朋友请在家长同意后再赞助哦。
 

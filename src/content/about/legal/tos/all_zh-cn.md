@@ -2,19 +2,7 @@
 title: "栈流Streack用户协议"
 description: " "
 ---
-<small id="old_menu"><a href="/">首页</a> | <a href="/doc/">文档</a></small><small><a href="/doc">←返回</a></small><br>
 
-> [i] 历史版本一览：<br>
-> 
-> * [2026-05-29](./user_history/2026-05-29.html)
-> * [2025-05-01](./user_history/2025-05-01.html)
-> * [2025-03-20](./user_history/2025-03-20.html)
-> * [2025-02-03](./user_history/2025-02-03.html)
-> * [2025-01-13](./user_history/2025-01-13.html)
-> 
-> 请以最新版本为准；因技术限制，若有更新版本将在游戏服务器内通知。
-
-<h1>用户协议</h1>
 <div>更新日期：<strong>2026年5月29日</strong></div>
 <div>生效日期：<strong>2026年6月01日</strong></div>
 
