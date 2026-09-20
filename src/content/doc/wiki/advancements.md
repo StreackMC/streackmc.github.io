@@ -3,13 +3,13 @@ title: "特有进度与挑战"
 description: "非原版的部分进度与挑战一览表"
 nav:
   - label: 文档
-    href: /doc
+    href: /doc/
   - label: 活动
-    href: /doc/event
+    href: /doc/event/
   - label: 新闻博客
-    href: /doc/news
+    href: /doc/news/
   - label: 近期更新
-    href: /doc/updata
+    href: /doc/updata/
 ---
 <small>创建：2026-05-19 | 最后更新：2026-05-19</small><br>
 

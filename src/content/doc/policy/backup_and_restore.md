@@ -3,13 +3,13 @@ title: "备份与恢复方针"
 description: " "
 nav:
   - label: 文档
-    href: /doc
+    href: /doc/
   - label: 活动
-    href: /doc/event
+    href: /doc/event/
   - label: 新闻博客
-    href: /doc/news
+    href: /doc/news/
   - label: 近期更新
-    href: /doc/updata
+    href: /doc/updata/
 ---
 <small>创建：2025-10-28 | 最后更新：2026-07-14</small><br>
 

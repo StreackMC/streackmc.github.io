@@ -3,13 +3,13 @@ title: "栈流Streack 2025年4月用户调研"
 description: "调研结果公示"
 nav:
   - label: 文档
-    href: /doc
+    href: /doc/
   - label: 活动
-    href: /doc/event
+    href: /doc/event/
   - label: 新闻博客
-    href: /doc/news
+    href: /doc/news/
   - label: 近期更新
-    href: /doc/updata
+    href: /doc/updata/
 ---
 <small>创建：2025-03-05 | 最后更新：2025-03-05</small><br>
 

@@ -4,13 +4,13 @@ description: "见证每一次变化"
 toc: false
 nav:
   - label: 文档
-    href: /doc
+    href: /doc/
   - label: 活动
-    href: /doc/event
+    href: /doc/event/
   - label: 新闻博客
-    href: /doc/news
+    href: /doc/news/
   - label: 近期更新
-    href: /doc/updata
+    href: /doc/updata/
 ---
 
 > [i] 若您有其它建议、BUG反馈、申诉需求等，请前往[Github฿](https://github.com/StreackMC/issues/new)或[Gitee฿](https://gitee.com/kdxiaoyi/issues/new)发起Issue。
