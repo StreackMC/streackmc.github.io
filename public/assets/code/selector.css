@@ -24,7 +24,7 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1.5rem 4rem;
-  padding-top: calc(var(--safezone, 0px) + 2rem);
+  padding-top: calc(var(--safezone, 0px) + 0rem);
   box-sizing: border-box;
   z-index: auto;
   top: unset;
@@ -64,7 +64,7 @@ s-page[dark] .selector-wrap {
   font-weight: 600; color: var(--sel-text);
 }
 .selector-wrap .selector-description {
-  font-size: 1rem; color: var(--sel-text-muted);
+  font-size: 1.2rem; color: var(--sel-text-muted);
   line-height: 1.6; margin: 0;
 }
 
