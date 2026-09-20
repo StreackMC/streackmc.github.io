@@ -113,6 +113,10 @@
 - 依赖（devDependencies）：`ai` / `@ai-sdk/openai` / `node-html-parser` / `zod`
 - LLM 策略：结构化输出优先，失败回退「文本 + 提取 JSON + zod」；整体重试 3 次
 - 写出默认“合并”（保留未覆盖旧条目，如外部 `/doc/**`）；选项 `--dry-run` / `--no-write` / `--replace` / `--limit` / `--pretty` / `--dir`
+- **名单（2026-09-20 新增）**：根目录 `summary-list.txt` 一行一个模式，**只总结命中名单的页面**；
+  模式匹配**网站路径**（非 dist 文件路径），支持 `*`（不跨 `/`）/ `**`（跨层级）/ `?`；
+  开头 `/` 可省略，`dir/` 等价 `dir/**`；**不带通配符的目录名同时覆盖其下所有页面**；
+  名单为空/文件不存在则不过滤（保持原行为）；模式零命中会告警（查笔误）；`--only "a,b"` 可临时覆盖名单
 - VSCode 任务：`Generate Search Suggestions`（`astro build && node summary.js`）
 - 运行：`node summary.js`（需先 build）
 

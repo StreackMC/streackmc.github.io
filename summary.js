@@ -26,6 +26,25 @@
  *    node summary.js --limit 3      # 只处理前 N 个页面（试跑用）
  *    node summary.js --pretty       # 以缩进格式写出（默认转为压缩的单行标准 JSON）
  *    node summary.js --dir <path>   # 指定构建产物目录（默认 dist）
+ *    node summary.js --only <模式>  # 只处理命中「名单」的页面（逗号分隔，覆盖名单文件）
+ *
+ *  ═══════════════════════════════════════════════════════════════
+ *  名单（只总结指定目录的文件，支持通配符）
+ *  ═══════════════════════════════════════════════════════════════
+ *  在仓库根目录维护 summary-list.txt，一行一个模式（# 开头为注释，空行忽略）：
+ *
+ *       doc/**              # doc 下所有页面
+ *       about/legal         # 该目录及其下的页面
+ *       /webtool/*          # 通配符：webtool 下任意一层
+ *       /doc/policy/privacy # 单个页面也可以
+ *
+ *  · 模式匹配的是**网站路径**（如 /doc/policy/donate，而非 dist 里的文件路径）
+ *  · 开头的 / 可省略；以 / 结尾（如 `doc/policy/`）等价于 `doc/policy/**`
+ *  · 通配符：`*` 匹配任意多个字符（不含 /）、`**` 跨层级、`?` 匹配单个字符
+ *  · 只写目录名（如 `doc/policy`）时，该目录**及其下所有页面**都会被纳入
+ *  · 名单为空或文件不存在 → 不做过滤，照旧处理全部可读页面
+ *  · 名单里某个模式没命中任何页面时会告警，便于发现笔误
+ *  · `--only` 传入的模式会**覆盖**名单文件（临时试跑用）
  *
  *  说明：
  *   · 只总结“页面”——HTML 页面；.js/.css 等资源不处理
@@ -55,6 +74,8 @@ import { generateObject, streamObject, generateText } from 'ai';
 // ============================================================
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const SECRET_PATH = join(ROOT, 'secret.json');
+/** 「名单」文件：一行一个模式，只总结命中名单的页面（不存在或为空则不过滤） */
+const LIST_PATH = join(ROOT, 'summary-list.txt');
 const OUTPUT_PATH = join(ROOT, 'public', 'assets', 'search-suggestion.json');
 
 /** 页面可见正文少于该字符数则视为“无实质内容”，跳过 */
@@ -76,6 +97,11 @@ const DIST_DIR = dirFlag >= 0 && argv[dirFlag + 1]
   : join(ROOT, 'dist');
 const limitFlag = argv.findIndex((a) => a === '--limit' || a === '-l');
 const LIMIT = limitFlag >= 0 && argv[limitFlag + 1] ? Math.max(0, parseInt(argv[limitFlag + 1], 10) || 0) : 0;
+/** --only 的模式列表（逗号分隔），命中则覆盖名单文件 */
+const onlyFlag = argv.findIndex((a) => a === '--only' || a === '-o');
+const ONLY = onlyFlag >= 0 && argv[onlyFlag + 1]
+  ? argv[onlyFlag + 1].split(',').map((s) => s.trim()).filter(Boolean)
+  : [];
 
 // ============================================================
 // 数据模型（zod）
@@ -182,6 +208,72 @@ function cleanTitle(raw) {
   if (!t) return '';
   const cleaned = t.replace(/\s*[—–\-|·]\s*(栈流\s*)?Streack\s*$/i, '').trim();
   return cleaned || t;
+}
+
+// ============================================================
+// 名单（只总结指定目录的文件，支持通配符）
+// ============================================================
+
+/** 规范化名单模式：补开头的 /；`dir/` 视作 `dir/**` */
+function normalizePattern(raw) {
+  const p = String(raw || '').trim();
+  if (!p) return '';
+  const withSlash = p.startsWith('/') ? p : '/' + p;
+  return withSlash.endsWith('/') ? withSlash + '**' : withSlash;
+}
+
+/** 通配符 → 正则：`**` 跨层级、`*` 不跨 `/`、`?` 单字符 */
+function globToRegExp(pattern) {
+  let re = '';
+  for (let i = 0; i < pattern.length; i++) {
+    const c = pattern[i];
+    if (c === '*') {
+      if (pattern[i + 1] === '*') {
+        re += '.*';
+        i += 1;
+      } else {
+        re += '[^/]*';
+      }
+    } else if (c === '?') {
+      re += '[^/]';
+    } else {
+      re += c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+  }
+  return new RegExp('^' + re + '$');
+}
+
+/** 判断某个网站路径是否命中名单模式（目录模式同时覆盖其下所有页面） */
+function matchesPattern(link, pattern) {
+  if (globToRegExp(pattern).test(link)) return true;
+  // 「指定目录」语义：不带通配符的 `/doc/policy` 也应命中 `/doc/policy/donate`
+  if (!pattern.includes('*') && !pattern.includes('?')) {
+    return globToRegExp(pattern + '/**').test(link);
+  }
+  return false;
+}
+
+/**
+ * 读取名单：优先 --only（覆盖），否则读 summary-list.txt。
+ * 返回 { patterns, fromCli }；patterns 为空表示不过滤。
+ */
+function loadAllowList() {
+  const fromCli = ONLY.length > 0;
+  const raw = fromCli
+    ? ONLY
+    : existsSync(LIST_PATH)
+      ? readFileSync(LIST_PATH, 'utf8')
+          .split(/\r?\n/)
+          .map((line) => line.trim())
+          .filter((line) => line && !line.startsWith('#'))
+      : [];
+
+  const patterns = [];
+  for (const item of raw) {
+    const p = normalizePattern(item);
+    if (p && !patterns.includes(p)) patterns.push(p);
+  }
+  return { patterns, fromCli };
 }
 
 // ============================================================
@@ -332,7 +424,7 @@ async function main() {
 
   // 2. 扫描并提取各页面正文
   const htmlFiles = await collectHtmlFiles(DIST_DIR);
-  const pages = [];
+  let pages = [];
   for (const file of htmlFiles) {
     const link = fileToLink(file, DIST_DIR);
     // 跳过 404
@@ -343,6 +435,28 @@ async function main() {
 
     pages.push({ link, title: cleanTitle(rawTitle), rawTitle, text, file });
   }
+
+  // 2b. 名单过滤：只保留命中名单模式的页面（名单为空则不过滤）
+  const { patterns, fromCli } = loadAllowList();
+  if (patterns.length > 0) {
+    const hits = new Map(patterns.map((p) => [p, 0]));
+    pages = pages.filter((page) => {
+      let hit = false;
+      for (const p of patterns) {
+        if (matchesPattern(page.link, p)) {
+          hits.set(p, hits.get(p) + 1);
+          hit = true;
+        }
+      }
+      return hit;
+    });
+    const source = fromCli ? '--only' : relative(ROOT, LIST_PATH);
+    console.log(`[summary] 名单（${source}）：${patterns.length} 条模式命中 ${pages.length} 个页面`);
+    for (const p of patterns) {
+      if (hits.get(p) === 0) console.warn(`  ! 该模式未命中任何页面，请检查写法：${p}`);
+    }
+  }
+
   pages.sort((a, b) => a.link.localeCompare(b.link));
   if (LIMIT > 0 && pages.length > LIMIT) pages.length = LIMIT; // --limit 试跑
 
