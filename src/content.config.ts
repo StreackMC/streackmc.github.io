@@ -27,6 +27,7 @@
  *   description — meta description
  *   keywords    — meta keywords
  *   theme       — 'light' | 'dark'，s-page 主题（默认 light）
+ *   toc         — 是否渲染页首目录（默认 true；写 false 则该页不渲染目录）
  *   nav         — 工具栏导航项 [{ label, href?, cmd? }]（标题栏智能插槽）
  */
 import { defineCollection, z } from 'astro:content';
@@ -40,6 +41,8 @@ const content = defineCollection({
     description: z.string().optional(),
     keywords: z.string().optional(),
     theme: z.enum(['light', 'dark']).optional(),
+    // 是否渲染页首目录；缺省为 true，写 false 则不渲染该页目录
+    toc: z.boolean().optional(),
     // 工具栏导航项（标题栏智能插槽）：label 必填，href 用 url 命令、cmd 用任意 data-cmd
     nav: z
       .array(

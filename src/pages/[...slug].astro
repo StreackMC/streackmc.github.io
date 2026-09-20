@@ -44,6 +44,7 @@ const heading = hasTopHeading ? undefined : data.title;
   theme={data.theme ?? 'light'}
   heading={heading}
   headings={headings}
+  toc={data.toc !== false}
   nav={data.nav}
 >
   <Content />

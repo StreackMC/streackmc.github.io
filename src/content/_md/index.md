@@ -35,10 +35,14 @@ title: 页面标题        # 用于 <title> 与页头
 description: 页面描述  # meta description
 keywords: 关键词,逗号,分隔
 theme: light          # light | dark，页面配色
+toc: false            # 是否渲染页首目录，默认 true（省略即渲染）
 ---
 ```
 
 若正文首行已使用一级标题 `#`，则不再额外渲染页头，避免标题重复。
+
+页首目录默认会渲染（含 2 级及以上标题、且至少 2 项时）；若某页不需要目录，
+在 frontmatter 写 `toc: false` 即可，该页将完全不输出目录区块。
 
 ## 下一步
 

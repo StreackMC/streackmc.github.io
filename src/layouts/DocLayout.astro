@@ -18,6 +18,7 @@
  *   theme       - s-page 主题（默认 light）
  *   heading     - 可选，正文顶部的页头标题（由路由按需传入）
  *   headings    - 可选，Astro render() 返回的标题列表，用于生成目录
+ *   toc         - 是否渲染页首目录（默认 true；由 frontmatter `toc: false` 关闭）
  *   nav         - 可选，工具栏导航项 [{ label, href? , cmd? }]，渲染为“标题栏智能插槽”
  *
  * Slots:
@@ -45,6 +46,7 @@ interface Props {
   theme?: string;
   heading?: string;
   headings?: Heading[];
+  toc?: boolean;
   nav?: NavItem[];
 }
 
@@ -55,6 +57,7 @@ const {
   theme = 'light',
   heading,
   headings = [],
+  toc = true,
   nav = [],
 } = Astro.props;
 
@@ -107,7 +110,7 @@ const tocHtml = buildToc(headings);
       <article class="doc-article">
         <div class="doc-body">
           {heading && <h1 class="doc-heading">{heading}</h1>}
-          {tocHtml && (
+          {toc && tocHtml && (
             <s-fold class="doc-toc" data-doc-toc folded="true" role="navigation" aria-label="目录">
               <div slot="trigger" class="doc-toc-head">
                 <span class="doc-toc-title">本文内容</span>

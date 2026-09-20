@@ -50,7 +50,7 @@
 - `src/pages/[...slug].astro` — 根级 catch-all 路由，slug = `entry.id.replace(/(^|\/)index$/, '')`
 - `src/layouts/DocLayout.astro` — 继承 FrameworkLayout；正文 `article > .doc-body`
 - `public/assets/code/doc.css` — prose 样式；以 `.doc-content .doc-body …` 覆盖 framework.css 的 `.content *` 重置
-- Frontmatter（可选）：title / description / keywords / theme
+- Frontmatter（可选）：title / description / keywords / theme / **toc**（`toc: false` 则该页不渲染页首目录）/ nav
 - 正文含顶级 `#` 时不重复渲染 frontmatter 页头
 
 ## Markdown 增强渲染（rehype，2026-09-17；源自旧站 pmd 的客户端增强）
