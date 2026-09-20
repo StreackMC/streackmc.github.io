@@ -59,15 +59,19 @@
 - 品牌拆分：Toolbar.astro 里 `#toolbar-brand` > `#toolbar-brand-en`(英文 Streack，窄屏可隐藏) + `#toolbar-brand-loc`(loc 后缀位)
 - framework.js 新增导出：`setToolbarLoc(text)`（自动补「·」）、`fitToolbarBrand()`（仅配置 loc 时介入，
   一行放不下则隐藏英文名）、`applyToolbarNavTemplates()`（解析 `<template data-toolbar-nav>`）、
-  `parseReplaceset` / `fillPlaceholders`（`%xxx%` 替换，未提供的占位符原样保留）
+  `parseReplaceset` / `fillPlaceholders`（`%xxx%` 替换，未提供的占位符原样保留）、
+  `mergeNavNodes(presetNodes, ownNodes)`（导航合并，见下）
 - 预设表 `public/assets/app/toolbar-presets.js`：`Map<名称, { loc, nav }>`，现含
   `document` / `about` / `example-of-section`（后者用 `%section%` 演示占位符）；
-  `registerToolbarPreset` / `getToolbarPreset` 可运行时扩展
+  `registerToolbarPreset` / `getToolbarPreset` 可运行时扩展；**预设按钮都带 id**（doc-* / about-* / ex-*）
 - 用法两种：Astro `<template slot="toolbar-nav" data-toolbar-nav toolbar-set="document" replaceset='…'>`；
   Markdown frontmatter `nav-preset: document`（简写）或 `{ set, loc, replaceset }`（对象）
-- 合并规则（逐字段独立、自身优先）：loc / nav 均「元素自身有值用自身，否则继承预设」；
-  replaceset 只来自元素，替换同时作用于预设值与自身值
-- `content.config.ts` 加 `nav-preset` schema；`DocLayout.astro` 转成 template 三属性
+- 合并规则：
+  · loc：元素自身 loc 属性有值用自身，否则继承预设（两者都做占位符替换）
+  · nav：preset 按钮与 template 按钮**合并**（都显示）——template 按钮带 id 且命中
+    preset 同 id → 覆写（保持 preset 原位置）；否则（无 id / 未命中）→ 追加到末尾；
+    占位符替换同时作用于 preset 与 template
+- `content.config.ts` 加 `nav-preset` schema 与 `nav` 项可选 `id` 字段；`DocLayout.astro` 转成 template 三属性
 
 ## loop-cards 循环卡片组件（自研轮播，无文档、当前未使用）
 - 位置：`public/assets/app/framework.js` 的 `export function initLoopCards()`（约 865 行）
