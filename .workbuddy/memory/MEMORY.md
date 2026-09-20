@@ -43,7 +43,7 @@
 - `src/components/`：Toolbar、Footer（服务端渲染）、Selector（嵌入选择器）、PageIcon（首栏图标）
 - `temple/` 为**顶层源模板目录**（5 文件），不在 src/pages，不参与构建
 - `public/`：静态资源；`public/webtool/*.html` 与 `public/h5event/` 为原始静态 HTML（仅 SoberJS，Astro 静态透传）
-- `dist/` 已提交入 git
+- `dist/` 已被 `.gitignore` 忽略（不再提交入 git，构建产物仅本地/CI 生成）
 - Sitemap：@astrojs/sitemap 集成，filter 排除 404，customPages 自动收录 public/ 静态 HTML
 
 ## 命令系统（public/assets/app/framework.js）
@@ -54,6 +54,20 @@
   initFramework 初始化时对 document.body 调用一次
 - 其他工具：openURL（含嵌套页面识别）、msg、getQueryString、CopyText、存储 API pmdStorage
 - 全部导出到 `window.streack.*`
+
+## Toolbar 预设与品牌后缀 loc（2026-09-20）
+- 品牌拆分：Toolbar.astro 里 `#toolbar-brand` > `#toolbar-brand-en`(英文 Streack，窄屏可隐藏) + `#toolbar-brand-loc`(loc 后缀位)
+- framework.js 新增导出：`setToolbarLoc(text)`（自动补「·」）、`fitToolbarBrand()`（仅配置 loc 时介入，
+  一行放不下则隐藏英文名）、`applyToolbarNavTemplates()`（解析 `<template data-toolbar-nav>`）、
+  `parseReplaceset` / `fillPlaceholders`（`%xxx%` 替换，未提供的占位符原样保留）
+- 预设表 `public/assets/app/toolbar-presets.js`：`Map<名称, { loc, nav }>`，现含
+  `document` / `about` / `example-of-section`（后者用 `%section%` 演示占位符）；
+  `registerToolbarPreset` / `getToolbarPreset` 可运行时扩展
+- 用法两种：Astro `<template slot="toolbar-nav" data-toolbar-nav toolbar-set="document" replaceset='…'>`；
+  Markdown frontmatter `nav-preset: document`（简写）或 `{ set, loc, replaceset }`（对象）
+- 合并规则（逐字段独立、自身优先）：loc / nav 均「元素自身有值用自身，否则继承预设」；
+  replaceset 只来自元素，替换同时作用于预设值与自身值
+- `content.config.ts` 加 `nav-preset` schema；`DocLayout.astro` 转成 template 三属性
 
 ## loop-cards 循环卡片组件（自研轮播，无文档、当前未使用）
 - 位置：`public/assets/app/framework.js` 的 `export function initLoopCards()`（约 865 行）
