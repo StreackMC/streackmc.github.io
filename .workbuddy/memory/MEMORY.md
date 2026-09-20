@@ -50,6 +50,12 @@
 - 双模式：整页（`SelectorLayout`）/ 嵌入（`Selector.astro`），共享同一 JS，扫描所有 `[data-selector]` 支持多实例
 - 配置结构：`{ title, description?, layerTitle?, options:[{label,hint?,layerTitle?,children?|result?}] }`
 - 交互：逐层下钻、层级标题、单选项 700ms 自动前进、scrollIntoView、面包屑回退、结果卡片
+- **滚动时机**由 `renderLayer(options, depth, layerTitle, autoScroll)` 第 4 参决定（缺省 = `depth > 0`）：
+  - 初始化（页面加载 / URL 驱动）**不滚** —— 第 0 层紧贴页面标题，居中滚动会把标题顶出视口；
+  - 下钻出的新层（depth > 0）滚至居中；
+  - **用户主动的「重新选择」与面包屑回退，回到第 0 层也必须显式传 `true`**
+    （曾用 `depth > 0` 一刀切，把这俩的滚动一起掐掉 → 点「重新选择」后停在空白处）
+  - 教训：用 depth 推断「是不是初始化」不可靠，第 0 层既有初始化也有用户回退，必须由调用方显式表达意图
 - URL 同步：`?selector=id:a.b.c|id2:x.y`（pushState/popstate）；给 `.selector-wrap` 设 id 才启用；
   `data-selector-history="false"` → replaceState 仅改地址栏
 - 初始化后移除 DOM 中的 `[data-selector-config]` 脚本

@@ -8,6 +8,14 @@
  * 两种模式共享同一份 JS：扫描页面上所有 [data-selector] 元素，
  * 各自从内部 [data-selector-config] 读取配置并独立初始化。
  *
+ * 滚动：
+ *   是否滚动由 renderLayer 的第 4 个参数 autoScroll 决定（缺省 = depth > 0）：
+ *   - 初始化（页面加载 / URL 驱动）时**不滚动** —— 第一层紧贴页面标题，
+ *     首层选项多时居中滚动会把标题顶出视口；
+ *   - 下钻产生的新层（depth > 0）滚动至视口居中；
+ *   - 用户主动的「重新选择」与面包屑回退，即便回到第 0 层也**要滚动**
+ *     （是明确的用户意图，不滚会让用户停在「结果卡已消失」的空位置上）。
+ *
  * URL 同步：
  *   通过 ?selector=id:path.subpath|id2:path2 参数控制选择器状态。
  *   - 页面加载时解析参数，自动选中对应路径
@@ -122,7 +130,17 @@
     let $layers = function () { return root.querySelector('[data-layers]'); };
     let $result = function () { return root.querySelector('[data-result]'); };
 
-    function renderLayer(options, depth, layerTitle) {
+    /**
+     * 渲染一层选项
+     * @param {any[]}   options
+     * @param {number}  depth
+     * @param {string}  [layerTitle]
+     * @param {boolean} [autoScroll] 是否把新层滚入视口。
+     *        缺省按 depth 推断（depth > 0 才滚）—— 但**初始化渲染第 0 层**与
+     *        **用户点「重新选择」/ 面包屑回到第 0 层**都必须显式传值区分，
+     *        否则会连带把后者的滚动一起掐掉。
+     */
+    function renderLayer(options, depth, layerTitle, autoScroll) {
       if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
       $layers().querySelectorAll('.selector-layer').forEach(function (l) {
         if (parseInt(l.dataset.depth) >= depth) l.remove();
@@ -147,7 +165,13 @@
       $layers().appendChild(layer);
 
       requestAnimationFrame(function () { layer.classList.add('visible'); });
-      setTimeout(function () { layer.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+      // 是否滚动：未显式指定时，只有下钻出的新层（depth > 0）才滚。
+      // 初始化渲染第 0 层时若居中滚动，会把页面标题顶出视口（首层选项多时尤甚）；
+      // 而「重新选择」/ 面包屑回退虽同为第 0 层，却是用户主动行为，必须滚。
+      let shouldScroll = (autoScroll === undefined) ? depth > 0 : !!autoScroll;
+      if (shouldScroll) {
+        setTimeout(function () { layer.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+      }
       updateBreadcrumb();
 
       if (options.length === 1 && !suppressAutoAdvance) {
@@ -250,15 +274,18 @@
 
     function goBackTo(depth) {
       path = path.slice(0, depth);
-      if (depth === 0) renderLayer(config.options, 0, config.layerTitle || config.title);
-      else renderLayer(path[depth - 1].option.children, depth, path[depth - 1].option.layerTitle || path[depth - 1].option.label);
+      // 面包屑回退是用户主动行为，回到第 0 层也要把该层滚回视口
+      if (depth === 0) renderLayer(config.options, 0, config.layerTitle || config.title, true);
+      else renderLayer(path[depth - 1].option.children, depth, path[depth - 1].option.layerTitle || path[depth - 1].option.label, true);
 
       if (!fromURLSync) syncURL(true);
     }
 
     function resetSelector() {
       path = [];
-      renderLayer(config.options, 0, config.layerTitle || config.title);
+      // 同 goBackTo(0)：点「重新选择」后结果卡被清空，
+      // 必须把第 0 层滚回视口，否则用户会停在页面下方一片空白处
+      renderLayer(config.options, 0, config.layerTitle || config.title, true);
 
       if (!fromURLSync) syncURL(true);
     }
@@ -286,8 +313,8 @@
       $result().classList.remove('visible');
       path = [];
 
-      /* 渲染根层 */
-      renderLayer(config.options, 0, config.layerTitle || config.title);
+      /* 渲染根层（URL 驱动，不滚动，保留页面标题可见） */
+      renderLayer(config.options, 0, config.layerTitle || config.title, false);
 
       let currentOptions = config.options;
       for (let i = 0; i < labels.length; i++) {
@@ -328,9 +355,9 @@
     let addHistory = root.dataset.selectorHistory !== 'false';
     registry.push({ root: root, getPath: getPath, selectPath: selectPath, addHistory: addHistory });
 
-    /* 启动 */
+    /* 启动：初始化渲染第 0 层，不滚动（保留页面标题可见） */
     path = [];
-    renderLayer(config.options, 0, config.layerTitle || config.title);
+    renderLayer(config.options, 0, config.layerTitle || config.title, false);
   }
 
   /* === 扫描 & 初始化 === */
