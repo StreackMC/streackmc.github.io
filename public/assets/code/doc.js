@@ -13,6 +13,7 @@
     document.querySelectorAll('.code-copy').forEach(function (btn) {
       if (btn.dataset.bound === 'true') return;
       btn.dataset.bound = 'true';
+      btn.classList.add('glass');
 
       var original = btn.textContent;
       btn.addEventListener('click', function () {
@@ -55,7 +56,11 @@
     if (!body) return;
 
     // 页面加载时一次性判定：目录过高则默认折叠，否则保持展开
-    if (body.scrollHeight >= window.innerHeight * 0.4) fold.setAttribute('folded', 'true');
+    if (body.scrollHeight >= window.innerHeight * 0.4) {
+      fold.setAttribute('folded', 'true');
+    } else {
+      fold.setAttribute('folded', 'false');
+    };
   }
 
   function init() {
