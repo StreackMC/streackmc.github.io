@@ -1,23 +1,164 @@
 ---
 import FrameworkLayout from '../../layouts/FrameworkLayout.astro';
 ---
-<FrameworkLayout title="未知的页面 — 栈流Streack" description="404 Notfound Page" keywords="404,unknown,missingno"
+<FrameworkLayout title="捐赠与赞助 — 栈流Streack" description="404 Notfound Page" keywords="404,unknown,missingno"
   theme="light">
 
-  <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
   <div style="display: contents">
-    <!-- 内容块示例 1：全宽 Banner -->
-    <div class="content" slot="0">
-      <div class="slotBg-I" style="--u:white;"></div>
-      <div style="--t: max(20vh, 12rem); --l:auto; --r: auto; --a: center;">
-        <h1 style="--fs:35px;--fl:60px;">抱歉，但你要访问的网页找不到</h1>
-        <!-- <p style="--fs:20px;--fl:36px;">描述文字</p> -->
-        <s-button data-cmd="search:" style="margin-top: 2rem;" id="hostname-p">Search</s-button>
+    <div class="content" slot="0" style="height: max-content;">
+      <div
+        style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: start; width: min(1024px, calc(var(--w) * 0.6));">
+        <h1 style="--fs:36px;--fl:52px; --a:center; margin: 4rem auto 0rem auto;">
+          <s-icon style="width: 1.5em; margin-bottom: .5em;">
+            <svg data-v-49a22239="" viewBox="0 -960 960 960">
+              <path data-v-49a22239=""
+                d="M185-80q-17 0-29.5-12.5T143-122v-105q0-90 56-159t144-88q-40 28-62 70.5T259-312v190q0 11 3 22t10 20h-87Zm147 0q-17 0-29.5-12.5T290-122v-190q0-70 49.5-119T459-480h189q70 0 119 49t49 119v64q0 70-49 119T648-80H332Zm148-484q-66 0-112-46t-46-112q0-66 46-112t112-46q66 0 112 46t46 112q0 66-46 112t-112 46Z">
+              </path>
+            </svg>
+          </s-icon><br>
+          联系 Streack
+        </h1>
+      </div>
+    </div>
+    <div class="content" slot="1" style="height: max-content;">
+      <div style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: start; width: 65%;">
+        <h2 style="--fs:24px;--fl:38px; margin: 1rem auto 2rem 0;">产品与服务支持</h2>
+        <div class="listed-items">
+          <s-card type="outlined">
+            <div slot="headline">联系支持以获取帮助</div>
+            <div slot="text">
+              <p>
+                通过加入我们的群聊，你可以向大多数时候在线的 Staff 们咨询你的疑难。<br>
+              </p>
+              <a target="_blank" href="https://qm.qq.com/q/guhbqi4Ftm">加入 QQ 群聊</a><br>
+              <p style="margin-top: 1rem;">
+                你也可以通过更多方式获取支持：
+              <ul>
+                <li><a target="_blank" href="/doc/">查阅在线文档</a></li>
+                <li><a href="mailto:contact@streack.top">通过电子邮件联系</a></li>
+                <li><a target="_blank"
+                    href="https://github.com/StreackMC/streackmc.github.io/issues/new/choose">在“Github”上提交 Issue</a>
+                </li>
+              </ul>
+              </p>
+            </div>
+          </s-card>
+          <s-card type="outlined">
+            <div slot="headline">财产损坏或丢失</div>
+            <div slot="text">
+              <p>
+                我们竭力守护你的财产安全。无论何种缘由，你可通过以下渠道寻求我们的帮助：<br>
+              <ul>
+                <li><a target="_blank" href="https://qm.qq.com/q/guhbqi4Ftm">加入 QQ 群聊</a></li>
+                <li><a href="mailto:contact@streack.top">通过电子邮件联系</a></li>
+                <li><a target="_blank"
+                    href="https://github.com/StreackMC/streackmc.github.io/issues/new/choose">在“Github”上提交 Issue</a>
+                </li>
+              </ul>
+              </p>
+              <p style="margin-top: 1rem;">
+                以下主题对你可能有帮助：
+              <ul>
+                <li><a target="_blank" href="/doc/policy/rule/">了解「基本方针」</a></li>
+                <li><a target="_blank" href="/doc/policy/backup_and_restore/">了解「备份与恢复方针」</a></li>
+              </ul>
+              </p>
+            </div>
+          </s-card>
+          <s-card type="outlined">
+            <div slot="headline">法律支持</div>
+            <div slot="text">
+              <p>
+                遵守服务所在国家或地区的法律是你我应尽的义务。有关任何法律支持（侵权、假冒检举、版权授权等），请通过电子邮件 <a
+                  href="mailto:law@streack.top">law@streack.top</a> 联系我们。<br>
+                阅读<a href="/about/legal/">“法律信息”</a>页面可能对你有所帮助。
+              </p>
+            </div>
+          </s-card>
+        </div>
+      </div>
+    </div>
+    <div class="content" slot="2" style="height: max-content;">
+      <div style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: start; width: 65%;">
+        <s-divider></s-divider>
+        <h2 style="--fs:24px;--fl:38px; margin: 1rem auto 2rem 0;">社群与媒体</h2>
+        <div class="listed-items">
+          <s-card type="outlined">
+            <div slot="headline">社交平台</div>
+            <div slot="text">
+              <p>
+                你可在各大平台上关注并联系我们：
+              <ul>
+                <li><a target="_blank" href="https://space.bilibili.com/3707029170424323">Bilibili</a></li>
+              </ul>
+              我们会阅读每一条留言，但不能保证全部回复。<br>
+              在此处没有列出的、号称“栈流 Streack 官方账号”等的，均不可信。
+              </p>
+            </div>
+          </s-card>
+          <s-card type="outlined">
+            <div slot="headline">可信域名</div>
+            <div slot="text">
+              <p>
+                栈流 Streack 仅使用以下域名。
+              <ul>
+                <li>streack.top</li>
+                <li>kdx233.eu.org</li>
+                <li>kdx233.github.io</li>
+                <li>streackmc.github.io</li>
+                <li>kdxhub.github.io</li>
+                <li>kdxiaoyi.top</li>
+              </ul>
+              在此处没有列出的、号称“栈流 Streack 官方域名”等的，均不可信。
+              </p>
+            </div>
+          </s-card>
+        </div>
       </div>
     </div>
   </div>
 
-  <script slot="scripts" is:inline type="module">
-    document.getElementById('hostname-p').innerText = `搜索 ${location.hostname}`;
-  </script>
+  <style>
+    div.listed-items {
+      position: relative;
+      width: min(1024px, calc(var(--w) * 0.6));
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
+    div.listed-items s-card {
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 1rem;
+      break-inside: avoid;
+      padding: 1rem 1.5rem;
+      height: 100%;
+      max-width: 360px;
+      background: transparent;
+      border-width: 0;
+    }
+
+    div.listed-items s-card img[slot="image"] {
+      margin: auto;
+    }
+
+    div.listed-items s-card div[slot="headline"] {
+      font-size: 1.5rem;
+      margin-bottom: 0.5em;
+    }
+
+    div.listed-items s-card div[slot="subhead"] {
+      font-size: 1.2rem;
+    }
+
+    div.listed-items s-card div[slot="text"] {
+      --lh: 1.5em;
+      font-size: 1rem;
+      line-height: var(--lh);
+    }
+  </style>
 </FrameworkLayout>
