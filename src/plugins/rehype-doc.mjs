@@ -27,6 +27,9 @@
  * 注意：只有**显式**带 `<!-- notes -->` 标记的列表会被搬运——正文里以列表结尾
  * （如「注意事项」）不会被误伤。
  *
+ * 条目内容需保持**行内**：框架把 `↩` 返回链接 append 到 <li> 末尾，若内容被 <p>
+ * 这类块级元素包着，箭头会被挤到下一行。故抽出时会把 <p> 展开（多个段落之间补 <br>）。
+ *
  * ⚠ 实现约束：注入模板必须用 **raw 字符串节点** 承载。Astro 在用户 rehype 插件
  *   **之后**还会跑 rehype-raw，而它以 `node.content` 序列化 `<template>`，
  *   会把手写的 `content` 清空（实测 `<template></template>`）；改用 raw 节点
@@ -366,6 +369,35 @@ function stripBackrefs(node) {
   }
 }
 
+/**
+ * 把条目里的块级 <p> 展开成行内内容。
+ * 框架是把 `↩` 返回链接 append 到 <li> 末尾的：若条目内容被 <p> 这类块级元素
+ * 包着，箭头会被挤到下一行（即使空间充足）。站内既有注释（首页、模板页）写的都是
+ * 行内文本，这里保持一致；多个段落之间补一个 <br> 以免粘成一行。
+ */
+function unwrapParagraphs(li) {
+  if (!Array.isArray(li.children)) return;
+  const out = [];
+  let seenParagraph = false;
+  for (const c of li.children) {
+    if (isTag(c, 'p')) {
+      if (seenParagraph) out.push({ type: 'element', tagName: 'br', properties: {}, children: [] });
+      out.push(...(c.children || []));
+      seenParagraph = true;
+    } else {
+      out.push(c);
+    }
+  }
+  // 去掉首尾空白文本节点，避免行首多余空格
+  while (out.length > 0 && out[0].type === 'text' && !String(out[0].value).trim()) out.shift();
+  while (out.length > 0) {
+    const last = out[out.length - 1];
+    if (last.type === 'text' && !String(last.value).trim()) out.pop();
+    else break;
+  }
+  li.children = out;
+}
+
 /** 正文脚注引用：<sup><a data-footnote-ref href="#user-content-fn-X">1</a></sup> → <sup data-note="X"></sup> */
 function rewriteNoteRefs(node) {
   if (!Array.isArray(node.children)) return;
@@ -409,6 +441,7 @@ function extractNotes(tree) {
       if (!m) return;
       li.properties = { 'data-note': decodeURIComponent(m[1]) };
       stripBackrefs(li);
+      unwrapParagraphs(li);
       items.push(li);
     });
     return false;
@@ -428,6 +461,7 @@ function extractNotes(tree) {
           .filter((c) => isTag(c, 'li'))
           .forEach((li, k) => {
             li.properties = { 'data-note': 'notes-' + (k + 1) };
+            unwrapParagraphs(li);
             items.push(li);
           });
         i = j; // 连同标记一起消费掉

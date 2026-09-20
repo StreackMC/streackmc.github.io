@@ -63,7 +63,9 @@
     A. `[^1]: …`（remark-gfm 脚注）→ 拆成 `li[data-note="1"]` + 正文 `sup[data-note="1"]`
     B. 单独一行 `<!-- notes -->` + 紧随的 ul/ol → 列表整体搬走，token 为 `notes-1`、`notes-2`…
     （必须显式标记：全站 17 篇的末尾块就是正文列表，自动判定会误伤）
-    产出 `<template data-inject="notes">`，由 `framework.js` 注入 `ol#notes` 并与 `sup` 双向绑定
+    产出 `<template data-inject="notes">`，由 `framework.js` 注入 `ol#notes` 并与 `sup` 双向绑定。
+    **条目内容必须行内**：框架把 `↩` append 到 `<li>` 末尾，若内容被 `<p>` 包着箭头会换行
+    → 抽出时用 `unwrapParagraphs()` 展开 `<p>`（多段之间补 `<br>`）；页脚注释区无任何 CSS
   - 图片仅加 `loading=lazy`（**图片查看器已移除**，不再有 `.doc-img`/灯箱）
 - `DocLayout.astro` — `render()` 的 `headings` 服务端生成 TOC（`.doc-toc`，**折叠复用 Sober `<s-fold>`** +
   180° 旋转箭头，见下「Sober UI 组件约束」）；
