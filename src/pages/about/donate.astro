@@ -4,12 +4,7 @@ import FrameworkLayout from '../../layouts/FrameworkLayout.astro';
 <FrameworkLayout title="捐赠与赞助 — 栈流Streack" description="404 Notfound Page" keywords="404,unknown,missingno"
   theme="light">
 
-  <template slot="toolbar-nav" data-toolbar-nav>
-    <div pc-only onclick='window.streack.openURL("/about/leadership/",true)' clickable>团队</div>
-    <div pc-only onclick='window.streack.openURL("/about/career/",true)' clickable>广纳贤士</div>
-    <div pc-only onclick='window.streack.openURL("/about/contact/",true)' clickable>联系</div>
-    <div pc-only onclick='window.streack.openURL("/about/donate/",true)' clickable>捐赠与赞助</div>
-  </template>
+  <template slot="toolbar-nav" data-toolbar-nav toolbar-set="about"></template>
 
   <div style="display: contents">
     <div class="content" slot="0" style="height: max-content;">

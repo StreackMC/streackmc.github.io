@@ -1,6 +1,7 @@
 ---
 title: "栈流Streack用户协议"
 description: " "
+nav-preset: about
 ---
 
 <div>更新日期：<strong>2026年5月29日</strong></div>

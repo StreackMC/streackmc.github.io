@@ -3,6 +3,8 @@
  * 提供所有基于此框架的页面共享的：工具函数、存储API、Toolbar管理器、命令系统、循环卡片、视频背景等
  */
 
+import { toolbarPresets, registerToolbarPreset, getToolbarPreset } from './toolbar-presets.js';
+
 /**
  * 定义不隔离的同源域名列表，支持子域名，列表之外的域名进行访问时会尝试尽可能地隔离数据。
  * 
@@ -636,6 +638,152 @@ async function initToolbar2Slots() {
 
 
 // ============================================================
+// Toolbar 品牌 loc + 可变插槽设置 toolbar-set
+// ============================================================
+//
+// 品牌后缀 loc：
+//   <template data-toolbar-nav loc="文档"> → 品牌渲染为「栈流Streack·文档」
+//   当 #toolbar1 一行放不下时，隐藏英文名 Streack，退化为「栈流·文档」
+//
+// 可变通用插槽设置 toolbar-set：
+//   <template data-toolbar-nav toolbar-set="预设名" replaceset='{"k":"v"}'>
+//   · 按名在预设表（assets/app/toolbar-presets.js）中查找 ToolbarTemplateLike
+//   · 继承其全部设置：loc（品牌后缀）与 nav（导航项按钮）
+//   · 元素自身的 loc 属性 / template 内部内容优先于预设
+//   · replaceset 是 Maplike（占位符名 → 值）；预设值里的 %xxx% 用它替换，
+//     未提供对应值的占位符原样保留
+
+/** 解析 replaceset 属性（JSON 对象字符串）→ Map；失败则告警并返回空 Map */
+export function parseReplaceset(raw) {
+  const map = new Map();
+  if (!raw) return map;
+  let obj;
+  try {
+    obj = JSON.parse(raw);
+  } catch (e) {
+    console.warn('[toolbar-set] replaceset 不是合法 JSON，已忽略：', raw, e);
+    return map;
+  }
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
+    console.warn('[toolbar-set] replaceset 需为 JSON 对象，已忽略：', raw);
+    return map;
+  }
+  for (const [k, v] of Object.entries(obj)) map.set(k, v);
+  return map;
+}
+
+/**
+ * 用 replaceset 填充 %xxx% 占位符
+ * @param {string} text
+ * @param {Map<string, any>} [replaceset]
+ * @returns {string} 未提供值的占位符原样保留
+ */
+export function fillPlaceholders(text, replaceset) {
+  if (typeof text !== 'string' || !text) return text || '';
+  const get = (key) => {
+    if (!replaceset) return undefined;
+    return typeof replaceset.get === 'function' ? replaceset.get(key) : replaceset[key];
+  };
+  return text.replace(/%([A-Za-z0-9_-]+)%/g, (whole, key) => {
+    const v = get(key);
+    return v === undefined || v === null ? whole : String(v);
+  });
+}
+
+/**
+ * 设置品牌后缀（渲染为「栈流Streack·文档」）
+ * 框架会自动补「·」；若文本已以「·」开头则不重复添加
+ * @param {string} [text] 传空则清除后缀
+ */
+export function setToolbarLoc(text) {
+  const el = document.getElementById('toolbar-brand-loc');
+  if (!el) return;
+  const t = String(text ?? '');
+  // 若使用者自带前导分隔符（·/・/| 等），不再重复添加
+  el.textContent = !t.trim() ? '' : /^[·・|｜/]/.test(t.trim()) ? t.trimEnd() : ' · ' + t;
+  fitToolbarBrand();
+}
+
+/** 防抖：多处（resize / 字体加载 / 导航注入）都会触发品牌适配 */
+let _brandFitTimer = null;
+function scheduleToolbarBrandFit() {
+  clearTimeout(_brandFitTimer);
+  _brandFitTimer = setTimeout(fitToolbarBrand, 120);
+}
+
+/**
+ * 按可用宽度适配品牌：
+ * 仅当**配置了 loc** 时生效 —— 若一行放不下，隐藏英文名 Streack
+ * （「栈流Streack·文档」→「栈流·文档」），保证 loc 文字与品牌中文名不被裁切。
+ *
+ * 判定方式：把 #toolbar1 各子元素宽度与间隔相加，和可用宽度比较。
+ * （不能用 scrollWidth：行内有 flex-wrap，放不下时是换行而非溢出。）
+ * 每次测量前都把英文名复原，因此反复调用结果稳定、不会来回抖动。
+ */
+export function fitToolbarBrand() {
+  const brand = document.getElementById('toolbar-brand');
+  const en = document.getElementById('toolbar-brand-en');
+  const loc = document.getElementById('toolbar-brand-loc');
+  const row = document.getElementById('toolbar1');
+  if (!brand || !en || !loc || !row) return;
+  // 没有 loc 时不介入
+  if (!loc.textContent) {
+    en.style.display = '';
+    return;
+  }
+  en.style.display = ''; // 先复原再测量，否则量到的是已隐藏后的宽度
+
+  const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
+  const kids = Array.from(row.children);
+  const used = kids.reduce((sum, c) => sum + c.getBoundingClientRect().width, 0)
+    + gap * Math.max(0, kids.length - 1);
+  if (used > row.clientWidth) {
+    en.style.display = 'none';
+  }
+}
+
+/**
+ * 处理页面里的 <template data-toolbar-nav>：解析 toolbar-set / loc / replaceset，
+ * 继承预设设置后把导航项注入 #toolbar-nav-slot
+ * @returns {boolean} 是否设置了品牌 loc
+ */
+export function applyToolbarNavTemplates() {
+  const navSlot = document.getElementById('toolbar-nav-slot');
+  let locApplied = false;
+
+  document.querySelectorAll('template[data-toolbar-nav]').forEach((tmpl) => {
+    // ① 取出三项设置（toolbar-set 亦可用更符合 HTML 习惯的 data-toolbar-set）
+    const setName = tmpl.getAttribute('toolbar-set') || tmpl.dataset.toolbarSet || '';
+    const replaceset = parseReplaceset(tmpl.getAttribute('replaceset'));
+    const preset = setName ? getToolbarPreset(setName) : undefined;
+    if (setName && !preset) {
+      console.warn(`[toolbar-set] 未找到名为「${setName}」的预设，已忽略（可用预设：`
+        + `${Array.from(toolbarPresets.keys()).join(', ') || '（空）'}）`);
+    }
+
+    // ② loc：元素自身属性优先，否则继承预设；两者都会做占位符替换
+    const ownLoc = tmpl.getAttribute('loc');
+    const locText = ownLoc != null
+      ? fillPlaceholders(ownLoc, replaceset)
+      : fillPlaceholders(preset?.loc, replaceset);
+    if (locText) {
+      setToolbarLoc(locText);
+      locApplied = true;
+    }
+
+    // ③ nav：template 内部内容优先，否则继承预设的 nav
+    const ownHtml = (tmpl.innerHTML || '').trim();
+    const navHtml = ownHtml || fillPlaceholders(preset?.nav, replaceset);
+    if (navSlot && navHtml) navSlot.insertAdjacentHTML('beforeend', navHtml);
+
+    tmpl.remove();
+  });
+
+  return locApplied;
+}
+
+
+// ============================================================
 // 共享初始化（框架基础行为）
 // ============================================================
 
@@ -667,14 +815,23 @@ export async function initFramework() {
   initToolbar2Slots();
 
   // 4. 处理页面模板注入
-  // 4a. <template data-toolbar-nav> → 注入到 #toolbar-nav-slot
-  document.querySelectorAll('template[data-toolbar-nav]').forEach((tmpl) => {
-    const slot = document.getElementById('toolbar-nav-slot');
-    if (slot) {
-      slot.insertAdjacentHTML('beforeend', tmpl.innerHTML);
-      tmpl.remove();
+  // 4a. <template data-toolbar-nav> → 解析 toolbar-set / loc / replaceset 后注入 #toolbar-nav-slot
+  const locApplied = applyToolbarNavTemplates();
+  // 品牌适配：仅当本页配置了 loc 时介入（窄屏时隐藏英文名 Streack）
+  // 字体异步加载、窗口尺寸变化都会改变可用宽度，故都重新适配一次
+  if (locApplied) {
+    try {
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(scheduleToolbarBrandFit);
+      }
+    } catch (e) { /* 忽略：字体 API 不可用 */ }
+    const row = document.getElementById('toolbar1');
+    if (row && typeof ResizeObserver === 'function' && !row._brandFitObserved) {
+      row._brandFitObserved = true;
+      new ResizeObserver(scheduleToolbarBrandFit).observe(row);
     }
-  });
+    scheduleToolbarBrandFit();
+  }
   // 4a-2. 若导航插槽无内容，隐藏移动端折叠菜单按钮（无项可展开）
   {
     const navSlot = document.getElementById('toolbar-nav-slot');
@@ -985,6 +1142,9 @@ if (!Array.isArray(window?.streack?.meta?.initby)) {
     shrinkToolbar: shrinkToolbar,
     expandToolbar: expandToolbar,
     switchToolbar: switchToolbar,
+    setToolbarLoc: setToolbarLoc,
+    toolbarPresets: toolbarPresets,
+    registerToolbarPreset: registerToolbarPreset,
     CopyText: CopyText,
     copyText: CopyText,
     closeAllDialogs: closeAllDialogs,
@@ -1003,6 +1163,9 @@ if (!Array.isArray(window?.streack?.meta?.initby)) {
   window.streack.shrinkToolbar = shrinkToolbar;
   window.streack.expandToolbar = expandToolbar;
   window.streack.switchToolbar = switchToolbar;
+  window.streack.setToolbarLoc = setToolbarLoc;
+  window.streack.toolbarPresets = toolbarPresets;
+  window.streack.registerToolbarPreset = registerToolbarPreset;
   window.streack.CopyText = CopyText;
   window.streack.copyText = CopyText;
   window.streack.closeAllDialogs = closeAllDialogs;

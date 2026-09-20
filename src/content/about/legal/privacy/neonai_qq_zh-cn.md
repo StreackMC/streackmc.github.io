@@ -1,6 +1,7 @@
 ---
 title: "澪奈Neonai隐私保护指引"
 description: " "
+nav-preset: about
 ---
 
 <p><strong>更新日期：2026-08-04</strong><br>

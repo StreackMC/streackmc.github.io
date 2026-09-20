@@ -1,15 +1,7 @@
 ---
 title: "服务器支持特性一览"
 description: "拓展与协议支持"
-nav:
-  - label: 文档
-    href: /doc/
-  - label: 活动
-    href: /doc/event/
-  - label: 新闻博客
-    href: /doc/news/
-  - label: 近期更新
-    href: /doc/updata/
+nav-preset: document
 ---
 <small>创建：2025-01-20 | 最后更新：2026-03-20</small><br>
 

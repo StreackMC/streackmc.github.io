@@ -2,15 +2,7 @@
 title: "文档目录"
 description: "致力于解决您所想知道的一切"
 toc: false
-nav:
-  - label: 文档
-    href: /doc/
-  - label: 活动
-    href: /doc/event/
-  - label: 新闻博客
-    href: /doc/news/
-  - label: 近期更新
-    href: /doc/updata/
+nav-preset: document
 ---
 
 ![栈流Streack的宣传图片，含有栈流Streack的基本信息](https://streack.top/assets/img/referral_1.png "宣传图")

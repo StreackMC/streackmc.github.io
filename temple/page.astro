@@ -17,8 +17,35 @@
  *
  * 模板机制：
  *   <template data-toolbar-nav>           — 向 toolbar1 添加导航项
- *   <template data-toolbar2-slot="xxx">   — 向 toolbar2 注册自定义抽屉面板（自动处理）
- *   <template data-inject="notes">        — 向页脚 #notes 注入注释条目
+ *     该模板还可附加三个可选设置：
+ *       loc="文档"               — 品牌后缀，渲染为「栈流Streack·文档」
+ *                                  （框架自动补「·」；一行放不下时自动隐藏英文名
+ *                                    →「栈流·文档」。字体随 #toolbar1 继承，不套品牌字体）
+ *       toolbar-set="预设名"     — 引用预定义 toolbar 预设，**继承其 loc 与导航项**
+ *                                  （预设表见 public/assets/app/toolbar-presets.js）
+ *       replaceset='{"k":"v"}'   — 占位符替换表（JSON 对象），供预设值里的 %xxx% 使用；
+ *                                  未提供值的占位符原样保留
+ *     优先级：元素自身的 loc 属性 / template 内部内容 优先于预设；
+ *             replaceset 的替换对两者都生效
+ *
+ *     四种用法（复制到正文的 display:contents 包裹层里使用）：
+ *       // ① 手写导航项
+ *       <template slot="toolbar-nav" data-toolbar-nav>
+ *         <div pc-only data-cmd="url:/doc/news/|" clickable>新闻</div>
+ *       </template>
+ *
+ *       // ② 只加品牌后缀
+ *       <template slot="toolbar-nav" data-toolbar-nav loc="文档"></template>
+ *
+ *       // ③ 引用预设，继承其 loc 与导航项（预设里若有 %xxx% 且未提供替换值，会原样保留并告警）
+ *       <template slot="toolbar-nav" data-toolbar-nav toolbar-set="document"></template>
+ *
+ *       // ④ 预设 + 占位符替换
+ *       <template slot="toolbar-nav" data-toolbar-nav toolbar-set="example-of-section"
+ *                 replaceset='{"section":"活动"}'></template>
+ *
+ *   <template data-toolbar2-slot="xxx"></template>   — 向 toolbar2 注册自定义抽屉面板（自动处理）
+ *   <template data-inject="notes"></template>        — 向页脚 #notes 注入注释条目
  *
  * 内置可复用组件（自研，样式在 framework.css）：
  *   .loop-cards — 水平无限循环滚动的卡片条（逻辑见 framework.js 的 initLoopCards）
@@ -27,7 +54,7 @@
  *     · 内容宽度不超容器时自动居中且不滚动；超出则复制一份卡片实现无缝回绕
  *     · 页面切到后台（切标签页）时自动暂停，回到前台继续
  *     · ⚠️ 必须在页面脚本里调用 initLoopCards()，否则不会启动（框架只在窗口
- *       resize 时会重跑一次）——见下方 <script> 段
+ *       resize 时会重跑一次）——见下方 <script /> 段
  *
  * 快速开始：
  *   1. 复制本文件为 src/pages/new-page.astro
@@ -47,7 +74,21 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
   <!-- 页面特定样式（可选） -->
   <!-- <link slot="head" rel="stylesheet" href="/assets/code/your-page.css" /> -->
 
-  <!-- 导航项模板（可选） -->
+  <!-- 导航项模板（可选）—— 四种用法，取消注释其一即可：
+       ① 手写导航项（下面这份）
+       ② 只加品牌后缀：模板上加 loc="文档"            → 品牌显示「栈流Streack·文档」
+       ③ 引用预设：模板上加 toolbar-set="document"         → 继承预设的 loc 与导航项
+       ④ 预设 + 占位符：再加 replaceset='{"section":"活动"}'
+          预设值里写 %section% 的地方会被替换成「活动」
+
+       ②③④ 的可复制写法（预设表见 public/assets/app/toolbar-presets.js）：
+         <template slot="toolbar-nav" data-toolbar-nav loc="文档"></template>
+         <template slot="toolbar-nav" data-toolbar-nav toolbar-set="document"></template>
+         <template slot="toolbar-nav" data-toolbar-nav toolbar-set="example-of-section" replaceset='{"section":"活动"}'></template>
+
+       ※ Astro 说明：直接作为页面 slot 内容的**顶层 HTML 注释会被整体剔除**（与内容无关，
+         也不会漏成真元素）；要让它留在产物里就包进某个元素（如 display:contents 包裹层）。
+         本注释同理不会出现在产物中，这是正常的 -->
   <template slot="toolbar-nav" data-toolbar-nav>
     <div pc-only onclick='window.streack.openURL("/doc/news",true)' clickable>新闻</div>
   </template>

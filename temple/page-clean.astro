@@ -7,7 +7,9 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
   keywords="关键词1,关键词2"
   theme="dark"
 >
-  <!-- 导航项模板 -->
+  <!-- 导航项模板
+       可选设置：loc="文档" 品牌后缀；toolbar-set="预设名" 继承预设的 loc 与导航项；
+                 replaceset='{"k":"v"}' 供预设里的 %xxx% 使用 -->
   <template slot="toolbar-nav" data-toolbar-nav>
     <div pc-only onclick='window.streack.openURL("/doc/news",true)' clickable>新闻</div>
   </template>

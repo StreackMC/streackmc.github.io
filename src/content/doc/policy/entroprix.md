@@ -1,15 +1,7 @@
 ---
 title: "「熵流」概率公示"
 description: "Entroprix Probability Publicity"
-nav:
-  - label: 文档
-    href: /doc/
-  - label: 活动
-    href: /doc/event/
-  - label: 新闻博客
-    href: /doc/news/
-  - label: 近期更新
-    href: /doc/updata/
+nav-preset: document
 ---
 
 ## 定义

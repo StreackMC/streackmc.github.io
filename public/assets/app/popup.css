@@ -75,6 +75,18 @@ s-dialog div.dialog {
   margin-right: auto;
 }
 
+/* --- 品牌（栈流Streack + loc 后缀） ---
+   整体不换行，便于 JS 按宽度决定是否隐藏英文名；
+   #toolbar-brand-loc 不套用品牌专用字体，字体与字号随 #toolbar1 继承。 */
+#toolbar-brand {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+#toolbar-brand-loc {
+  white-space: nowrap;
+}
+
 /* 导航项插槽：其子项与 toolbar1 的其他子项保持相同的行内水平布局 */
 #toolbar-nav-slot {
   display: flex;

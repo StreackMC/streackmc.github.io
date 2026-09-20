@@ -29,6 +29,8 @@
  *   theme       — 'light' | 'dark'，s-page 主题（默认 light）
  *   toc         — 是否渲染页首目录（默认 true；写 false 则该页不渲染目录）
  *   nav         — 工具栏导航项 [{ label, href?, cmd? }]（标题栏智能插槽）
+ *   nav-preset  — toolbar 预设：字符串 = 预设名，或 { set?, loc?, replaceset? }
+ *                 （继承 assets/app/toolbar-presets.js 里预设的 loc 与 nav）
  */
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
@@ -52,6 +54,18 @@ const content = defineCollection({
           cmd: z.string().optional(),
         }),
       )
+      .optional(),
+    // toolbar 预设（可变通用插槽设置）：引用 toolbar-presets.js 里的预设，
+    // 继承其 loc（品牌后缀）与 nav（导航项）；replaceset 为占位符 %xxx% 的替换表
+    'nav-preset': z
+      .union([
+        z.string(),
+        z.object({
+          set: z.string().optional(),
+          loc: z.string().optional(),
+          replaceset: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+        }),
+      ])
       .optional(),
   }),
 });

@@ -2,15 +2,7 @@
 title: "活动一览"
 description: " "
 toc: false
-nav:
-  - label: 文档
-    href: /doc/
-  - label: 活动
-    href: /doc/event/
-  - label: 新闻博客
-    href: /doc/news/
-  - label: 近期更新
-    href: /doc/updata/
+nav-preset: document
 ---
 
 > [i] 关于现在正在进行的活动，请在[文档首页](../)查看。

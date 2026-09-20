@@ -38,6 +38,7 @@ keywords: 栈流,Streack,文档,Markdown
 | `theme` | `light` / `dark` | 页面配色，默认 `light` |
 | `toc` | 布尔 | 是否渲染页首目录，默认 `true` |
 | `nav` | 列表 | 工具栏导航项，见下 |
+| `nav-preset` | 文本 / 对象 | 工具栏预设：继承预定义的品牌后缀与导航项，见下 |
 
 ```yaml
 ---
@@ -51,12 +52,43 @@ nav:
     href: /_md
   - label: 回到顶部
     cmd: "slot:0"
+nav-preset: document  # 引用预设（简写）
 ---
 ```
 
 - 若正文首行已使用一级标题 `#`，则不再额外渲染页头，避免标题重复。
 - `nav` 的每一项：`label` 为显示文字，`href` 表示点击后跳转的地址，
   `cmd` 表示执行一条站点命令（如 `slot:0` 即回到内容顶部）。
+
+### `nav-preset` —— 工具栏预设
+
+工具栏品牌默认显示「栈流Streack」。想让某一页（或一批页）显示后缀、并复用一整套导航项时，
+用 `nav-preset` 引用**预设**即可，无需每页重复抄写 `nav`：
+
+| 写法 | 含义 |
+| --- | --- |
+| `nav-preset: document` | 简写，等于只写 `set: document` |
+| `nav-preset: { set: 预设名 }` | 引用预设，继承它的 `loc` 与导航项 |
+| `nav-preset: { loc: 文档 }` | 不引用预设，只给品牌加后缀 |
+| `nav-preset: { set: 预设名, loc: 覆盖值 }` | 引用预设并覆盖其后缀 |
+| `nav-preset: { set: 预设名, replaceset: { 键: 值 } }` | 预设里可写 `%键%` 占位符，由 `replaceset` 替换 |
+
+```yaml
+---
+title: 活动一览
+nav-preset:
+  set: example-of-section
+  replaceset:
+    section: 活动      # 预设里的 %section% 会被替换为「活动」
+---
+```
+
+- 预设表定义在 `public/assets/app/toolbar-presets.js`（`Map<名称, { loc, nav }>`），
+  可按站点需要增删；页面里写的 `nav` / `nav-preset.loc` 优先于预设。
+- 品牌后缀渲染为「栈流Streack·活动」；当窗口宽度放不下时，会自动隐藏英文名
+  「Streack」，退化为「栈流·活动」。
+- 未提供替换值的占位符会**原样保留**（便于发现拼写问题），并在控制台告警。
+
 
 ## 自动渲染增强
 

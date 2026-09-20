@@ -20,6 +20,11 @@
  *   headings    - 可选，Astro render() 返回的标题列表，用于生成目录
  *   toc         - 是否渲染页首目录（默认 true；由 frontmatter `toc: false` 关闭）
  *   nav         - 可选，工具栏导航项 [{ label, href? , cmd? }]，渲染为“标题栏智能插槽”
+ *   navPreset   - 可选，toolbar 预设（frontmatter `nav-preset`）：
+ *                 字符串 = 预设名；或对象 { set?, loc?, replaceset? }
+ *                 · set        引用 assets/app/toolbar-presets.js 里的预设，继承其 loc 与 nav
+ *                 · loc        品牌后缀（渲染为「栈流Streack·<loc>」）
+ *                 · replaceset 占位符替换表 { 名: 值 }，供预设值里的 %xxx% 使用
  *
  * Slots:
  *   default     - Markdown 渲染结果（<Content />）
@@ -48,6 +53,7 @@ interface Props {
   headings?: Heading[];
   toc?: boolean;
   nav?: NavItem[];
+  navPreset?: string | { set?: string; loc?: string; replaceset?: Record<string, string | number> };
 }
 
 const {
@@ -59,9 +65,21 @@ const {
   headings = [],
   toc = true,
   nav = [],
+  navPreset,
 } = Astro.props;
 
 const navItems = Array.isArray(nav) ? nav.filter((n) => n && n.label) : [];
+
+/* === toolbar 预设（frontmatter.nav-preset）→ <template> 上的三个属性 ===
+   简写（字符串）= 只引用预设名；完整写法可覆盖 loc 并给出 replaceset 占位符替换表 */
+const np = typeof navPreset === 'string' ? { set: navPreset } : (navPreset || {});
+const presetSet = np.set || undefined;
+const presetLoc = np.loc || undefined;
+const presetReplaceset =
+  np.replaceset && Object.keys(np.replaceset).length > 0
+    ? JSON.stringify(np.replaceset)
+    : undefined;
+const hasToolbarPreset = Boolean(presetSet || presetLoc || navItems.length > 0);
 
 /* === 目录（TOC）：由 Astro 的 headings 在服务端生成嵌套列表 === */
 const TOC_MAX_DEPTH = 3; // 目录收录的标题层级上限（h2 ~ h3）
@@ -129,9 +147,17 @@ const tocHtml = buildToc(headings);
     </div>
   </div>
 
-  <!-- frontmatter.nav → 工具栏导航插槽（标题栏智能插槽） -->
-  {navItems.length > 0 && (
-    <template slot="toolbar-nav" data-toolbar-nav>
+  <!-- frontmatter.nav / nav-preset → 工具栏导航插槽（标题栏智能插槽）
+       toolbar-set 引用预设（继承其 loc 与 nav）；loc 为品牌后缀；
+       replaceset 为占位符替换表（JSON），供预设值里的 %xxx% 使用 -->
+  {hasToolbarPreset && (
+    <template
+      slot="toolbar-nav"
+      data-toolbar-nav
+      toolbar-set={presetSet}
+      loc={presetLoc}
+      replaceset={presetReplaceset}
+    >
       {navItems.map((item) =>
         item.cmd ? (
           <div data-cmd={item.cmd} clickable>{item.label}</div>

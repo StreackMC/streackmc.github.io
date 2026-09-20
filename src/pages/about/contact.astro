@@ -4,6 +4,8 @@ import FrameworkLayout from '../../layouts/FrameworkLayout.astro';
 <FrameworkLayout title="联系我们 — 栈流Streack" description="404 Notfound Page" keywords="404,unknown,missingno"
   theme="light">
 
+  <template slot="toolbar-nav" data-toolbar-nav toolbar-set="about"></template>
+
   <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
   <div style="display: contents">
     <div class="content" slot="0" style="height: max-content;">

@@ -1,6 +1,7 @@
 ---
 title: "栈流Streack隐私政策"
 description: " "
+nav-preset: about
 ---
 
 <div>更新日期：<strong>2025年6月20日</strong></div>

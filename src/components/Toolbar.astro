@@ -9,9 +9,11 @@
 <div id="toolbar-area" class="glass">
   <!-- 展示按钮 -->
   <div id="toolbar1">
-    <!-- 品牌logo -->
-    <div onclick='window.streack.openURL("/",true)'><span class="WenQuanWeiMiHei">栈流</span><span class="MiSans"
-        style="color:var(--s-color-primary);">Streack</span></div>
+    <!-- 品牌logo（#toolbar-brand-en = 英文名，窄屏时可被隐藏；#toolbar-brand-loc = 页面 loc 后缀） -->
+    <div id="toolbar-brand" onclick='window.streack.openURL("/",true)'><span
+        class="WenQuanWeiMiHei">栈流</span><span id="toolbar-brand-en" class="MiSans"
+        style="color:var(--s-color-primary);">Streack</span><span id="toolbar-brand-loc"
+        class="toolbar-brand-loc"></span></div>
     <!-- 导航项插槽：页面可通过 <template data-toolbar-nav> 提供自定义项 -->
     <div pc-only id="toolbar-nav-slot">
     </div>
