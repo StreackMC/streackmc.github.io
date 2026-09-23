@@ -101,6 +101,10 @@
     （父级高度为 auto 时百分比整条失效，卡片会各按内容收缩）
   - 容器尺寸变化、以及容器从 `display:none` 变可见，都由 **ResizeObserver** 捕获并
     防抖重建（重建后 400ms 内忽略回调防自激）
+  - 控制器交互：点进度点 → 跳转该卡片（`jumpTo` 取与当前位置最近的等价位移，避免跨
+    回绕边界时倒着滚一大段）；点当前那张的展开进度条 → 重置进度。按钮用 `<s-icon-button>`
+  - 停顿计时是**累积式**（`holdElapsed` + 当前段）：暂停 / 切后台先 `freezeHold()` 结算
+    再停，恢复后接着走 —— 早期在 toggle 里直接 `holdStart = 0`，会让进度被清零
 - **Selector**（`component/selector/`）：双模式（SelectorLayout 整页 / Selector.astro 嵌入），
   扫描所有 `[data-selector]` 支持多实例；配置 `{title,description?,layerTitle?,options:[…]}`；
   初始化后移除 `[data-selector-config]` 脚本
@@ -131,6 +135,14 @@
   例外：`s-page` 的 `dark`（`:host([dark])` 看存在性）
 - 常用 API：`s-fold(folded, 插槽 trigger)` / `s-switch(checked)` / `s-checkbox(checked, indeterminate)` /
   `s-button(type)` / `s-card(type, clickable)`；目录折叠用 s-fold + CSS 按 `[folded]` 旋转 chevron
+- **要涟漪点击反馈就用 `<s-icon-button>`**（`type`: standard / filled / filled-tonal / outlined）：
+  其模板自带 `<s-ripple attached="true" part="ripple">`，开箱可用；图标直接放 `<svg>` 即可
+  （内部 `::slotted(svg)` 是 24px，可用外部 `.cls > svg` 覆盖）；图标色走
+  `--s-color-on-surface-variant`，亮 / 暗自动适配，不必自己配色
+- `s-ripple` 的 props 为 `{centered, attached}`；`attached` 时 host 铺满父级且 `pointer-events:none`，
+  **触发函数由宿主组件调用** —— 自己单独放一个 `<s-ripple>` 不会动，得用别人已接好的组件
+- **查证 Sober 组件真实 API 的招**（别靠猜）：`curl -s <CDN>/sober@1.0.6.min.js` 落到 /tmp，
+  再用 node `s.slice(i, i+2400)` 提取定义片段 —— props、模板、`:host` 样式一目了然
 
 ## 搜索数据（summary.js）与 Sitemap
 - `summary.js`：扫描 `dist/**/*.html`，LLM 生成 summary/keywords，更新
