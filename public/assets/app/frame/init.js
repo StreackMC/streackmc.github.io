@@ -4,7 +4,7 @@ import { flushInitCallbacks } from './init-hooks.js';
 import { bindCommandOn, executeCommand } from './commands.js';
 import { cacheToolbarSlots, initToolbar2Slots } from '../component/toolbar/toolbar.js';
 import { applyToolbarNavTemplates, scheduleToolbarBrandFit } from '../component/toolbar/toolbar-nav.js';
-import { initCounting } from '../component/counting.js';
+import { loadFeatures, readFeatures } from './features.js';
 
 // ============================================================
 // 共享初始化（框架基础行为）
@@ -160,6 +160,8 @@ export async function initFramework() {
   flushInitCallbacks();
   console.log(`[streack-app/plugins] Framework Plugins Loaded!`);
 
-  // 13. 启动运营计时器（所有使用 FrameworkLayout 的页面均生效）
-  initCounting();
+  // 13. 按页面声明加载可选组件（<streack features="…">，见 frame/features.js）
+  //     只为已声明的组件发起动态 import —— 未声明的组件不会下载。
+  //     异步进行、不 await：不阻塞初始化收尾，组件自身就绪后再生效。
+  loadFeatures(readFeatures());
 }

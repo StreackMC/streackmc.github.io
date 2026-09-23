@@ -6,6 +6,7 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
   description="页面描述"
   keywords="关键词1,关键词2"
   theme="dark"
+  features="loopCards"
 >
   <!-- 导航项模板
        可选设置：loc="文档" 品牌后缀；toolbar-set="预设名" 继承预设 loc、且模板内按钮与
@@ -72,7 +73,7 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
     </div>
 
     <!-- 内容块示例 5：循环滚动卡片（loop-cards）
-         直接子元素即卡片；data-speed 控制速度倍率；需在页面脚本调用 initLoopCards()
+         直接子元素即卡片；data-speed 控制速度倍率；需在上方 features 声明 loopCards
          卡片文案为示例（取自当前版本 S2「岭回双壑风」的更新亮点），按实际页面替换 -->
     <div class="content" slot="4" style="background: #15151f; color: #ddd; height: auto; min-height: 40vh;">
       <div style="position: static; width: 100%; padding: 2.5rem 0;">
@@ -123,14 +124,12 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
     <li data-note="demo">这是一个注释示例，点击 ↩ 可回到原文位置。</li>
   </template>
 
-  <!-- 页面独有逻辑 -->
+  <!-- 页面独有逻辑（循环卡片等可选组件由上方 features 声明按需加载） -->
   <script slot="scripts" is:inline type="module">
     import { requestInitFunc } from '/assets/app/frame/init-hooks.js';
-    import { initLoopCards } from '/assets/app/component/loop-cards.js';
-    import { registerToolbarSlot } from '/assets/app/component/toolbar/toolbar.js';
 
     requestInitFunc(() => {
-      initLoopCards();
+      // 需要「框架就绪」后才执行的页面逻辑
     });
 
   </script>

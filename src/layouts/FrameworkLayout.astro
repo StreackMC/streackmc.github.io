@@ -9,6 +9,9 @@
  *   description - meta description
  *   keywords    - meta keywords
  *   theme       - s-page 主题（dark/light，默认 dark）
+ *   features    - 需加载的可选组件名（空格分隔或数组），如 "videoBg loopCards"
+ *                 （构建期落成 <streack features="…">，框架按需动态 import；
+ *                   未声明的组件不会下载。counting 为默认组件，无需声明）
  *
  * Slots:
  *   default      - 页面内容（.content 插槽块）
@@ -27,6 +30,7 @@ interface Props {
   description?: string;
   keywords?: string;
   theme?: string;
+  features?: string | string[];
 }
 
 const {
@@ -34,7 +38,17 @@ const {
   description,
   keywords,
   theme = 'dark',
+  features,
 } = Astro.props;
+
+/* 页面配置 → <streack> 标签（框架运行时的唯一数据源）
+   counting（页脚运营计时器）为框架默认组件，所有页面默认开启；
+   其余可选组件由页面通过本布局的 features 属性声明 */
+const featureList = [
+  'counting',
+  ...(Array.isArray(features) ? features : String(features ?? '').split(/[\s,]+/)),
+].filter(Boolean);
+const featuresAttr = featureList.join(' ');
 ---
 
 <BaseLayout title={title} description={description} keywords={keywords}>
@@ -46,6 +60,10 @@ const {
   <slot name="head" slot="head" />
 
   <s-page id="page" theme={theme}>
+    <!-- 页面配置（框架运行时读取的唯一数据源）
+         Astro 页面用本布局的 props 声明；非 Astro 的静态 HTML 页面可直接手写本标签 -->
+    <streack features={featuresAttr} hidden></streack>
+
     <div class="unselectable" style="position: absolute;" id="no_script">
       <h1>您似乎没有启用JavaScript，而这是此网站正常运行所必须的。<br>此外，该页面不支持过老的浏览器内核。</h1>
     </div>

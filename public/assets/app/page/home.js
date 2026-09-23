@@ -1,7 +1,8 @@
 /**
  * Streack 首页 · 页面特定脚本
  * 首页独有的对话框/底栏/赞助等逻辑
- * 运营计时器由 component/counting.js 的 initCounting() 统一处理，此处不再重复
+ * 运营计时器（counting）与视频背景（videoBg）等可选组件由
+ * <streack features="…"> 声明后按需加载，本文件不再直接调用
  */
 
 import { DOM } from '../frame/dom.js';
@@ -9,8 +10,6 @@ import { openURL, msg, CopyText } from '../frame/utils.js';
 import { executeCommand } from '../frame/commands.js';
 import { requestInitFunc } from '../frame/init-hooks.js';
 import { shrinkToolbar } from '../component/toolbar/toolbar.js';
-import { initVideoBg } from '../component/video-bg.js';
-import { initLoopCards } from '../component/loop-cards.js';
 
 
 // ============================================================
@@ -76,12 +75,7 @@ requestInitFunc(() => {
   const action = params.get("action");
   if (action) migrateState(action);
 
-  // 初始化视频背景
-  initVideoBg();
-
-  // 初始化循环卡片
-  initLoopCards();
-
+  // 视频背景（videoBg）等可选组件由页面声明后按需加载，见 FrameworkLayout
 });
 
 
