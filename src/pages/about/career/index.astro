@@ -34,57 +34,6 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
 
   </div>
 
-  <!-- 页面独有逻辑 -->
-  <script slot="scripts" is:inline type="module">
-    import { openURL } from '/assets/app/frame/utils.js';
-    const container = document.getElementById('jobcards');
-    [
-      {
-        // 职位
-        "what": "暂无",
-        // 地点
-        "where": "目前 Streack Team 暂时没有发布招聘需求",
-        // 工作内容
-        "todo": "点击以刷新",
-        // 需求
-        "wanna": "",
-        // 福利待遇
-        "reward": "",
-        // 详细地址
-        "detail": ".",
-      },
-      {
-        "what": "",
-        "where": "",
-        "todo": "",
-        "wanna": "",
-        "reward": "",
-        "detail": "",
-      },
-    ].forEach((job)=>{
-      if (!job?.what) return;
-      const card = document.createElement('s-card');
-      card.type = 'outlined';
-      card.classList.add('jobs_container');
-      card.innerHTML = `
-        <!-- <img slot="image" src="cover.jpg" alt=""> -->
-        <div slot="headline">${job.what.replace(/\n/g, '<br>') }</div>
-        <div slot="subhead">${job.where.replace(/\n/g, '<br>') }</div>
-        <div slot="text">${job.todo.replace(/\n/g, '<br>') }<br>${job.wanna.replace(/\n/g, '<br>') }<br>${job.reward.replace(/\n/g,'<br>')}</div>
-      `;
-      card.clickable = true;
-      card.addEventListener('click', () => openURL(job.detail, true));
-      container.appendChild(card);
-    });
-
-    const style = document.createElement('style');
-    style.innerText = `
-      div#jobcards { flex-direction: row; flex-wrap: wrap; gap: 1rem; }
-      body s-card.jobs_container { width: fit-content; padding: 1rem 1.5rem; height: max-content; min-width: calc(50% - 1rem); max-width: 100%; }
-      body s-card.jobs_container div[slot="headline"] { font-size: 1.5rem; }
-      body s-card.jobs_container div[slot="subhead"] { font-size: 1rem; }
-      body s-card.jobs_container div[slot="text"] { font-size: .875rem; }
-    `;
-    document.body.appendChild(style);
-  </script>
+  <!-- 页面独有逻辑（招聘卡片渲染，见 page/career.js） -->
+  <script slot="scripts" is:inline type="module" src="/assets/app/page/career.js"></script>
 </FrameworkLayout>

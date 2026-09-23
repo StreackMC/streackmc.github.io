@@ -4,7 +4,7 @@ import { flushInitCallbacks } from './init-hooks.js';
 import { bindCommandOn, executeCommand } from './commands.js';
 import { cacheToolbarSlots, initToolbar2Slots } from '../component/toolbar/toolbar.js';
 import { applyToolbarNavTemplates, scheduleToolbarBrandFit } from '../component/toolbar/toolbar-nav.js';
-import { loadFeatures, readFeatures } from './features.js';
+import { applyRedirect, loadFeatures, readFeatures } from './page-config.js';
 
 // ============================================================
 // 共享初始化（框架基础行为）
@@ -23,6 +23,10 @@ export async function initFramework() {
   if (document.readyState === 'loading') {
     await new Promise(r => document.addEventListener('DOMContentLoaded', r, { once: true }));
   }
+
+  // 1b. 声明式重定向（<streack redirect="…">）
+  //     尽早跳转，省掉后续无谓的初始化与组件下载
+  if (applyRedirect()) return;
 
   // 2. 并加载入 HTML 片段（toolbar / footer）
   const loads = Object.entries(DEFAULT_FRAGMENTS).map(
@@ -160,7 +164,7 @@ export async function initFramework() {
   flushInitCallbacks();
   console.log(`[streack-app/plugins] Framework Plugins Loaded!`);
 
-  // 13. 按页面声明加载可选组件（<streack features="…">，见 frame/features.js）
+  // 13. 按页面声明加载可选组件（<streack features="…">，见 frame/page-config.js）
   //     只为已声明的组件发起动态 import —— 未声明的组件不会下载。
   //     异步进行、不 await：不阻塞初始化收尾，组件自身就绪后再生效。
   loadFeatures(readFeatures());

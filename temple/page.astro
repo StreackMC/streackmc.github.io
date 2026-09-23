@@ -66,12 +66,17 @@
  *   发起动态 import —— 未声明的组件不会被下载。
  *   （非 Astro 的静态 HTML 页面可直接手写该 <streack> 标签，语义完全相同）
  *
- *   可用组件见 public/assets/app/frame/features.js 的 featureRegistry：
+ *   可用组件见 public/assets/app/frame/page-config.js 的 featureRegistry：
  *     videoBg    — 视频背景（自动播放 class="slotBg-V" 的视频）
  *     loopCards  — 循环滚动卡片（需页面里有 .loop-cards 容器）
  *     counting   — 页脚运营计时器（**默认开启**，所有页面无需声明）
  *
  *   例：features="videoBg loopCards"；写数组亦可：features={['videoBg', 'loopCards']}
+ *
+ * 声明式重定向（中转页）：
+ *   给 <FrameworkLayout> 加 redirect="/目标地址"，框架在初始化早期 replace 跳转
+ *   （用 replace 不产生历史条目，返回键不会回到中转页）。
+ *   例：redirect="/minecraft/main/s2/play"
  *
  * 内置可复用组件（自研，样式在 framework.css）：
  *   .loop-cards — 水平无限循环滚动的卡片条（逻辑见 component/loop-cards.js 的 initLoopCards）
