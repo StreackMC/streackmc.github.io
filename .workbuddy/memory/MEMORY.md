@@ -93,6 +93,14 @@
     `data-controller-overlap`：false(缺省) 控制器撑开容器 / true 叠在卡片上
   - 结构：`.loop-cards > .loop-cards-viewport > .loop-cards-track`（视口裁剪；控制器与视口平级，故按钮可点）
   - 纯逻辑已导出便于自检：`secondsToMs` / `resolveArrow` / `resolveController`
+  - ⚠️ **组件自带样式是异步注入的 → 一切尺寸测量必须等样式表 load 之后再跑**
+    （`stylesReady()` 缓存成 Promise）。否则量到的是「未套样式的裸 DOM」（轨道还不是
+    flex 行、卡片纵向堆叠），会误判成「内容不足一屏」而静止不滚 —— 表现为
+    「要手动 resize 窗口才开始轮播」（那次重建时样式早已就位）
+  - 卡片**等高**用 flex 的 `align-items: stretch`；不要回来依赖 `min-height: 100%`
+    （父级高度为 auto 时百分比整条失效，卡片会各按内容收缩）
+  - 容器尺寸变化、以及容器从 `display:none` 变可见，都由 **ResizeObserver** 捕获并
+    防抖重建（重建后 400ms 内忽略回调防自激）
 - **Selector**（`component/selector/`）：双模式（SelectorLayout 整页 / Selector.astro 嵌入），
   扫描所有 `[data-selector]` 支持多实例；配置 `{title,description?,layerTitle?,options:[…]}`；
   初始化后移除 `[data-selector-config]` 脚本
