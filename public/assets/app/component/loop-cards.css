@@ -1,0 +1,213 @@
+/**
+ * loop-cards —— 卡片轮播 / 循环滚动组件样式
+ * 由 component/loop-cards.js 在按需加载时自动注入（页面无需手写 <link>）
+ *
+ * 结构（JS 生成）：
+ *   .loop-cards[data-*]                 容器（属性的宿主）
+ *     ├ .loop-cards-viewport            视口（裁剪；overlap 时控制器叠在其上）
+ *     │   └ .loop-cards-track           轨道（transform 位移）
+ *     │       └ > div ×N + ×N(克隆)     卡片
+ *     └ .loop-cards-controller          控制器（可选，位置由 data-controller-pos 决定）
+ *         ├ .loop-cards-btn             玻璃按钮（prev / next / toggle）
+ *         └ .loop-cards-progress        胶囊进度条（progress 控制器）
+ *             └ .loop-cards-dot ×N      对应卡片的点（当前点展开为进度条）
+ */
+
+/* --- 容器：纵向堆叠「视口 + 控制器」，控制器不重叠时靠它撑开高度 --- */
+.loop-cards {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+  z-index: 1;
+}
+
+/* --- 视口：负责裁剪；指针事件穿透（卡片不拦截点击） --- */
+.loop-cards-viewport {
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* --- 轨道 --- */
+.loop-cards-track {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  will-change: transform;
+  height: 100%;
+}
+
+.loop-cards[data-orientation="vertical"] .loop-cards-track,
+.loop-cards[data-orientation="reverted-vertical"] .loop-cards-track {
+  flex-direction: column;
+  height: auto;
+}
+
+/* --- 卡片 --- */
+.loop-cards-track>div {
+  flex-shrink: 0;
+  padding: 0.8rem 1.6rem;
+  margin-left: 1.5rem;
+  font-size: 0.95rem;
+  color: #ddd;
+  min-height: 100%;
+  width: fit-content;
+  max-width: max(calc(var(--w) * 0.16), 160px);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 垂直轮播：卡片改为整宽、纵向排列 */
+.loop-cards[data-orientation="vertical"] .loop-cards-track>div,
+.loop-cards[data-orientation="reverted-vertical"] .loop-cards-track>div {
+  margin-left: 0;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.loop-cards-track>div,
+.loop-cards-track>div * {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================
+   控制器
+   ============================================================ */
+.loop-cards-controller {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 2;
+}
+
+/* --- 不重叠：参与布局（把容器撑开），按 pos 的左右部分对齐 --- */
+.loop-cards-controller[data-overlap="false"] {
+  margin: 0.6rem 0.8rem;
+}
+
+.loop-cards-controller[data-overlap="false"][data-pos^="left"] {
+  align-self: flex-start;
+}
+
+.loop-cards-controller[data-overlap="false"][data-pos^="center"] {
+  align-self: center;
+}
+
+.loop-cards-controller[data-overlap="false"][data-pos^="right"] {
+  align-self: flex-end;
+}
+
+/* --- 重叠：绝对定位到六方位之一 --- */
+.loop-cards-controller[data-overlap="true"] {
+  position: absolute;
+}
+
+.loop-cards-controller[data-overlap="true"][data-pos^="left"] {
+  left: 0.8rem;
+}
+
+.loop-cards-controller[data-overlap="true"][data-pos^="center"] {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.loop-cards-controller[data-overlap="true"][data-pos^="right"] {
+  right: 0.8rem;
+}
+
+.loop-cards-controller[data-overlap="true"][data-pos$="-top"] {
+  top: 0.8rem;
+}
+
+.loop-cards-controller[data-overlap="true"][data-pos$="-bottom"] {
+  bottom: 0.8rem;
+}
+
+/* --- 玻璃按钮 --- */
+.loop-cards-btn {
+  width: 2.2rem;
+  height: 2.2rem;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  color: #eee;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
+.loop-cards-btn:hover {
+  transform: scale(1.06);
+}
+
+.loop-cards-btn:active {
+  transform: scale(0.94);
+}
+
+.loop-cards-btn svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: currentColor;
+  pointer-events: none;
+}
+
+/* --- 进度条：胶囊容器 + 对应各卡片的点 --- */
+.loop-cards-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+}
+
+.loop-cards-dot {
+  position: relative;
+  flex-shrink: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.4);
+  transition: width 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 当前卡片：由点展开为进度条 */
+.loop-cards-dot[data-active="true"] {
+  width: 1.8rem;
+}
+
+.loop-cards-dot-fill {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform-origin: left center;
+  /* --p 由 JS 每帧写入（0 → 1） */
+  transform: scaleX(var(--p, 0));
+}
+
+/* --- 亮色模式 --- */
+s-page:not([dark]) .loop-cards-btn {
+  color: #333;
+}
+
+s-page:not([dark]) .loop-cards-dot {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+s-page:not([dark]) .loop-cards-dot-fill {
+  background: #333;
+}

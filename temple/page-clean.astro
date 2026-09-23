@@ -75,13 +75,15 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
       </div>
     </div>
 
-    <!-- 内容块示例 5：循环滚动卡片（loop-cards）
-         直接子元素即卡片；data-speed 控制速度倍率；需在上方 features 声明 loopCards
+    <!-- 内容块示例 5：卡片轮播（loop-cards）
+         直接子元素即卡片；需在上方 features 声明 loopCards
+         方向 / 模式 / 控制器见 data-orientation、data-type、data-controller-* 属性
          卡片文案为示例（取自当前版本 S2「岭回双壑风」的更新亮点），按实际页面替换 -->
     <div class="content" slot="4" style="background: #15151f; color: #ddd; height: auto; min-height: 40vh;">
       <div style="position: static; width: 100%; padding: 2.5rem 0;">
-        <h2 style="--fs:24px;--fl:36px; --a:center; margin: 0 0 1.5rem;">循环滚动卡片</h2>
-        <div class="loop-cards" data-speed="1">
+        <h2 style="--fs:24px;--fl:36px; --a:center; margin: 0 0 1.5rem;">卡片轮播</h2>
+        <div class="loop-cards" data-type="pausing" data-speed="4"
+             data-controller-type="step-pause" data-controller-pos="right-bottom" data-controller-overlap="true">
           <div class="glass">
             <h3 style="--fs:16px;--fl:20px; margin: 0 0 .4em;">皎月祝赐</h3>
             <p style="--fs:13px;--fl:15px; margin: 0;">新增「皎月祝赐」等 14 项附魔。</p>
