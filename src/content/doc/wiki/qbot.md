@@ -15,7 +15,7 @@ nav-preset: document
 > 请参阅：[小可Wiki฿](https://bot.teahouse.team/)和[Teahouse-Studios/akari-bot฿](https://github.com/Teahouse-Studios/akari-bot)。
 
 > [!] **小可由第三方提供服务**，若使用即视为您额外同意[《茶馆工作室隐私政策》฿](https://teahouse.team/privacy/)。<br>
-> 您也不得利用漏洞或使用诱导等方式让小可输出违法违规言论。一经发现违背小可使用条款和[栈流Streack基本方针](https://streack.top/doc/policy/rule)中的内容，对Bot使用者进行相应惩罚。
+> 您也不得利用漏洞或使用诱导等方式让小可输出违法违规言论。一经发现违背小可使用条款和[栈流Streack基本方针](https://streack.top/doc/policy/rule/)中的内容，对Bot使用者进行相应惩罚。
 
 > [x] 2026年8月左右，由于第三方框架频繁出现问题，茶馆已经切换到 QQ 官方机器人接口；受限于某些限制，下列功能可能不可用。
 

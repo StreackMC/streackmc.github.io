@@ -8,9 +8,7 @@ import DownloadLayout from '/src/layouts/DownloadLayout.astro';
   heading="下载「樱飘雪霁月」存档"
 >
   <!-- 导航项 -->
-  <template slot="toolbar-nav" data-toolbar-nav>
-    <div pc-only data-cmd="url:/minecraft/main/s1|" clickable>S1「樱飘雪霁月」</div>
-  </template>
+  <template slot="toolbar-nav" data-toolbar-nav toolbar-set="mc-main-s1"></template>
 
   <!-- 区域 1：版本日志 / 说明（标题由 DownloadLayout 的 heading 参数渲染） -->
   <time datetime="2026-07-09" style="opacity:.6; font-size:.85rem;">2026-07-09</time>

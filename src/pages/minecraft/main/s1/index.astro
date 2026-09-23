@@ -8,9 +8,7 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
   theme="light"
 >
   <!-- 导航项模板 -->
-  <template slot="toolbar-nav" data-toolbar-nav>
-    <div pc-only data-cmd="url:/minecraft/main/s1/download|" clickable>存档下载</div>
-  </template>
+  <template slot="toolbar-nav" data-toolbar-nav toolbar-set="mc-main-s1"></template>
 
   <!-- 正文内容 -->
   <div style="display: contents">

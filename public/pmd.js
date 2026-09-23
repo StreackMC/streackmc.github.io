@@ -11,7 +11,7 @@ const conf = {
       /*文章授权协议*/
       what: `ARR`,
       /*文章授权协议链接*/
-      link: `https://streack.top/our_license`,
+      link: `https://streack.top/our_license/`,
     },
     /*自定义CSS样式*/
     style: `s-card#slot_2 {flex-wrap: wrap;flex-direction: row;}`,

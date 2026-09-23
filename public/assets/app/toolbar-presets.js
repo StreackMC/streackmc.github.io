@@ -52,12 +52,34 @@ export const toolbarPresets = new Map([
     'about',
     {
       loc: '关于我们',
-      locIndex: '/about/leadership',
+      locIndex: '/about/leadership/',
       nav: [
         `<div pc-only id="about-team" onclick='window.streack.openURL("/about/leadership/",true)' clickable>团队</div>`,
         `<div pc-only id="about-career" onclick='window.streack.openURL("/about/career/",true)' clickable>广纳贤士</div>`,
         `<div pc-only id="about-contact" onclick='window.streack.openURL("/about/contact/",true)' clickable>联系</div>`,
         `<div pc-only id="about-donate" onclick='window.streack.openURL("/about/donate/",true)' clickable>捐赠与赞助</div>`,
+      ].join(''),
+    },
+  ],
+  [
+    'mc-main-s1',
+    {
+      loc: '「樱飘雪霁月」',
+      locIndex: '/minecraft/main/s1/',
+      nav: [
+        `<div pc-only id="about-join" onclick='window.streack.openURL("/minecraft/main/s1/download/",true)' clickable>下载存档</div>`,
+        `<div pc-only id="about-updatelog" onclick='window.streack.openURL("/doc/updata/#:~:text=樱飘雪霁月",false)' clickable>更新日志</div>`,
+      ].join(''),
+    },
+  ],
+  [
+    'mc-main-s2',
+    {
+      loc: '「岭回双壑风」',
+      locIndex: '/minecraft/main/s2/',
+      nav: [
+        `<div pc-only id="about-join" onclick='window.streack.openURL("/minecraft/main/s2/play/",true)' clickable>开始游戏</div>`,
+        `<div pc-only id="about-updatelog" onclick='window.streack.openURL("/doc/updata/#:~:text=岭回双壑风",false)' clickable>更新日志</div>`,
       ].join(''),
     },
   ],
