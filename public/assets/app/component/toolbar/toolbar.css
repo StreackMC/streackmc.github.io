@@ -1,8 +1,8 @@
-/* --- Sober的dialog --- */
-s-dialog div.dialog {
-  padding: 0 7% 0.3rem 7%;
-  user-select: none;
-}
+/**
+ * Toolbar 样式 —— 第一行（品牌 / 导航插槽）+ 第二行抽屉（toolbar2 插槽）
+ * 结构由 src/components/Toolbar.astro 服务端渲染；
+ * 交互逻辑见 component/toolbar/toolbar.js 与 toolbar-nav.js
+ */
 
 /* --- 上方 Toolbar --- */
 #toolbar-area {
@@ -27,28 +27,12 @@ s-dialog div.dialog {
     padding-bottom 600ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Toolbar 外部关闭区域 —— 展开时覆盖整个页面，拦截点击/触摸/鼠标以触发收起，已弃用 */
-#toolbar-outline {
-  z-index: 101;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: none;
-  cursor: default;
-}
-
 /* 展开：第二行由内容撑开，不再依赖固定高度计算 */
 #toolbar-area.expanded {
   grid-template-rows: var(--toolbar-height) 1fr;
   padding-bottom: calc(var(--toolbar-padding-h) + 0.5rem);
 }
 
-/* 展示外部关闭区域（位于 Toolbar 下方） */
-#toolbar-area.expanded+#toolbar-outline {
-  display: block;
-}
 
 /* 在宽度过大时调整显示 */
 @media screen and (min-width: 834px) {

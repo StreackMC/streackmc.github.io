@@ -1,0 +1,10 @@
+/**
+ * Sober 组件的站点级微调：对话框 / 底部抽屉面板
+ * （弹窗的开关逻辑见 component/dialog.js 与 component/popups.js）
+ */
+
+/* --- Sober的dialog --- */
+s-dialog div.dialog {
+  padding: 0 7% 0.3rem 7%;
+  user-select: none;
+}
