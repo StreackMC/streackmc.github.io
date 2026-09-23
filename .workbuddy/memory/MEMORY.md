@@ -82,9 +82,17 @@
   动画期间加 `.toolbar2-disallow-scroll` 防滚动条闪现
 
 ## 组件要点
-- **loop-cards**（`component/loop-cards.js`，当前无页面在用）：容器 `<div class="loop-cards" data-speed="1">`，
-  直接子元素即卡片；页面写 `features="loopCards"` 按需加载。
-  ⚠️ 两处「文档说有、实际没有」：悬停暂停未实现；点击卡片点不到（track 的 `pointer-events:none` 被继承）
+- **loop-cards**（`component/loop-cards.js` + 同名 `.css`，当前无页面在用）：容器 `<div class="loop-cards">`，
+  直接子元素即卡片；写 `features="loopCards"` 按需加载（**样式由组件自动注入**，无需手写 `<link>`）
+  - `data-orientation`：horizontal(缺省) / vertical / reverted-horizontal / reverted-vertical
+  - `data-type`：continuous(缺省，无缝滚动，speed = 速度倍率) / pausing(每张停顿片刻，
+    speed = 停顿秒数，支持小数、精度到毫秒、多余位数舍弃)
+  - `data-controller-type`：step / step-pause / progress（缺省 = 不渲染控制器）；
+    **continuous 下没有「当前卡片」概念 → 任何类型都只渲染暂停/继续按钮**
+  - `data-controller-pos`：left|center|right × top|bottom（缺省 right-bottom）；
+    `data-controller-overlap`：false(缺省) 控制器撑开容器 / true 叠在卡片上
+  - 结构：`.loop-cards > .loop-cards-viewport > .loop-cards-track`（视口裁剪；控制器与视口平级，故按钮可点）
+  - 纯逻辑已导出便于自检：`secondsToMs` / `resolveArrow` / `resolveController`
 - **Selector**（`component/selector/`）：双模式（SelectorLayout 整页 / Selector.astro 嵌入），
   扫描所有 `[data-selector]` 支持多实例；配置 `{title,description?,layerTitle?,options:[…]}`；
   初始化后移除 `[data-selector-config]` 脚本
