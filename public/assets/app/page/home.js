@@ -3,10 +3,12 @@
  * 首页独有的对话框/底栏/赞助等逻辑
  * 运营计时器（counting）与视频背景（videoBg）等可选组件由
  * <streack features="…"> 声明后按需加载，本文件不再直接调用
+ *
+ * 全局 API（openURL / msg / CopyText 等）统一由 frame/api.js 暴露，
+ * 页面脚本不再重复挂载；URL 参数读取统一走框架的 getQueryString。
  */
 
-import { DOM } from '../frame/dom.js';
-import { openURL, msg, CopyText } from '../frame/utils.js';
+import { openURL, getQueryString } from '../frame/utils.js';
 import { executeCommand } from '../frame/commands.js';
 import { requestInitFunc } from '../frame/init-hooks.js';
 import { shrinkToolbar } from '../component/toolbar/toolbar.js';
@@ -16,7 +18,8 @@ import { shrinkToolbar } from '../component/toolbar/toolbar.js';
 // 旧 state 向后兼容 —— 处理地址栏 & hash 路由
 // ============================================================
 
-if (!window.streack) window.streack = { meta: { initby: ["home/js"] }, };
+// 记录本页脚本已加载（window.streack 由框架建立，此处只补 initby 追踪标记）
+window.streack?.meta?.initby?.push?.('page/home.js');
 
 /** 将旧 state 动作转发到新 API */
 function migrateState(name) {
@@ -26,17 +29,17 @@ function migrateState(name) {
       return executeCommand('bst', 'play_message');
     case "donate":
     case "donate_done":
-      window.open('/about/donate', '_self');
+      openURL('/about/donate', true);
       return true;
     case "qqun":
     case "qqun_done":
-      window.open('/about/contact', '_self');
+      openURL('/about/contact', true);
       return true;
     case "comment":
-      window.open('/', '_self');
+      openURL('/', true);
       return true;
     case "issue":
-      window.open('/about/contact', '_self');
+      openURL('/about/contact', true);
       return true;
     default:
       return false;
@@ -71,20 +74,8 @@ window.addEventListener('hashchange', () => {
 
 requestInitFunc(() => {
   // 处理初始深层链接（旧 state 兼容 → 转发到新 API）
-  const params = new URLSearchParams(window.location.search);
-  const action = params.get("action");
+  const action = getQueryString('action');
   if (action) migrateState(action);
 
   // 视频背景（videoBg）等可选组件由页面声明后按需加载，见 FrameworkLayout
 });
-
-
-// ============================================================
-// 暴露给全局（供 HTML onclick 等调用）
-// ============================================================
-
-window.streack.openURL = openURL;
-window.streack.openState = migrateState;
-window.streack.msg = msg;
-window.streack.CopyText = CopyText;
-window.CopyText = CopyText;

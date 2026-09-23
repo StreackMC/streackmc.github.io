@@ -8,6 +8,9 @@ import { toolbarPresets, registerToolbarPreset } from '../config/toolbar-presets
 // ============================================================
 // 导出通用对象
 // ============================================================
+// 注：window.CopyText 是保留的**全局兼容别名** —— 页面 HTML 里的
+//     onclick="CopyText('…')" 直接依赖它（见 src/pages/index.astro）。
+//     规范写法是 window.streack.CopyText；别名只为兼容既有标记而保留。
 if (!Array.isArray(window?.streack?.meta?.initby)) {
   window.streack = {
     meta: { initby: ["streack-web-framework/main"] },
@@ -31,8 +34,7 @@ if (!Array.isArray(window?.streack?.meta?.initby)) {
     getCurrentTimeZone: getCurrentTimeZone,
     getQueryString: getQueryString,
   };
-} else {
-  window.streack.meta.initby.push("streack-web-framework");
+} else {  window.streack.meta.initby.push("streack-web-framework");
   window.streack.openURL = openURL;
   window.streack.msg = msg;
   window.streack.executeCommand = executeCommand;
@@ -52,4 +54,7 @@ if (!Array.isArray(window?.streack?.meta?.initby)) {
   window.streack.closeAllDialogs = closeAllDialogs;
   window.streack.getCurrentTimeZone = getCurrentTimeZone;
   window.streack.getQueryString = getQueryString;
-};
+}
+
+// 全局兼容别名 —— 页面 HTML 的 onclick="CopyText('…')" 依赖它（见文件头说明）
+window.CopyText = CopyText;

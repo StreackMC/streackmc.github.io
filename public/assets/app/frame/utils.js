@@ -19,12 +19,19 @@ export function getCurrentTimeZone() {
   };
 }
 
-/** 获取 URL 查询参数值 */
+/**
+ * 获取 URL 查询参数值（自动解码；参数不存在时返回 null）
+ * 用 URLSearchParams 替代已废弃的 unescape + 手写正则
+ * @param {string} name 参数名
+ * @returns {string|null}
+ */
 export function getQueryString(name) {
-  const m = window.location.search.substr(1).match(
-    new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i")
-  );
-  return m ? unescape(m[2]) : null;
+  try {
+    return new URL(window.location.href).searchParams.get(name);
+  } catch (e) {
+    console.warn('[streack-app/func.getQueryString] 无法解析当前 URL：', e);
+    return null;
+  }
 }
 
 /**
@@ -85,14 +92,26 @@ export function msg(message, confirmText, isWarning, duration, onClick, align, i
   return info;
 }
 
-/** 将文本复制到系统剪贴板，并提示结果 */
-export function CopyText(text) {
+/**
+ * 将文本复制到系统剪贴板，并提示结果
+ * @param {string} text 要复制的文本
+ * @param {{ silent?: boolean, onSuccess?: Function }} [opts]
+ *   silent    成功时跳过 Snackbar（调用方自行反馈时用；失败仍会提示）
+ *   onSuccess 复制成功后的回调
+ * @returns {boolean} 剪贴板 API 是否可用
+ */
+export function CopyText(text, opts = {}) {
+  const { silent = false, onSuccess } = opts;
   if (!navigator.clipboard) {
     msg("未能复制文本，因为方法不支持", "好", true);
     return false;
   }
   navigator.clipboard.writeText(String(text)).then(
-    () => msg("✓ 已复制文本", "好"),           // 成功提示
+    () => {
+      if (!silent) msg("✓ 已复制文本", "好");   // 成功提示
+      if (typeof onSuccess === 'function') onSuccess();
+    },
     () => msg("未能复制文本，因为拒绝访问剪贴板", "好", true) // 失败提示
   );
+  return true;
 }
