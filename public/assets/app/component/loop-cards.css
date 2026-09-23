@@ -84,6 +84,7 @@
    控制器
    ============================================================ */
 .loop-cards-controller {
+  --loop-ctl-size: 2.2rem;   /* 按钮与进度条的统一高度 */
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -133,21 +134,15 @@
   bottom: 0.8rem;
 }
 
-/* --- 玻璃按钮 --- */
+/* --- 按钮：用 Sober 的 <s-icon-button>（模板自带 s-ripple 涟漪反馈）
+       这里只覆盖尺寸与外观，图标颜色交给 Sober 的主题变量自动适配亮/暗 --- */
 .loop-cards-btn {
-  width: 2.2rem;
-  height: 2.2rem;
+  width: var(--loop-ctl-size);
+  height: var(--loop-ctl-size);
   flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: none;
   border-radius: 999px;
-  color: #eee;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  user-select: none;
   transition: transform 200ms ease, opacity 200ms ease;
 }
 
@@ -159,9 +154,10 @@
   transform: scale(0.94);
 }
 
-.loop-cards-btn svg {
-  width: 1.1rem;
-  height: 1.1rem;
+/* 覆盖 s-icon-button 的 ::slotted(svg)（默认 24px） */
+.loop-cards-btn>svg {
+  width: 1.15rem;
+  height: 1.15rem;
   fill: currentColor;
   pointer-events: none;
 }
@@ -171,7 +167,9 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.45rem 0.7rem;
+  height: var(--loop-ctl-size);
+  padding: 0 0.7rem;
+  box-sizing: border-box;
   border-radius: 999px;
 }
 
@@ -181,12 +179,20 @@
   width: 0.45rem;
   height: 0.45rem;
   border-radius: 999px;
-  overflow: hidden;
   background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
   transition: width 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 当前卡片：由点展开为进度条 */
+/* 点本身太小，向外扩一圈透明热区便于点击 */
+.loop-cards-dot::before {
+  content: '';
+  position: absolute;
+  inset: -0.35rem;
+  border-radius: 999px;
+}
+
+/* 当前卡片：由点展开为进度条（点击它是「重置进度」） */
 .loop-cards-dot[data-active="true"] {
   width: 1.8rem;
 }
@@ -194,17 +200,15 @@
 .loop-cards-dot-fill {
   position: absolute;
   inset: 0;
+  border-radius: inherit;
   background: #fff;
   transform-origin: left center;
-  /* --p 由 JS 每帧写入（0 → 1） */
+  /* --p 由 JS 写入（0 → 1）；非当前卡片恒为 0（只留底色，避免与当前项混淆） */
   transform: scaleX(var(--p, 0));
+  pointer-events: none;
 }
 
-/* --- 亮色模式 --- */
-s-page:not([dark]) .loop-cards-btn {
-  color: #333;
-}
-
+/* --- 亮色模式（按钮图标颜色由 s-icon-button 的主题变量自动适配，无需覆盖） --- */
 s-page:not([dark]) .loop-cards-dot {
   background: rgba(0, 0, 0, 0.22);
 }

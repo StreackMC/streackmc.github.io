@@ -142,14 +142,20 @@ export function resolveController(isPausing, ctrlType) {
   };
 }
 
-/** 生成按钮元素 */
+/**
+ * 生成按钮元素
+ * 用 Sober 的 <s-icon-button>：其模板自带 `<s-ripple attached="true">`，
+ * 因此天然具备涟漪点击反馈（自定义 <button> 需自行触发 ripple，见 Sober 源码）。
+ * 图标颜色交给 Sober 的主题变量自动适配亮 / 暗。
+ */
 function makeButton(role, iconName, label) {
-  const btn = document.createElement('button');
-  btn.type = 'button';
+  const btn = document.createElement('s-icon-button');
   btn.className = 'loop-cards-btn glass';
   btn.dataset.role = role;
-  btn.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[iconName]}"/></svg>`;
+  btn.tabIndex = 0;
+  btn.setAttribute('role', 'button');
   btn.setAttribute('aria-label', label);
+  btn.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[iconName]}"/></svg>`;
   return btn;
 }
 
@@ -276,7 +282,9 @@ function initInstance(container) {
     let paused = false;
     let hidden = false;
     let phase = 'hold';      // 仅停顿模式：'hold' 停留 | 'move' 步进动画中
-    let holdStart = 0;
+    let holdStart = 0;       // 当前计时段起点（0 = 未开始 / 已结算）
+    let holdElapsed = 0;     // 已累计的停留毫秒数（暂停、切后台时保留，进度不丢）
+    let lastTs = 0;          // 最近一帧时间戳（结算时用）
 
     const apply = () => {
       track.style.transform = cfg.axis === 'x'
@@ -293,14 +301,30 @@ function initInstance(container) {
       }
     };
 
-    /** 更新进度点：仅当前卡片的点激活，并按 p（0→1）填充 */
+    /** 把当前计时段结算进 holdElapsed（暂停 / 切后台时调用）—— 恢复后接着走，不清零 */
+    const freezeHold = () => {
+      if (holdStart) {
+        holdElapsed += Math.max(0, (lastTs || holdStart) - holdStart);
+        holdStart = 0;
+      }
+    };
+
+    /** 进度归零（点击当前点重置、跳转后、一轮结束时） */
+    const resetHold = () => {
+      holdElapsed = 0;
+      holdStart = 0;
+      renderDots(0);
+    };
+
+    /** 更新进度点：仅当前卡片的点展开并填充，其余点回到纯底色（避免与当前项混淆） */
     const renderDots = (p) => {
       if (!dots.length) return;
       dots.forEach((d, i) => {
-        d.dataset.active = String(i === stepIndex);
+        const active = i === stepIndex;
+        d.dataset.active = String(active);
+        const fill = d.firstElementChild;
+        if (fill) fill.style.setProperty('--p', active ? String(p) : '0');
       });
-      const fill = dots[stepIndex] && dots[stepIndex].firstElementChild;
-      if (fill) fill.style.setProperty('--p', String(p));
     };
 
     /** 步进一张（forward=false 为上一张）；仅停顿模式使用 */
@@ -312,13 +336,27 @@ function initInstance(container) {
       apply();
       container._loopTimer = setTimeout(() => {
         phase = 'hold';
-        holdStart = 0;
         const delta = forward ? 1 : -1;
         stepIndex = ((stepIndex + delta) % cards.length + cards.length) % cards.length;
         container._loopStep = stepIndex;
-        renderDots(0);
+        resetHold();
         container._loopTimer = 0;
       }, MOVE_MS);
+    };
+
+    /** 直接跳到第 index 张（点击进度点时）；位移取与当前位置最近的一个等价位置 */
+    const jumpTo = (index) => {
+      if (phase === 'move') return;
+      stepIndex = index;
+      container._loopStep = index;
+      const base = cfg.dir < 0 ? -index * step : -span + index * step;
+      let target = base;
+      for (const cand of [base - span, base, base + span]) {
+        if (Math.abs(cand - offset) < Math.abs(target - offset)) target = cand;
+      }
+      offset = target;
+      apply();
+      resetHold();
     };
 
     const frozen = () => hidden || paused || window?.streack?.flag?.noAnimation;
@@ -332,15 +370,17 @@ function initInstance(container) {
       apply();
     };
 
-    /** 停顿模式：停留计时 → 满了就步进 */
+    /** 停顿模式：停留计时 → 满了就步进。暂停 / 切后台时结算进度，恢复后接着走 */
     const tickPausing = (ts) => {
       container._loopRaf = requestAnimationFrame(tickPausing);
-      if (frozen()) { holdStart = 0; return; }
+      lastTs = ts;
+      if (frozen()) { freezeHold(); return; }
       if (phase !== 'hold') return;
       if (!holdStart) holdStart = ts;
-      const p = Math.min(1, (ts - holdStart) / holdMs);
+      const p = Math.min(1, (holdElapsed + (ts - holdStart)) / holdMs);
       renderDots(p);
       if (p >= 1) {
+        holdElapsed = 0;
         holdStart = 0;
         advance(true);
       }
@@ -349,10 +389,15 @@ function initInstance(container) {
     // ---------- 事件 ----------
     if (toggleBtn) {
       toggleBtn.addEventListener('click', () => {
-        paused = !paused;
-        holdStart = 0;
+        if (paused) {
+          paused = false;        // 恢复：保留已走过的进度，接着计时
+        } else {
+          freezeHold();          // 暂停：先结算当前段，避免进度被清零
+          paused = true;
+        }
         toggleBtn.dataset.paused = String(paused);
-        toggleBtn.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[paused ? 'play' : 'pause']}"/></svg>`;
+        const path = toggleBtn.querySelector('svg path');
+        if (path) path.setAttribute('d', ICONS[paused ? 'play' : 'pause']);  // 只换路径，保留 ripple
         toggleBtn.setAttribute('aria-label', paused ? '继续' : '暂停');
       });
     }
@@ -361,13 +406,21 @@ function initInstance(container) {
     if (prevBtn) prevBtn.addEventListener('click', () => advance(false));
     if (nextBtn) nextBtn.addEventListener('click', () => advance(true));
 
+    // 进度点：点其他点 → 立即切到该卡片；点当前（已展开的进度条）→ 重置进度
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        if (i === stepIndex) resetHold();
+        else jumpTo(i);
+      });
+    });
+
     // 页面切到后台时暂停（省电），回到前台继续
     if (container._loopVisHandler) {
       document.removeEventListener('visibilitychange', container._loopVisHandler);
     }
     container._loopVisHandler = () => {
       hidden = document.hidden;
-      if (!hidden) holdStart = 0;
+      if (hidden) freezeHold();   // 结算进度，回前台接着走
     };
     document.addEventListener('visibilitychange', container._loopVisHandler);
 
