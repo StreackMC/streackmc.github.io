@@ -32,7 +32,14 @@
  *     └ .loop-cards-controller > .loop-cards-btn ×N (+ .loop-cards-progress > .loop-cards-dot ×N)
  *
  * 其它行为：
- *   · 卡片内容不足一屏时居中显示、不滚动，控制器也不渲染
+ *   · 卡片内容不足一屏（含相等）时居中显示、不滚动，控制器也不渲染 ——
+ *     判定用 轨道内容尺寸 vs 视口可用尺寸（+1px 容差），见 initInstance 内注释
+ *   · ⚠️ 该判定只在初始化时做一次：
+ *     - 容器被 display:none 隐藏时所有布局值都是 0 → 归入「不足一屏」（安全兜底，
+ *       不会崩），但容器可见后**不会自动恢复轮播** —— 需触发 window resize
+ *       （会防抖重建）或重新调用 initLoopCards()。用在可折叠容器里时请自行补一次重跑。
+ *     - 容器自身尺寸变化（不伴随 window resize）同样不会重新判定。
+ *   · 垂直轮播需调用方给容器限定高度，否则视口被卡片撑满、永远「不足一屏」而不滚动
  *   · window.streack.flag.noAnimation 为真时整体不动画
  *   · 页面切到后台（document.hidden）暂停，回到前台继续
  *   · 视口带 pointer-events:none（卡片不拦截点击）；需要卡片可点就删掉该样式
