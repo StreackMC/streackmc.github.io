@@ -34,15 +34,17 @@
 .loop-cards-track {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  /* 卡片等高：子项拉伸到轨道高度。
+     旧写法是 align-items:center + 卡片 min-height:100%，那条链依赖父级有确定高度
+     （旧 .loop-cards 带 height:max-content）——插入「视口」层后视口高度为 auto，
+     百分比高度整条失效、卡片各按内容收缩，故直接用 stretch 实现等高 */
+  align-items: stretch;
   will-change: transform;
-  height: 100%;
 }
 
 .loop-cards[data-orientation="vertical"] .loop-cards-track,
 .loop-cards[data-orientation="reverted-vertical"] .loop-cards-track {
   flex-direction: column;
-  height: auto;
 }
 
 /* --- 卡片 --- */
@@ -52,7 +54,6 @@
   margin-left: 1.5rem;
   font-size: 0.95rem;
   color: #ddd;
-  min-height: 100%;
   width: fit-content;
   max-width: max(calc(var(--w) * 0.16), 160px);
   text-align: left;

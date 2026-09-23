@@ -34,11 +34,11 @@
  * 其它行为：
  *   · 卡片内容不足一屏（含相等）时居中显示、不滚动，控制器也不渲染 ——
  *     判定用 轨道内容尺寸 vs 视口可用尺寸（+1px 容差），见 initInstance 内注释
- *   · ⚠️ 该判定只在初始化时做一次：
- *     - 容器被 display:none 隐藏时所有布局值都是 0 → 归入「不足一屏」（安全兜底，
- *       不会崩），但容器可见后**不会自动恢复轮播** —— 需触发 window resize
- *       （会防抖重建）或重新调用 initLoopCards()。用在可折叠容器里时请自行补一次重跑。
- *     - 容器自身尺寸变化（不伴随 window resize）同样不会重新判定。
+ *   · 测量严格等到「样式表就绪 + 字体就绪」之后再做（stylesReady / document.fonts.ready）：
+ *     否则量到的是**未套样式的裸 DOM**（卡片纵向堆叠），会被误判成「内容不足一屏」
+ *     而静止不动 —— 表现为「要手动 resize 窗口才开始轮播」
+ *   · 容器尺寸变化由 ResizeObserver 捕获并防抖重建：既覆盖不伴随 window resize 的
+ *     布局变化，也覆盖容器从 display:none 变为可见（因此放进可折叠容器也能自动恢复）
  *   · 垂直轮播需调用方给容器限定高度，否则视口被卡片撑满、永远「不足一屏」而不滚动
  *   · window.streack.flag.noAnimation 为真时整体不动画
  *   · 页面切到后台（document.hidden）暂停，回到前台继续
@@ -75,13 +75,28 @@ const SPEED_BASE = 1.2;
 /** 停顿模式的缺省停留时长（秒） */
 const HOLD_DEFAULT_SEC = 2;
 
-/** 按 href 去重注入组件样式表 */
-function ensureStyles() {
-  if (document.querySelector(`link[href="${STYLE_HREF}"]`)) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = STYLE_HREF;
-  document.head.appendChild(link);
+/**
+ * 注入组件样式表，并返回「就绪」Promise（同一份只注入、只等一次）
+ *
+ * ⚠️ 必须等它就绪再测量：样式表是异步到达的，在此之前布局还是「裸 DOM」——
+ * 轨道尚未成为 flex 行、卡片在纵向堆叠，测出的尺寸会被误判成
+ * 「内容不足一屏」→ 组件静止不滚动，要手动 resize（触发的重建那时样式已就位）才恢复。
+ */
+let _stylesReady = null;
+function stylesReady() {
+  if (_stylesReady) return _stylesReady;
+  _stylesReady = new Promise((resolve) => {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = STYLE_HREF;
+    link.addEventListener('load', () => resolve(), { once: true });
+    link.addEventListener('error', () => {
+      console.warn('[loop-cards] 组件样式加载失败，将以裸 DOM 继续：', STYLE_HREF);
+      resolve();
+    }, { once: true });
+    document.head.appendChild(link);
+  });
+  return _stylesReady;
 }
 
 /**
@@ -154,8 +169,10 @@ function makeProgress(count) {
 
 /** 初始化全部 .loop-cards 容器 */
 export function initLoopCards() {
-  ensureStyles();
-  document.querySelectorAll('.loop-cards').forEach(initInstance);
+  document.querySelectorAll('.loop-cards').forEach((container) => {
+    initInstance(container);
+    observeResize(container);
+  });
 }
 
 /** 初始化单个容器 */
@@ -197,7 +214,8 @@ function initInstance(container) {
   cards.forEach((c) => track.appendChild(c));
   container.appendChild(viewport);
 
-  requestAnimationFrame(() => {
+  // 测量与启动（须等样式表 + 字体就绪，见文件尾部的 Promise.all）
+  const measure = () => requestAnimationFrame(() => {
     const posOf = (el) => (cfg.axis === 'x' ? el.offsetLeft : el.offsetTop);
     const sizeOf = (el) => (cfg.axis === 'x' ? el.offsetWidth : el.offsetHeight);
     const viewportSize = cfg.axis === 'x' ? viewport.clientWidth : viewport.clientHeight;
@@ -365,14 +383,39 @@ function initInstance(container) {
       container._loopRaf = requestAnimationFrame(tickContinuous);
     }
   });
+
+  // 等样式表与字体就绪再测量：两者都会改变布局尺寸（字体就绪后文字宽度会变），
+  // 过早测量会得到「裸 DOM」的尺寸 → 误判为内容不足一屏（详见 stylesReady 注释）
+  Promise.all([
+    stylesReady(),
+    (document.fonts && document.fonts.ready) || Promise.resolve(),
+  ]).then(measure);
 }
 
-// 窗口尺寸变化时重新测量并重建（防抖 300ms）
-let _loopResizeTimer = null;
-window.addEventListener('resize', () => {
-  if (_loopResizeTimer) clearTimeout(_loopResizeTimer);
-  _loopResizeTimer = setTimeout(() => {
-    _loopResizeTimer = null;
-    initLoopCards();
-  }, 300);
-});
+/**
+ * 容器尺寸变化时重建（防抖 200ms）
+ * 比监听 window resize 更准：容器自身被布局改变（不伴随窗口变化）时同样能响应；
+ * 也顺带解决了「容器从 display:none 变为可见时不会恢复轮播」的问题。
+ * 重建后短暂忽略回调，避免「重建 → 尺寸再变 → 再重建」的自激。
+ */
+function observeResize(container) {
+  if (typeof ResizeObserver !== 'function' || container._loopResizeObs) return;
+  let last = null;
+  let timer = 0;
+  container._loopResizeObs = new ResizeObserver((entries) => {
+    const rect = entries[0] && entries[0].contentRect;
+    if (!rect) return;
+    if (Date.now() < (container._loopIgnoreUntil || 0)) return;   // 刚重建过，忽略
+    const w = Math.round(rect.width);
+    const h = Math.round(rect.height);
+    const changed = !last || Math.abs(w - last.w) > 1 || Math.abs(h - last.h) > 1;
+    last = { w, h };
+    if (!changed) return;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      container._loopIgnoreUntil = Date.now() + 400;
+      initInstance(container);
+    }, 200);
+  });
+  container._loopResizeObs.observe(container);
+}
