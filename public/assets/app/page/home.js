@@ -1,14 +1,16 @@
 /**
  * Streack 首页 · 页面特定脚本
  * 首页独有的对话框/底栏/赞助等逻辑
- * 运营计时器由 framework.js initCounting() 统一处理，此处不再重复
+ * 运营计时器由 component/counting.js 的 initCounting() 统一处理，此处不再重复
  */
 
-import {
-  DOM, openURL, msg, CopyText,
-  executeCommand, shrinkToolbar, requestInitFunc,
-  initVideoBg, initLoopCards,
-} from '../app/framework.js';
+import { DOM } from '../frame/dom.js';
+import { openURL, msg, CopyText } from '../frame/utils.js';
+import { executeCommand } from '../frame/commands.js';
+import { requestInitFunc } from '../frame/init-hooks.js';
+import { shrinkToolbar } from '../component/toolbar/toolbar.js';
+import { initVideoBg } from '../component/video-bg.js';
+import { initLoopCards } from '../component/loop-cards.js';
 
 
 // ============================================================

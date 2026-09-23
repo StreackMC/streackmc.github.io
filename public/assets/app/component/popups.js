@@ -4,10 +4,8 @@
  * 通过框架的命令注册机制自动接入 executeCommand。
  */
 
-import {
-  registerCommand, toolbarSlots,
-  expandToolbar,
-} from './framework.js';
+import { registerCommand } from '../frame/commands.js';
+import { toolbarSlots, expandToolbar } from './toolbar/toolbar.js';
 
 
 // ============================================================

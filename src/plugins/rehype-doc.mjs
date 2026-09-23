@@ -14,7 +14,7 @@
  *   7. 注释合并      —— 把两种注释都搬到页脚注释区（见下）
  *
  * ── 7. 注释合并（语法糖）──────────────────────────────────────────
- * 页脚注释区由框架提供：Footer.astro 的 `ol#notes`，framework.js 会
+ * 页脚注释区由框架提供：Footer.astro 的 `ol#notes`，frame/init.js 会
  *   ① 把任意 `<template data-inject="notes">` 的内容注入到 `ol#notes`；
  *   ② 把正文 `<sup data-note="token">` 与 `li[data-note="token"]` 双向绑定
  *      （自动编号、点击互跳，并给条目补 ↩ 返回链接）。

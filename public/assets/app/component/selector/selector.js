@@ -91,7 +91,7 @@
 
   /**
    * 读取 URL ?selector= 参数并应用到对应实例
-   * 使用 framework.js 的 getQueryString
+   * 注：此处自行使用 URLSearchParams，未走框架的 getQueryString（待统一）
    */
   function applyURLParam() {
     let raw = null, url=null;

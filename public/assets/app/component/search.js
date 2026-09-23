@@ -5,12 +5,11 @@
  * 依赖框架的 requestInitFunc 确保 Toolbar DOM 就绪后才初始化
  */
 
-import {
-  DOM, openURL,
-  toolbarSlots, toolbarExpanded,
-  expandToolbar, shrinkToolbar,
-  requestInitFunc, registerCommand
-} from './framework.js';
+import { DOM } from '../frame/dom.js';
+import { openURL } from '../frame/utils.js';
+import { requestInitFunc } from '../frame/init-hooks.js';
+import { registerCommand } from '../frame/commands.js';
+import { toolbarSlots, toolbarExpanded, expandToolbar, shrinkToolbar } from './toolbar/toolbar.js';
 
 
 // ============================================================

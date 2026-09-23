@@ -11,10 +11,10 @@
  *
  * 约定：
  *   - .sha256 元素的 textContent 留空，哈希值仅通过 data-sha256 属性声明
- *   - 复制依赖 /assets/app/framework.js 的 CopyText 函数
+ *   - 复制依赖 assets/app/frame/utils.js 的 CopyText 函数
  */
 
-import { CopyText } from '../app/framework.js';
+import { CopyText } from '../frame/utils.js';
 
 const $sha = document.querySelector('.sha256');
 

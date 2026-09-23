@@ -125,7 +125,9 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
 
   <!-- 页面独有逻辑 -->
   <script slot="scripts" is:inline type="module">
-    import { requestInitFunc, initLoopCards, registerToolbarSlot } from '/assets/app/frame/framework.js';
+    import { requestInitFunc } from '/assets/app/frame/init-hooks.js';
+    import { initLoopCards } from '/assets/app/component/loop-cards.js';
+    import { registerToolbarSlot } from '/assets/app/component/toolbar/toolbar.js';
 
     requestInitFunc(() => {
       initLoopCards();

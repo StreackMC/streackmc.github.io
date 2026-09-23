@@ -154,7 +154,7 @@ const tocHtml = buildToc(headings);
   <!-- frontmatter.nav / nav-preset → 工具栏导航插槽（标题栏智能插槽）
        toolbar-set 引用预设（继承其 loc / loc-index 与 nav）；loc 为品牌后缀；
        loc-index 为点击 loc 文字的跳转地址；replaceset 为占位符替换表（JSON）
-       nav 项与预设按钮在 framework.js 里**合并**（带 id 且同 id → 覆写，否则追加） -->
+       nav 项与预设按钮在 component/toolbar/toolbar-nav.js 里**合并**（带 id 且同 id → 覆写，否则追加） -->
   {hasToolbarPreset && (
     <template
       slot="toolbar-nav"

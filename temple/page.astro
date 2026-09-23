@@ -7,9 +7,13 @@
  * 也可使用移除绝大部分注释的版本 /temple-clean.astro
  *
  * 资源结构说明（public/assets/app/ 下按层收纳）：
- *   frame/      — 底层框架：入口 entry.js、framework.js、framework.css
- *                 （初始化各部分、加载选定组件、与旧框架 pmd 协作）
- *   component/  — 各组件：search、popup、selector/ 等，自包含、可解耦
+ *   frame/      — 底层框架（不依赖组件）
+ *                 · entry.js  启动入口（组合根）
+ *                 · init.js   initFramework 主流程（组合根）
+ *                 · dom / utils / storage / fragments / init-hooks / commands
+ *                 · api.js    公共 API 暴露（window.streack，与 pmd.js 协作）
+ *   component/  — 各组件：toolbar/（插槽与品牌）、search、popups、dialog、
+ *                 counting、video-bg、loop-cards、selector/
  *   config/     — 代码驱动的配置：toolbar-presets.js 等
  *   page/       — 页面独有脚本与样式，命名跟随页面（如 doc.js / doc.css）
  *   ↑ 依赖方向：page → component → frame；config 被 frame 与 component 读取
@@ -57,7 +61,7 @@
  *   <template data-inject="notes"></template>        — 向页脚 #notes 注入注释条目
  *
  * 内置可复用组件（自研，样式在 framework.css）：
- *   .loop-cards — 水平无限循环滚动的卡片条（逻辑见 framework.js 的 initLoopCards）
+ *   .loop-cards — 水平无限循环滚动的卡片条（逻辑见 component/loop-cards.js 的 initLoopCards）
  *     · 容器写 class="loop-cards"，**直接子元素即卡片**（建议用 <div class="glass">）
  *     · data-speed 控制速度倍率（实际速度 = 1.2 × 倍率 px/帧），缺省 1.0
  *     · 内容宽度不超容器时自动居中且不滚动；超出则复制一份卡片实现无缝回绕
@@ -109,7 +113,7 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
   </template>
 
   <!-- 自定义 toolbar2 插槽模板（可选）
-       由 framework.js 自动注册，在 toolbar1 中添加按钮调用
+       由 component/toolbar/toolbar.js 自动注册，在 toolbar1 中添加按钮调用
        expandToolbar('my-panel') 即可打开 -->
   <template slot="toolbar-nav" data-toolbar2-slot="my-panel">
     <div style="padding:1rem;color:#ccc;">
@@ -231,7 +235,9 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
   <!-- 页面特定逻辑（可选）
        通过 requestInitFunc 注册回调，框架就绪后自动执行 -->
   <script slot="scripts" is:inline type="module">
-    import { requestInitFunc, initLoopCards, registerToolbarSlot } from '/assets/app/frame/framework.js';
+    import { requestInitFunc } from '/assets/app/frame/init-hooks.js';
+    import { initLoopCards } from '/assets/app/component/loop-cards.js';
+    import { registerToolbarSlot } from '/assets/app/component/toolbar/toolbar.js';
 
     requestInitFunc(() => {
       // 启动「循环滚动卡片」。页面里没有 .loop-cards 时是空操作，留着无妨。
