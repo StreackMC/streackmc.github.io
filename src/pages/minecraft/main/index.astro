@@ -1,0 +1,156 @@
+---
+import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
+---
+<FrameworkLayout title="主生存服 — 栈流Streack" description="页面描述" keywords="关键词1,关键词2" theme="dark" features="loopCards">
+  <template slot="toolbar-nav" data-toolbar-nav loc="主生存服">
+    <div pc-only data-cmd="url:/minecraft/main/s2|" clickable>了解更多</div>
+  </template>
+
+  <style>
+    /* slot=0 主区域：高度可以 > 100dvh，由页面（.main）来滚动 */
+    div.hero[slot] {
+      height: auto;
+      min-height: var(--h);
+      /* 覆盖 framework 的 min-height: 100% */
+      max-height: unset;
+      margin-top: 0;
+      overflow: visible;
+      /* 关键：覆盖 .content 的 overflow:hidden，否则 sticky 失效 */
+      display: block;
+      /* 覆盖 .content 的 flex 居中，避免内容被居中裁掉 */
+    }
+
+    /* hero-content 撑满整个 hero，作为视频 sticky 的活动范围 */
+    div.hero-content {
+      position: relative;
+      inset: 0;
+      /* 等价 top/right/bottom/left: 0 */
+      width: auto;
+      /* 覆盖 .content>* 的 width: fit-content */
+      height: auto;
+      display: flow-root;
+    }
+
+    div.hero-content>* {
+      z-index: 1;
+      flex-shrink: 0;
+    }
+
+    div.hero-content>*:not(:first-child) {
+      border-radius: 0;
+      border-top: 0 transparent;
+      border-bottom: 0 transparent;
+      margin: 0;
+      padding: 4.83rem 5rem;
+      height: max-content;
+      min-height: calc(var(--h) * 0.8639);
+      font-size: 1.5rem;
+    }
+
+    /* 视频背景：钉在视口顶部，直到 hero-content 滚完 */
+    div.hero-content div.slotBg-V {
+      position: sticky;
+      top: 0;
+      height: var(--h);
+      width: 100%;
+      z-index: 0;
+    }
+
+    /* 视频背景叠加层 */
+    .slotBg-V-overflow {
+      position: absolute;
+      bottom: 3rem;
+      left: 3.5rem;
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+    }
+
+    @media screen and (max-width: 833px) {
+      .slotBg-V-overflow {
+        left: 16px;
+      }
+
+      div.hero-content>*:not(:first-child) {
+        padding: 28px 24px;
+      }
+    }
+  </style>
+
+  <!-- 正文内容 -->
+  <div style="display: contents">
+    <div class="content hero" slot="0">
+      <div class="hero-content">
+        <div class="slotBg-V">
+          <video poster="https://s41.ax1x.com/2026/09/23/pnlKeSA.jpg" class="slotBg-V" muted playsinline preload="auto">
+            <source src="/assets/video/mc-main-s2.mp4" type="video/mp4">
+            <source src="/assets/video/mc-main-s2.webm" type="video/webm">
+          </video>
+          <div class="glass slotBg-V-overflow">
+            <p style="--fs: 24px;--fl: 60px;--fw: 700;--lh: 1.1em;--a: left;transform: translateX(-.5em);">
+              <span pc-only class="WenQuanWeiMiHei">&ensp;栈流</span><wbr>
+              「岭回双壑风」<br>
+              <span style="--fs:18px; --fl:42px;">&emsp;冒险新征程，大不一样</span>
+            </p>
+            <div style="flex-direction: column;display: flex;">
+              <s-button mobile-only data-cmd="url:/minecraft/main/s2/|">查看</s-button>
+              <s-button pc-only data-cmd="url:/minecraft/main/s2/|">立即查看</s-button>
+            </div>
+          </div>
+        </div>
+        <div class="glass">
+          <h2 style="--a: center;--fs: 1.75rem;--fl: 3.25rem;--fw: 600;padding-top: 3em">
+            我们为<wbr>「岭回双壑风」<wbr>付出许多，<br>
+            从重构底层到自研插件、<br>
+            从算力跃升到价值重塑，<br>
+            由此向你带来大不一样的，<br>
+            <span class="text-gradient" style="--tg-start: #84fab0;--tg-end: #ff9a9e;">“冒险新征程”</span>
+          </h2>
+          <h2 style="--a: center;--fs: 1.75rem;--fl: 3.25rem;--fw: 600;margin-top: calc(var(--h) * 0.5 + 2em);margin-bottom: 3em;">
+            <s-icon style="width: 1.5em;">
+              <svg data-v-49a22239="" viewBox="0 -960 960 960">
+                <path data-v-49a22239=""
+                  d="M381-116q-44-36-55-92-53 17-107-2t-83-66q-30-48-22-106.5t52-97.5q-42-38-50.5-94T134-678q27-48 81.5-69.5T324-752q11-56 55-92t101-36q57 0 101 36t55 92q56-17 108.5 3t81.5 71q27 50 19.5 104.5T794-480q44 39 52.5 96.5T828-276q-29 51-81.5 68T638-208q-11 56-55 92T482-80q-57 0-101-36Zm101-44q47 0 70.5-40.5T552-280l-28-46q-11 3-21 4.5t-21 1.5q-10 0-20.5-1.5T440-326l-28 46q-24 39-.5 79.5T482-160ZM202-320q24 41 70.5 41t69.5-41l26-46q-8-8-15-17t-12-19q-5-9-9-18.5t-7-19.5h-53q-47 0-70 39.5t0 80.5Zm416 0q23 41 69.5 41t70.5-41q23-41 0-80.5T688-440h-53q-2 10-6.5 19.5T619-402q-5 10-12 19t-15 17l26 46ZM480-480Zm-155-40q3-11 7.5-21.5T342-561q5-9 11.5-17t14.5-16l-26-46q-23-41-69.5-41T202-640q-23 41 0 80.5t70 39.5h53Zm363 0q47 0 70-39.5t0-80.5q-24-41-70.5-41T618-640l-26 46q8 8 14.5 16t11.5 17q5 9 9.5 19.5T635-520h53ZM437-634q11-3 21.5-4.5T480-640q11 0 21.5 1.5T523-634l27-46q23-39 0-79.5T480-800q-47 0-70 40t0 80l27 46Zm0 0q11-3 21.5-4.5T480-640q11 0 21.5 1.5T523-634q-11-3-21.5-4.5T480-640q-11 0-21.5 1.5T437-634Zm-96 232q-5-9-9-18.5t-7-19.5q3 10 7 19.5t9 18.5q5 10 12 19t15 17q-8-8-15-17t-12-19Zm-16-118q3-11 7.5-21.5T342-561q5-9 11.5-17t14.5-16q-8 8-14.5 16T342-561q-5 9-9.5 19.5T325-520Zm157 200q-10 0-20.5-1.5T440-326q11 3 21.5 4.5T482-320q11 0 21-1.5t21-4.5q-11 3-21 4.5t-21 1.5Zm110-46q8-8 15-17t12-19q5-9 9.5-18.5T635-440q-2 10-6.5 19.5T619-402q-5 10-12 19t-15 17Zm43-154q-3-11-7.5-21.5T618-561q-5-9-11.5-17T592-594q8 8 14.5 16t11.5 17q5 9 9.5 19.5T635-520Zm-98.5 96.5Q560-447 560-480t-23.5-56.5Q513-560 480-560t-56.5 23.5Q400-513 400-480t23.5 56.5Q447-400 480-400t56.5-23.5Z">
+                </path>
+              </svg>
+            </s-icon><br>
+            为<span class="text-gradient" style="--tg-start: #a1c4fd;--tg-end: #c2e9fb;">“澪奈Neonai”</span>预备好<sup data-note="neonaic"></sup>
+          </h2>
+        </div>
+      </div></div>
+
+      <div class="content" slot="1" style="background: var(--s-color-surface-container, #222); color: #fff;">
+        <div style="--a: center;">
+          <h1 style="--fs:35px;--fl:60px;">纯内容区域</h1>
+          <p style="--fs:20px;--fl:36px;">可自由放置任意 HTML 内容。</p>
+          <p style="--fs:16px;--fl:24px;">
+            使用 CSS 变量控制样式：
+            <br>--t / --r / --b / --l — 绝对定位
+            <br>--fs / --fl — 字号 clamp(最小, 自动斜率, 最大)
+            <br>→ --fv 重写斜率 --fz 重写字号
+            <br>--fw — 字重，正常400，加粗700
+            <br>class="text-gradient" 时使用 --tg-start --tg-end --tg-degree 设置渐变字体
+            <br>--a — 文本对齐 (start/center/end)
+            <br>--lh - 控制行高，对p默认1.5倍，其它均为1倍
+            <br>--safezone - 预设变量，为toolbar安全高度，通常首栏的元素的top不能小于它的定义值，否则会被遮挡
+          </p>
+        </div>
+      </div>
+
+      <!-- 注释模板 -->
+      <template slot="notes" data-inject="notes">
+        <li data-note="neonaic">推出时间视开发进度与监管要求而定。即使推出，部分功能的使用仍有限制。</li>
+      </template>
+
+      <!-- 页面独有逻辑（循环卡片等可选组件由上方 features 声明按需加载） -->
+      <script slot="scripts" is:inline type="module">
+        import { requestInitFunc } from '/assets/app/frame/init-hooks.js';
+
+        requestInitFunc(() => {
+          // 需要「框架就绪」后才执行的页面逻辑
+          requestAnimationFrame(() => { document.querySelectorAll('video.slotBg-V').forEach(e => e.play()); });
+        });
+
+      </script>
+</FrameworkLayout>
