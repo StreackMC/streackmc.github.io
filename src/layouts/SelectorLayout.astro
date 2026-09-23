@@ -27,8 +27,8 @@
  *   dialogs     - 页面弹窗（透传给 FrameworkLayout）
  *
  * 外部资源：
- *   CSS — /assets/code/selector.css
- *   JS  — /assets/code/selector.js（通过 [data-selector-config] JSON 读取配置）
+ *   CSS — /assets/app/component/selector/selector.css
+ *   JS  — /assets/app/component/selector/selector.js（通过 [data-selector-config] JSON 读取配置）
  */
 import FrameworkLayout from './FrameworkLayout.astro';
 import PageIcon from '../components/PageIcon.astro';
@@ -74,7 +74,7 @@ const {
   <slot name="toolbar-nav" slot="toolbar-nav" />
 
   <!-- 页面 CSS -->
-  <link slot="head" rel="stylesheet" href="/assets/code/selector.css" />
+  <link slot="head" rel="stylesheet" href="/assets/app/component/selector/selector.css" />
 
   <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
   <div style="display: contents">
@@ -114,5 +114,5 @@ const {
   <slot name="notes" slot="notes" />
 
   <!-- 页面脚本 -->
-  <script data-selector-page="independent" slot="scripts" is:inline type="module" src="/assets/code/selector.js"></script>
+  <script data-selector-page="independent" slot="scripts" is:inline type="module" src="/assets/app/component/selector/selector.js"></script>
 </FrameworkLayout>

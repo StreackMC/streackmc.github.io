@@ -2,7 +2,7 @@
  * rehype-doc — Markdown 渲染结果的站点级增强（对应旧站 PagesSober 的 pmd 客户端增强）
  *
  * 在**构建期（服务端）**直接产出增强后的 HTML 标记，仅把必须的交互留给客户端脚本
- * （见 public/assets/code/doc.js）：
+ * （见 public/assets/app/page/doc.js）：
  *
  *   1. 标题锚点按钮  —— 在每个 h1~h6 末尾追加「链接到此标题」按钮（旧站 hyper_markdown.header_link）
  *   2. 链接语法糖    —— 链接文字中写 ↗ / $ / ฿ 时，改为新标签页打开并加外链箭头

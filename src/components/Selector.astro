@@ -38,7 +38,7 @@ const { config, id, history = true, class: className } = Astro.props;
 ---
 
 <!-- 页面 CSS（浏览器自动去重，多实例安全） -->
-<link rel="stylesheet" href="/assets/code/selector.css" />
+<link rel="stylesheet" href="/assets/app/component/selector/selector.css" />
 
 <!-- 嵌入式选择器 -->
 <div
@@ -61,4 +61,4 @@ const { config, id, history = true, class: className } = Astro.props;
 </div>
 
 <!-- 页面脚本（浏览器自动去重，多实例安全） -->
-<script is:inline type="module" src="/assets/code/selector.js"></script>
+<script is:inline type="module" src="/assets/app/component/selector/selector.js"></script>

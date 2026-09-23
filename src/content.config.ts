@@ -30,7 +30,7 @@
  *   toc         — 是否渲染页首目录（默认 true；写 false 则该页不渲染目录）
  *   nav         — 工具栏导航项 [{ label, href?, cmd? }]（标题栏智能插槽）
  *   nav-preset  — toolbar 预设：字符串 = 预设名，或 { set?, loc?, replaceset? }
- *                 （继承 assets/app/toolbar-presets.js 里预设的 loc 与 nav）
+ *                 （继承 assets/app/config/toolbar-presets.js 里预设的 loc 与 nav）
  */
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';

@@ -39,9 +39,9 @@ const {
 
 <BaseLayout title={title} description={description} keywords={keywords}>
   <!-- 框架 CSS -->
-  <link slot="head" rel="stylesheet" href="/assets/app/framework.css" />
-  <link slot="head" rel="stylesheet" href="/assets/app/popup.css" />
-  <link slot="head" rel="stylesheet" href="/assets/app/search.css" />
+  <link slot="head" rel="stylesheet" href="/assets/app/frame/framework.css" />
+  <link slot="head" rel="stylesheet" href="/assets/app/component/popup.css" />
+  <link slot="head" rel="stylesheet" href="/assets/app/component/search.css" />
   <!-- 页面特定 head 内容 -->
   <slot name="head" slot="head" />
 
@@ -82,7 +82,7 @@ const {
     window.streack = { meta: { initby: ["streack-web-framework/layout"] }, };
     window.streack.conf = typeof conf !== 'undefined' ? conf : null;
   </script>
-  <script is:inline type="module" src="/assets/app/entry.js"></script>
+  <script is:inline type="module" src="/assets/app/frame/entry.js"></script>
 
   <!-- 页面特定脚本 -->
   <slot name="scripts" />

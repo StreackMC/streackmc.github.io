@@ -49,7 +49,7 @@ nav:
 
 ## 样式说明
 
-文档正文由 `DocLayout` 渲染，样式定义在 `public/assets/code/doc.css`，
+文档正文由 `DocLayout` 渲染，样式定义在 `public/assets/app/page/doc.css`，
 与站点整体风格保持一致（配色、圆角、代码块等随站点主题自动适配）。
 
 > [i] 正文中无需手动加锚点或目录——标题锚点、页首目录、代码复制按钮

@@ -130,7 +130,7 @@ const ResultSchema = z.object({
 });
 
 /**
- * 搜索数据条目（写入 public/assets/search-suggestion.json，由 assets/app/search.js 消费）
+ * 搜索数据条目（写入 public/assets/search-suggestion.json，由 assets/app/component/search.js 消费）
  *   link     — 站点路径
  *   keywords — 搜索关键词
  *   title    — 真·文章标题（取自页面 <title>，去除站点名后缀）

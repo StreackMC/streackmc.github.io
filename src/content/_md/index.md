@@ -84,7 +84,7 @@ nav-preset:
 ---
 ```
 
-- 预设表定义在 `public/assets/app/toolbar-presets.js`（`Map<名称, { loc, locIndex, nav }>`），
+- 预设表定义在 `public/assets/app/config/toolbar-presets.js`（`Map<名称, { loc, locIndex, nav }>`），
   可按站点需要增删；预设按钮都带 `id`，便于页面按 id 覆写某一项。
 - **`loc-index`**：点击 loc 后缀文字时的跳转地址（取代「点击品牌默认跳首页」）；
   未设置时点击 loc 会冒泡到品牌、恢复跳首页。

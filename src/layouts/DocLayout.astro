@@ -4,7 +4,7 @@
  * 继承 FrameworkLayout（含工具栏 + 页脚），用于渲染 Markdown 内容
  *
  * 与站点样式保持一致：正文放入 .content 内容槽，prose 样式见
- * public/assets/code/doc.css（标题、段落、列表、引用、代码、表格等）。
+ * public/assets/app/page/doc.css（标题、段落、列表、引用、代码、表格等）。
  *
  * 增强渲染由构建期完成（src/plugins/rehype-doc.mjs）：
  *   标题锚点、链接语法糖、代码块复制按钮、引用块提示框、任务列表 s-checkbox、图片懒加载；
@@ -23,7 +23,7 @@
  *                 id 与预设按钮同 id 时覆写（保持预设位置），否则与预设按钮合并追加
  *   navPreset   - 可选，toolbar 预设（frontmatter `nav-preset`）：
  *                 字符串 = 预设名；或对象 { set?, loc?, loc-index?, replaceset? }
- *                 · set        引用 assets/app/toolbar-presets.js 里的预设，继承其 loc / loc-index 与 nav
+ *                 · set        引用 assets/app/config/toolbar-presets.js 里的预设，继承其 loc / loc-index 与 nav
  *                 · loc        品牌后缀（渲染为「栈流Streack·<loc>」）
  *                 · loc-index  点击 loc 文字的跳转地址（取代点击品牌默认跳首页）
  *                 · replaceset 占位符替换表 { 名: 值 }，供预设值里的 %xxx% 使用
@@ -124,7 +124,7 @@ const tocHtml = buildToc(headings);
   theme={theme}
 >
   <!-- 文档样式 -->
-  <link slot="head" rel="stylesheet" href="/assets/code/doc.css" />
+  <link slot="head" rel="stylesheet" href="/assets/app/page/doc.css" />
 
   <!-- 正文内容（display:contents 包裹防止 Astro 解释 slot 属性） -->
   <div style="display: contents">
@@ -186,7 +186,7 @@ const tocHtml = buildToc(headings);
   <slot name="notes" slot="notes" />
 
   <!-- 文档交互脚本（代码复制） -->
-  <script slot="scripts" is:inline type="module" src="/assets/code/doc.js"></script>
+  <script slot="scripts" is:inline type="module" src="/assets/app/page/doc.js"></script>
 
   <!-- 页面脚本（透传） -->
   <slot name="scripts" slot="scripts" />
