@@ -10,6 +10,9 @@
  *                      · continuous —— 连续无缝滚动，data-speed 为**速度倍率**（缺省 1，基准 1.2px/帧）
  *                      · pausing    —— 每切换一张后停顿片刻，data-speed 为**停顿秒数**
  *                                      （缺省 2 秒；支持小数，精度到毫秒，多余位数直接舍弃）
+ *                      ⭐ 语法糖：data-speed="0" → **永不自动滚动**（两种模式通用），
+ *                         此时「暂停 / 继续」按钮无意义、不予渲染；上一张 / 下一张与
+ *                         进度点照常可用（即变成纯手动的轮播）
  *
  *   data-controller-type  "" | "step" | "progress" | "step-pause"（缺省空 = 不渲染控制器）
  *                      · step        上一张 / 下一张 两个玻璃按钮
@@ -18,6 +21,7 @@
  *                                    + 暂停 / 继续按钮
  *                      · ⚠️ data-type="continuous" 时没有「当前卡片」概念、进度条无意义，
  *                         因此**任何 controller-type 都只渲染暂停 / 继续按钮**
+ *                         （若又关闭了自动滚动，则连它也不渲染 → 整个控制器不出现）
  *
  *   data-controller-pos    "left"|"center"|"right" + "top"|"bottom"（缺省 right-bottom）
  *                          （如 "left-top"、"center-bottom"、"right-top"）
@@ -51,6 +55,7 @@
  *   · reverted-* 的语义是「卡片沿反向行进」：布局与阅读顺序不变，只是内容朝
  *     另一侧移动；因此「下一张」在 reverted 下对应索引递减（视觉与进度点始终一致）
  *   · window.streack.flag.noAnimation 为真时整体不动画
+ *   · data-speed="0"（关闭自动滚动）时连 rAF 循环都不启动：位移只在手动操作时改变
  *   · 页面切到后台（document.hidden）暂停，回到前台继续
  *   · 视口带 pointer-events:none（卡片不拦截点击）；需要卡片可点就删掉该样式
  *   · 样式由 component/loop-cards.css 自动注入，页面无需手写 <link>
@@ -137,17 +142,25 @@ export function resolveArrow(cfg, forward) {
  * · 未设 controller-type → 完全不渲染
  * · data-type="continuous" → 没有「当前卡片」概念、进度条无意义，任何类型都只渲染暂停按钮
  * · data-type="pausing" → 按 controller-type 渲染（step / step-pause / progress）
+ * · 关闭自动滚动（data-speed="0"）→ 「暂停 / 继续」没有可暂停的对象，不渲染；
+ *   连续模式下它又是唯一的部件，于是整个控制器都不渲染
  * @param {boolean} isPausing
  * @param {string} ctrlType
+ * @param {boolean} [autoScroll=true] 是否自动滚动
  * @returns {{ render: boolean, step: boolean, toggle: boolean, progress: boolean }}
  */
-export function resolveController(isPausing, ctrlType) {
-  if (!ctrlType) return { render: false, step: false, toggle: false, progress: false };
-  if (!isPausing) return { render: true, step: false, toggle: true, progress: false };
+export function resolveController(isPausing, ctrlType, autoScroll = true) {
+  const none = { render: false, step: false, toggle: false, progress: false };
+  if (!ctrlType) return none;
+  if (!isPausing) {
+    return autoScroll
+      ? { render: true, step: false, toggle: true, progress: false }
+      : none;
+  }
   return {
     render: true,
     step: ctrlType === 'step' || ctrlType === 'step-pause',
-    toggle: ctrlType === 'step-pause' || ctrlType === 'progress',
+    toggle: autoScroll && (ctrlType === 'step-pause' || ctrlType === 'progress'),
     progress: ctrlType === 'progress',
   };
 }
@@ -248,13 +261,18 @@ function initInstance(container) {
   const ctrlPos = container.dataset.controllerPos || 'right-bottom';
   const ctrlOverlap = container.dataset.controllerOverlap === 'true';
 
+  // data-speed 的语法糖：**0 = 永不自动滚动**（两种模式皆然）。
+  // 与「没写 / 值非法」不同 —— 后者取缺省（continuous 1 倍、pausing 2 秒）。
   const speedRaw = parseFloat(container.dataset.speed);
+  const autoScroll = !(Number.isFinite(speedRaw) && speedRaw === 0);
   const speed = Number.isFinite(speedRaw) && speedRaw > 0 ? speedRaw : null;
 
-  /** 连续模式：每帧位移像素 */
-  const pxPerFrame = SPEED_BASE * (speed ?? 1);
-  /** 停顿模式：每张停留毫秒（非法或 ≤0 时用缺省 2 秒） */
-  const holdMs = secondsToMs(speed ?? HOLD_DEFAULT_SEC) || HOLD_DEFAULT_SEC * 1000;
+  /** 连续模式：每帧位移像素（关闭自动滚动时为 0） */
+  const pxPerFrame = autoScroll ? SPEED_BASE * (speed ?? 1) : 0;
+  /** 停顿模式：每张停留毫秒（关闭自动滚动时为 0；非法或 ≤0 时用缺省 2 秒） */
+  const holdMs = autoScroll
+    ? (secondsToMs(speed ?? HOLD_DEFAULT_SEC) || HOLD_DEFAULT_SEC * 1000)
+    : 0;
 
   // 卡片列表（重复初始化时保留首轮的引用）
   if (!container._loopCards) container._loopCards = [...container.children];
@@ -302,7 +320,7 @@ function initInstance(container) {
     const cardOffsets = cards.map((_, m) => posOf(track.children[cards.length + m]) - cycleBase);
 
     // ---------- 控制器 ----------
-    const plan = resolveController(isPausing, ctrlType);
+    const plan = resolveController(isPausing, ctrlType, autoScroll);
     let dots = [];
     let toggleBtn = null;
 
@@ -517,8 +535,9 @@ function initInstance(container) {
       renderDots(0);
       // 步进动画用 CSS transition 完成（时长与 MOVE_MS 一致）
       track.style.transition = moveTransition;
-      container._loopRaf = requestAnimationFrame(tickPausing);
-    } else {
+      // 关闭自动滚动（data-speed="0"）时不启动循环：手动按钮 / 进度点照常可用
+      if (autoScroll) container._loopRaf = requestAnimationFrame(tickPausing);
+    } else if (autoScroll) {
       container._loopRaf = requestAnimationFrame(tickContinuous);
     }
   });

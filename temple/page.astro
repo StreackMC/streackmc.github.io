@@ -89,11 +89,14 @@
  *         data-type                continuous(缺省，无缝滚动) | pausing(每张停留片刻)
  *         data-speed               continuous → 速度倍率（缺省 1，基准 1.2px/帧）
  *                                  pausing    → 停顿秒数（缺省 2，支持小数、精度到毫秒）
+ *                                  ⭐ 写 0 = 永不自动滚动（两种模式通用），此时不渲染
+ *                                     暂停 / 继续按钮，退回纯手动轮播（按钮与进度点仍可用）
  *         data-controller-type     step | step-pause | progress（缺省 = 不渲染控制器）
  *             step        上一张 / 下一张 两个玻璃按钮（箭头随轮播方向变化）
  *             step-pause  在 step 基础上多一个暂停 / 继续按钮
  *             progress    胶囊进度条（对应各卡片的点，当前点展开为进度条）+ 暂停 / 继续按钮
  *             ⚠️ data-type="continuous" 时没有「当前卡片」概念，任何类型都只渲染暂停 / 继续按钮
+ *                （若同时又 data-speed="0" → 整个控制器都不渲染）
  *         data-controller-pos      left|center|right + top|bottom（缺省 right-bottom）
  *         data-controller-overlap  true | false(缺省)：是否与卡片重叠；false 时控制器把容器撑开
  *     · 内容不超一屏时居中且不滚动（控制器也不渲染）；超出则复制一份实现无缝回绕
@@ -204,6 +207,8 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
           <br>--a — 文本对齐 (start/center/end)
           <br>--lh - 控制行高，对p默认1.5倍，其它均为1倍
           <br>--safezone - 预设变量，为toolbar安全高度，通常首栏的元素的top不能小于它的定义值，否则会被遮挡
+          <br>
+          <br>属性“nosugar”可以禁用该元素的上述特性
         </p>
       </div>
     </div>
