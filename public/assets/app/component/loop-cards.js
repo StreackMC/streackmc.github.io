@@ -28,7 +28,7 @@
  *
  * 初始化时生成的结构：
  *   .loop-cards[data-*]
- *     ├ .loop-cards-viewport > .loop-cards-track > 卡片 ×N + 克隆 ×N
+ *     ├ .loop-cards-viewport > .loop-cards-track > 前导克隆 ×N + 卡片 ×N + 尾部克隆 ×N
  *     └ .loop-cards-controller > .loop-cards-btn ×N (+ .loop-cards-progress > .loop-cards-dot ×N)
  *
  * 其它行为：
@@ -40,6 +40,12 @@
  *   · 容器尺寸变化由 ResizeObserver 捕获并防抖重建：既覆盖不伴随 window resize 的
  *     布局变化，也覆盖容器从 display:none 变为可见（因此放进可折叠容器也能自动恢复）
  *   · 垂直轮播需调用方给容器限定高度，否则视口被卡片撑满、永远「不足一屏」而不滚动
+ *   · 「上一张 / 下一张」跨过首尾时是**无缝**的（停顿模式）：轨道是三圈重叠，
+ *     越界时照样滑动一张（前导 / 尾部克隆就在旁边接着），滑动结束后再把位移
+ *     瞬间拉回规范值 —— 那一刻视口内画面与原来完全一致，所以看不见。
+ *     ⚠️ 这次归位必须**不带过渡**，否则会看见整条轨道倒着滑回开头。
+ *   · reverted-* 的语义是「卡片沿反向行进」：布局与阅读顺序不变，只是内容朝
+ *     另一侧移动；因此「下一张」在 reverted 下对应索引递减（视觉与进度点始终一致）
  *   · window.streack.flag.noAnimation 为真时整体不动画
  *   · 页面切到后台（document.hidden）暂停，回到前台继续
  *   · 视口带 pointer-events:none（卡片不拦截点击）；需要卡片可点就删掉该样式
@@ -143,6 +149,27 @@ export function resolveController(isPausing, ctrlType) {
 }
 
 /**
+ * 取「与当前位置最近的等价位移」
+ *
+ * 轨道是三段式（前导克隆 + 原始卡片 + 尾部克隆），内容以 span 为周期重复，
+ * 因此相差 span 整数倍的位移**画面完全相同**。步进时取最近的那个：
+ * · 一圈之内 → 就是相邻卡片的正常一步（±step）
+ * · 跨过首尾 → 落在克隆上，同样是 ±step 的正常一步（因此滑动方向不会反过来），
+ *   动画结束后再由调用方把位移拉回规范值（那一刻画面相同，看不见）
+ * @param {number} current 当前位移
+ * @param {number} target 目标卡片相对「中间一圈」的规范位移
+ * @param {number} span 一个周期的跨度
+ * @returns {number}
+ */
+export function nearestOffset(current, target, span) {
+  let best = target;
+  for (const cand of [target - span, target, target + span]) {
+    if (Math.abs(cand - current) < Math.abs(best - current)) best = cand;
+  }
+  return best;
+}
+
+/**
  * 生成按钮元素
  * 用 Sober 的 <s-icon-button>：其模板自带 `<s-ripple attached="true">`，
  * 因此天然具备涟漪点击反馈（自定义 <button> 需自行触发 ripple，见 Sober 源码）。
@@ -239,10 +266,15 @@ function initInstance(container) {
       ? Math.abs(posOf(track.children[1]) - posOf(track.children[0]))
       : sizeOf(track.children[0]);
 
-    // 克隆一份卡片，用于无缝回绕
+    // 三段式轨道：前导克隆 + 原始卡片（此时在轨道里）+ 尾部克隆
+    // —— 前导克隆是「上一张」在首卡处能补进画面的前提；
+    //    尾部克隆让「下一张」越过末卡时直接滑进下一轮的首卡（不必倒着滑回去）
+    const lead = document.createDocumentFragment();
+    cards.forEach((c) => lead.appendChild(c.cloneNode(true)));
+    track.insertBefore(lead, track.firstChild);
     cards.forEach((c) => track.appendChild(c.cloneNode(true)));
 
-    // 回绕跨度 = 克隆区第一张相对原始第一张的位移
+    // 回绕跨度 = 后一圈第一张相对前一圈第一张的位移（即一整圈的宽度）
     const span = (posOf(track.children[cards.length]) - posOf(track.children[0])) || stripSize;
 
     // ---------- 控制器 ----------
@@ -275,10 +307,17 @@ function initInstance(container) {
     }
 
     // ---------- 运行状态 ----------
-    let offset = cfg.dir < 0 ? 0 : -span;
+    /**
+     * 逻辑卡片 m 的**规范位移**：把该卡片对齐到视口起点。
+     * 锚定在「中间一圈」的原始卡片上（前导克隆占 [0, span)，原始卡片占 [span, 2span)），
+     * 因此位移始终落在 [-2span + step, -span] 这一段里，视口两侧都有克隆垫着。
+     */
+    const canonicalOffset = (m) => -(span + m * step);
+
     let stepIndex = Number.isInteger(container._loopStep)
       ? ((container._loopStep % cards.length) + cards.length) % cards.length
       : 0;
+    let offset = canonicalOffset(stepIndex);
     let paused = false;
     let hidden = false;
     let phase = 'hold';      // 仅停顿模式：'hold' 停留 | 'move' 步进动画中
@@ -286,19 +325,36 @@ function initInstance(container) {
     let holdElapsed = 0;     // 已累计的停留毫秒数（暂停、切后台时保留，进度不丢）
     let lastTs = 0;          // 最近一帧时间戳（结算时用）
 
+    /** 步进动画的过渡（normalize 归位后要原样恢复它） */
+    const moveTransition = `transform ${MOVE_MS}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+
     const apply = () => {
       track.style.transform = cfg.axis === 'x'
         ? `translateX(${offset}px)`
         : `translateY(${offset}px)`;
     };
 
-    /** 越过回绕边界时把位移拉回有效区间，实现无缝衔接 */
-    const wrap = () => {
-      if (cfg.dir < 0) {
-        if (offset <= -span) offset += span;
-      } else if (offset >= 0) {
-        offset -= span;
-      }
+    /** 连续模式：位移漂出一圈就整体挪回一圈（画面完全相同，故不可见） */
+    const wrapContinuous = () => {
+      if (offset <= -2 * span) offset += span;
+      else if (offset > -span) offset -= span;
+    };
+
+    /**
+     * 把位移瞬间拉回当前卡片的规范值。
+     * 只在「已经滑到等价位置」之后调用 —— 那一刻视口内画面与规范值完全一致，
+     * 所以这次赋值看不见；但**必须关掉过渡**，否则浏览器会把这段 span 距离
+     * 演成一整圈倒着滑回去的动画（这正是「下一张到末尾跳回开头」的成因）。
+     */
+    const normalize = () => {
+      const target = canonicalOffset(stepIndex);
+      if (Math.abs(target - offset) < 0.5) return;
+      offset = target;
+      if (!isPausing) { apply(); return; }
+      track.style.transition = 'none';
+      apply();
+      void track.offsetWidth;            // 强制重排，让浏览器记下「无过渡」的这次赋值
+      track.style.transition = moveTransition;
     };
 
     /** 把当前计时段结算进 holdElapsed（暂停 / 切后台时调用）—— 恢复后接着走，不清零 */
@@ -327,18 +383,26 @@ function initInstance(container) {
       });
     };
 
-    /** 步进一张（forward=false 为上一张）；仅停顿模式使用 */
+    /**
+     * 步进一张（forward=false 为上一张）；仅停顿模式使用
+     *
+     * 位移只走「正常的一步」（±step），跨越首尾时落在前导 / 尾部克隆上 ——
+     * 因此滑动方向始终正确，动画结束后再由 normalize() 无声归位。
+     * 注意「下一张」的**索引**方向：内容朝哪边移动由 cfg.dir 决定，
+     * 而索引必须跟着**画面**走（reverted 下下一张是索引递减），否则进度点会与画面相反。
+     */
     const advance = (forward) => {
       if (phase === 'move') return;
+      const sign = forward ? 1 : -1;
+      const nextIndex = ((stepIndex + sign * -cfg.dir) % cards.length + cards.length) % cards.length;
       phase = 'move';
-      offset += cfg.dir * step * (forward ? 1 : -1);
-      wrap();
+      offset = nearestOffset(offset, canonicalOffset(nextIndex), span);
       apply();
       container._loopTimer = setTimeout(() => {
         phase = 'hold';
-        const delta = forward ? 1 : -1;
-        stepIndex = ((stepIndex + delta) % cards.length + cards.length) % cards.length;
+        stepIndex = nextIndex;
         container._loopStep = stepIndex;
+        normalize();           // 与刚才落点画面相同 → 瞬间归位，肉眼不可见
         resetHold();
         container._loopTimer = 0;
       }, MOVE_MS);
@@ -349,12 +413,7 @@ function initInstance(container) {
       if (phase === 'move') return;
       stepIndex = index;
       container._loopStep = index;
-      const base = cfg.dir < 0 ? -index * step : -span + index * step;
-      let target = base;
-      for (const cand of [base - span, base, base + span]) {
-        if (Math.abs(cand - offset) < Math.abs(target - offset)) target = cand;
-      }
-      offset = target;
+      offset = nearestOffset(offset, canonicalOffset(index), span);
       apply();
       resetHold();
     };
@@ -366,7 +425,7 @@ function initInstance(container) {
       container._loopRaf = requestAnimationFrame(tickContinuous);
       if (frozen()) return;
       offset += cfg.dir * pxPerFrame;
-      wrap();
+      wrapContinuous();
       apply();
     };
 
@@ -430,7 +489,7 @@ function initInstance(container) {
       container._loopStep = stepIndex;
       renderDots(0);
       // 步进动画用 CSS transition 完成（时长与 MOVE_MS 一致）
-      track.style.transition = `transform ${MOVE_MS}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+      track.style.transition = moveTransition;
       container._loopRaf = requestAnimationFrame(tickPausing);
     } else {
       container._loopRaf = requestAnimationFrame(tickContinuous);

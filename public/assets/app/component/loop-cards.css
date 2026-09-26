@@ -6,7 +6,8 @@
  *   .loop-cards[data-*]                 容器（属性的宿主）
  *     ├ .loop-cards-viewport            视口（裁剪；overlap 时控制器叠在其上）
  *     │   └ .loop-cards-track           轨道（transform 位移）
- *     │       └ > div ×N + ×N(克隆)     卡片
+ *     │       └ > div ×3N               前导克隆 ×N + 卡片 ×N + 尾部克隆 ×N
+ *     │                                 （两端的克隆让「上一张 / 下一张」跨首尾时能无缝续上）
  *     └ .loop-cards-controller          控制器（可选，位置由 data-controller-pos 决定）
  *         ├ .loop-cards-btn             玻璃按钮（prev / next / toggle）
  *         └ .loop-cards-progress        胶囊进度条（progress 控制器）
