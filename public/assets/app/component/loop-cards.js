@@ -43,7 +43,11 @@
  *   · 「上一张 / 下一张」跨过首尾时是**无缝**的（停顿模式）：轨道是三圈重叠，
  *     越界时照样滑动一张（前导 / 尾部克隆就在旁边接着），滑动结束后再把位移
  *     瞬间拉回规范值 —— 那一刻视口内画面与原来完全一致，所以看不见。
- *     ⚠️ 这次归位必须**不带过渡**，否则会看见整条轨道倒着滑回开头。
+ *     ⚠️ 两个前提：① 这次归位必须**不带过渡**，否则会看见整条轨道倒着滑回开头；
+ *     ② 越界那一步的落点必须按**行进方向**挑（directedStepOffset），只看距离的话
+ *        「反向的等价落点」有时更近，会往回滑 —— 见该函数的说明。
+ *   · 卡片宽度**不必相等**（宽度通常由内容决定）：所有对齐位置都用实测的卡片位置
+ *     计算，不假设均匀步长
  *   · reverted-* 的语义是「卡片沿反向行进」：布局与阅读顺序不变，只是内容朝
  *     另一侧移动；因此「下一张」在 reverted 下对应索引递减（视觉与进度点始终一致）
  *   · window.streack.flag.noAnimation 为真时整体不动画
@@ -149,13 +153,10 @@ export function resolveController(isPausing, ctrlType) {
 }
 
 /**
- * 取「与当前位置最近的等价位移」
+ * 取「与当前位置最近的等价位移」—— 方向不限，用于点击进度点跳转（跳转只要最短动画）
  *
  * 轨道是三段式（前导克隆 + 原始卡片 + 尾部克隆），内容以 span 为周期重复，
- * 因此相差 span 整数倍的位移**画面完全相同**。步进时取最近的那个：
- * · 一圈之内 → 就是相邻卡片的正常一步（±step）
- * · 跨过首尾 → 落在克隆上，同样是 ±step 的正常一步（因此滑动方向不会反过来），
- *   动画结束后再由调用方把位移拉回规范值（那一刻画面相同，看不见）
+ * 因此相差 span 整数倍的位移**画面完全相同**。
  * @param {number} current 当前位移
  * @param {number} target 目标卡片相对「中间一圈」的规范位移
  * @param {number} span 一个周期的跨度
@@ -167,6 +168,29 @@ export function nearestOffset(current, target, span) {
     if (Math.abs(cand - current) < Math.abs(best - current)) best = cand;
   }
   return best;
+}
+
+/**
+ * 取「朝指定方向的那一个等价位移」—— 用于上一张 / 下一张
+ *
+ * ⚠️ 步进**必须**限定方向，不能只挑最近的：跨过首尾时，目标卡片在轨道上同时存在
+ * 「向前一整圈的落点」与「倒退一整圈的落点」，两者画面相同，但只有一个是正常的
+ * 续接方向。若只看距离，当「末张卡片的占位 < 整圈的一半」时，反向那个反而更近 ——
+ * 于是「下一张」会朝反方向滑（表现为滚回开头）。卡片宽度不等时尤其容易踩到。
+ * @param {number} current 当前位移
+ * @param {number} target 目标卡片相对「中间一圈」的规范位移
+ * @param {number} span 一个周期的跨度
+ * @param {number} sign 期望的位移方向（+1 内容正向移动 / -1 反向）
+ * @returns {number}
+ */
+export function directedStepOffset(current, target, span, sign) {
+  let best = null;
+  for (const cand of [target - span, target, target + span]) {
+    const d = cand - current;
+    if (d !== 0 && d * sign <= 0) continue;              // 方向不对的等价落点直接排除
+    if (best === null || Math.abs(d) < Math.abs(best - current)) best = cand;
+  }
+  return best === null ? target : best;
 }
 
 /**
@@ -250,7 +274,6 @@ function initInstance(container) {
   // 测量与启动（须等样式表 + 字体就绪，见文件尾部的 Promise.all）
   const measure = () => requestAnimationFrame(() => {
     const posOf = (el) => (cfg.axis === 'x' ? el.offsetLeft : el.offsetTop);
-    const sizeOf = (el) => (cfg.axis === 'x' ? el.offsetWidth : el.offsetHeight);
     const viewportSize = cfg.axis === 'x' ? viewport.clientWidth : viewport.clientHeight;
     const stripSize = cfg.axis === 'x' ? track.scrollWidth : track.scrollHeight;
 
@@ -260,11 +283,6 @@ function initInstance(container) {
       track.style.justifyContent = 'center';
       return;
     }
-
-    // 步长 = 相邻卡片的跨距（已包含卡片间距）
-    const step = cards.length > 1
-      ? Math.abs(posOf(track.children[1]) - posOf(track.children[0]))
-      : sizeOf(track.children[0]);
 
     // 三段式轨道：前导克隆 + 原始卡片（此时在轨道里）+ 尾部克隆
     // —— 前导克隆是「上一张」在首卡处能补进画面的前提；
@@ -276,6 +294,12 @@ function initInstance(container) {
 
     // 回绕跨度 = 后一圈第一张相对前一圈第一张的位移（即一整圈的宽度）
     const span = (posOf(track.children[cards.length]) - posOf(track.children[0])) || stripSize;
+
+    // 各卡片相对「本圈第一张」的**实测**位置。
+    // ⚠️ 不能假设卡片等宽（卡片宽度由内容决定）：均匀步长会把后续卡片错位，
+    //    出界时更会让「等价位移」的取舍算错 —— 见 directedStepOffset 的说明。
+    const cycleBase = posOf(track.children[cards.length]);
+    const cardOffsets = cards.map((_, m) => posOf(track.children[cards.length + m]) - cycleBase);
 
     // ---------- 控制器 ----------
     const plan = resolveController(isPausing, ctrlType);
@@ -310,9 +334,10 @@ function initInstance(container) {
     /**
      * 逻辑卡片 m 的**规范位移**：把该卡片对齐到视口起点。
      * 锚定在「中间一圈」的原始卡片上（前导克隆占 [0, span)，原始卡片占 [span, 2span)），
-     * 因此位移始终落在 [-2span + step, -span] 这一段里，视口两侧都有克隆垫着。
+     * 因此位移始终落在 [-2span, -span] 这一段里，视口两侧都有克隆垫着。
+     * 用实测的 cardOffsets[m] 而非 m·步长 —— 卡片宽度由内容决定，不必相等。
      */
-    const canonicalOffset = (m) => -(span + m * step);
+    const canonicalOffset = (m) => -(span + cardOffsets[m]);
 
     let stepIndex = Number.isInteger(container._loopStep)
       ? ((container._loopStep % cards.length) + cards.length) % cards.length
@@ -386,7 +411,7 @@ function initInstance(container) {
     /**
      * 步进一张（forward=false 为上一张）；仅停顿模式使用
      *
-     * 位移只走「正常的一步」（±step），跨越首尾时落在前导 / 尾部克隆上 ——
+     * 位移只走「正常的一步」（相邻卡片的实测间距），跨越首尾时落在前导 / 尾部克隆上 ——
      * 因此滑动方向始终正确，动画结束后再由 normalize() 无声归位。
      * 注意「下一张」的**索引**方向：内容朝哪边移动由 cfg.dir 决定，
      * 而索引必须跟着**画面**走（reverted 下下一张是索引递减），否则进度点会与画面相反。
@@ -396,7 +421,9 @@ function initInstance(container) {
       const sign = forward ? 1 : -1;
       const nextIndex = ((stepIndex + sign * -cfg.dir) % cards.length + cards.length) % cards.length;
       phase = 'move';
-      offset = nearestOffset(offset, canonicalOffset(nextIndex), span);
+      // 位移方向必须与行进方向一致（sign × cfg.dir）：出界那一步要落在克隆上继续走，
+      // 不能因为「反向等价落点更近」而往回滑 —— 见 directedStepOffset 的说明
+      offset = directedStepOffset(offset, canonicalOffset(nextIndex), span, sign * cfg.dir);
       apply();
       container._loopTimer = setTimeout(() => {
         phase = 'hold';

@@ -200,12 +200,15 @@
 
 .loop-cards-dot-fill {
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  /* 进度由**宽度**驱动（--p 由 JS 写入 0 → 1；非当前卡片恒为 0）
+     ⚠️ 不要改用 transform: scaleX(--p)：横向缩放会把圆角一并压扁，
+     右端变成椭圆帽，与底衬的圆角对不上；用宽度就自始至终是同一枚胶囊 */
+  width: calc(var(--p, 0) * 100%);
+  border-radius: 999px;
   background: #fff;
-  transform-origin: left center;
-  /* --p 由 JS 写入（0 → 1）；非当前卡片恒为 0（只留底色，避免与当前项混淆） */
-  transform: scaleX(var(--p, 0));
   pointer-events: none;
 }
 
