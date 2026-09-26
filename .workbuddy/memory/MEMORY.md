@@ -87,6 +87,9 @@
   - `data-orientation`：horizontal(缺省) / vertical / reverted-horizontal / reverted-vertical
   - `data-type`：continuous(缺省，无缝滚动，speed = 速度倍率) / pausing(每张停顿片刻，
     speed = 停顿秒数，支持小数、精度到毫秒、多余位数舍弃)
+  - ⭐ `data-speed="0"` 是语法糖：**永不自动滚动**（两种模式通用，与「没写」不同 —— 没写取
+    缺省 1 倍 / 2 秒），此时不启动 rAF、不渲染暂停键（continuous 下暂停键是唯一部件 →
+    整个控制器都不渲染；pausing 下保留按钮 / 进度点，退回纯手动）
   - `data-controller-type`：step / step-pause / progress（缺省 = 不渲染控制器）；
     **continuous 下没有「当前卡片」概念 → 任何类型都只渲染暂停/继续按钮**
   - `data-controller-pos`：left|center|right × top|bottom（缺省 right-bottom）；
