@@ -92,7 +92,18 @@
   - `data-controller-pos`：left|center|right × top|bottom（缺省 right-bottom）；
     `data-controller-overlap`：false(缺省) 控制器撑开容器 / true 叠在卡片上
   - 结构：`.loop-cards > .loop-cards-viewport > .loop-cards-track`（视口裁剪；控制器与视口平级，故按钮可点）
-  - 纯逻辑已导出便于自检：`secondsToMs` / `resolveArrow` / `resolveController`
+  - 轨道是**三段式**：前导克隆 ×N + 原始卡片 ×N + 尾部克隆 ×N（共 3N）。位移锚定在
+    中间一圈的原始卡片上：`canonicalOffset(m) = -(span + m*step)`，取值恒在
+    `[-2span+step, -span]`，视口两侧都有克隆垫着 —— **两端各一圈克隆是「上一张 / 下一张」
+    跨首尾能无缝续上的前提**（只留尾部一圈时，首卡往左滑会滑出空白）
+  - ⚠️ **带过渡时，跨整圈的「等价位移」必须无过渡地归位**：周期 span 的位移画面完全相同，
+    连续模式（每帧约 1.2px、无过渡）直接 `offset += span` 看不出；但停顿模式用 CSS 过渡，
+    若在 `apply()` 前就加 span，浏览器会把「倒退一圈」演成整条轨道倒滑回开头（曾被报为
+    「下一张到末尾会跳回开头」）。正确做法：步进只走 ±step（越界那步落在克隆上，方向因此
+    始终正确），过渡结束后再 `style.transition='none'` + 强制重排 + 恢复，瞬间归位
+  - reverted-* 的语义 = 布局与阅读顺序不变、只反向行进；因此「下一张」在 reverted 下
+    对应**索引递减**（索引跟着画面走，否则进度点与画面相反）
+  - 纯逻辑已导出便于自检：`secondsToMs` / `resolveArrow` / `resolveController` / `nearestOffset`
   - ⚠️ **组件自带样式是异步注入的 → 一切尺寸测量必须等样式表 load 之后再跑**
     （`stylesReady()` 缓存成 Promise）。否则量到的是「未套样式的裸 DOM」（轨道还不是
     flex 行、卡片纵向堆叠），会误判成「内容不足一屏」而静止不滚 —— 表现为
