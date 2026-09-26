@@ -353,7 +353,7 @@ sup[data-note] a {
 }
 
 /* 每栏内部 */
-.content * {
+.content :not([nosugar]) {
   white-space: normal;
   word-break: normal;
   text-align: var(--a, left);

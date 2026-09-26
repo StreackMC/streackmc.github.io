@@ -209,6 +209,11 @@ export function applyToolbarNavTemplates() {
   const navSlot = document.getElementById('toolbar-nav-slot');
   let locApplied = false;
 
+  // 设置首页地址
+  document.getElementById('toolbar-brand')?.addEventListener('click', (e) => {
+    openURL('/', true);
+  });
+
   document.querySelectorAll('template[data-toolbar-nav]').forEach((tmpl) => {
     // ① 取出三项设置（toolbar-set 亦可用更符合 HTML 习惯的 data-toolbar-set）
     const setName = tmpl.getAttribute('toolbar-set') || tmpl.dataset.toolbarSet || '';

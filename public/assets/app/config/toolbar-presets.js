@@ -62,24 +62,14 @@ export const toolbarPresets = new Map([
     },
   ],
   [
-    'mc-main-s1',
+    'mc-main',
     {
-      loc: '「樱飘雪霁月」',
-      locIndex: '/minecraft/main/s1/',
+      loc: '主生存服',
+      locIndex: '/minecraft/main/',
       nav: [
-        `<div pc-only id="about-join" onclick='window.streack.openURL("/minecraft/main/s1/download/",true)' clickable>下载存档</div>`,
-        `<div pc-only id="about-updatelog" onclick='window.streack.openURL("/doc/updata/#:~:text=樱飘雪霁月",false)' clickable>更新日志</div>`,
-      ].join(''),
-    },
-  ],
-  [
-    'mc-main-s2',
-    {
-      loc: '「岭回双壑风」',
-      locIndex: '/minecraft/main/s2/',
-      nav: [
-        `<div pc-only id="about-join" onclick='window.streack.openURL("/minecraft/main/s2/play/",true)' clickable>开始游戏</div>`,
-        `<div pc-only id="about-updatelog" onclick='window.streack.openURL("/doc/updata/#:~:text=岭回双壑风",false)' clickable>更新日志</div>`,
+        `<div pc-only id="about-join" onclick='window.streack.openURL("/minecraft/main/s2/",true)' clickable>「岭回双壑风」</div>`,
+        `<div pc-only id="about-updatelog" onclick='window.streack.openURL("/doc/updata/#%E4%B8%BB%E7%94%9F%E5%AD%98%E6%9C%8D",false)' clickable>更新日志</div>`,
+        `<div pc-only id="about-join" onclick='window.streack.openURL("/minecraft/main/s1/",true)' clickable>过往版本</div>`,
       ].join(''),
     },
   ],

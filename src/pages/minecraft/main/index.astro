@@ -2,88 +2,117 @@
 import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
 ---
 <FrameworkLayout title="主生存服 — 栈流Streack" description="页面描述" keywords="关键词1,关键词2" theme="dark" features="loopCards">
-  <template slot="toolbar-nav" data-toolbar-nav loc="主生存服">
-    <div pc-only data-cmd="url:/minecraft/main/s2|" clickable>了解更多</div>
-  </template>
-
-  <style>
-    /* slot=0 主区域：高度可以 > 100dvh，由页面（.main）来滚动 */
-    div.hero[slot] {
-      height: auto;
-      min-height: var(--h);
-      /* 覆盖 framework 的 min-height: 100% */
-      max-height: unset;
-      margin-top: 0;
-      overflow: visible;
-      /* 关键：覆盖 .content 的 overflow:hidden，否则 sticky 失效 */
-      display: block;
-      /* 覆盖 .content 的 flex 居中，避免内容被居中裁掉 */
-    }
-
-    /* hero-content 撑满整个 hero，作为视频 sticky 的活动范围 */
-    div.hero-content {
-      position: relative;
-      inset: 0;
-      /* 等价 top/right/bottom/left: 0 */
-      width: auto;
-      /* 覆盖 .content>* 的 width: fit-content */
-      height: auto;
-      display: flow-root;
-    }
-
-    div.hero-content>* {
-      z-index: 1;
-      flex-shrink: 0;
-    }
-
-    div.hero-content>*:not(:first-child) {
-      border-radius: 0;
-      border-top: 0 transparent;
-      border-bottom: 0 transparent;
-      margin: 0;
-      padding: 4.83rem 5rem;
-      height: max-content;
-      min-height: calc(var(--h) * 0.8639);
-      font-size: 1.5rem;
-    }
-
-    /* 视频背景：钉在视口顶部，直到 hero-content 滚完 */
-    div.hero-content div.slotBg-V {
-      position: sticky;
-      top: 0;
-      height: var(--h);
-      width: 100%;
-      z-index: 0;
-    }
-
-    /* 视频背景叠加层 */
-    .slotBg-V-overflow {
-      position: absolute;
-      bottom: 3rem;
-      left: 3.5rem;
-      padding: 1rem 1.5rem;
-      display: flex;
-      flex-direction: row;
-      align-items: flex-end;
-    }
-
-    @media screen and (max-width: 833px) {
-      .slotBg-V-overflow {
-        left: 16px;
-      }
-
-      div.hero-content>*:not(:first-child) {
-        padding: 28px 24px;
-      }
-    }
-  </style>
+  <template slot="toolbar-nav" data-toolbar-nav toolbar-set="mc-main"></template>
 
   <!-- 正文内容 -->
   <div style="display: contents">
+    <style>
+      /* slot=0 主区域：高度可以 > 100dvh，由页面（.main）来滚动 */
+      div.hero[slot] {
+        height: auto;
+        min-height: var(--h);
+        /* 覆盖 framework 的 min-height: 100% */
+        max-height: unset;
+        margin-top: 0;
+        overflow: visible;
+        /* 关键：覆盖 .content 的 overflow:hidden，否则 sticky 失效 */
+        display: block;
+        /* 覆盖 .content 的 flex 居中，避免内容被居中裁掉 */
+      }
+
+      /* hero-content 撑满整个 hero，作为视频 sticky 的活动范围 */
+      div.hero-content {
+        position: relative;
+        inset: 0;
+        /* 等价 top/right/bottom/left: 0 */
+        width: auto;
+        /* 覆盖 .content>* 的 width: fit-content */
+        height: auto;
+        display: flow-root;
+      }
+
+      div.hero-content>* {
+        z-index: 1;
+        flex-shrink: 0;
+      }
+
+      div.hero-content>*:not(:first-child) {
+        border-radius: 0;
+        border-top: 0 transparent;
+        border-bottom: 0 transparent;
+        margin: 0;
+        padding: 4.83rem 5rem;
+        height: max-content;
+        min-height: calc(var(--h) * 0.8639);
+        font-size: 1.5rem;
+      }
+
+      /* 视频背景：钉在视口顶部，直到 hero-content 滚完 */
+      div.hero-content div.slotBg-V {
+        position: sticky;
+        top: 0;
+        height: var(--h);
+        width: 100%;
+        z-index: 0;
+      }
+
+      /* 视频背景叠加层 */
+      .slotBg-V-overflow {
+        position: absolute;
+        bottom: 3rem;
+        left: 3.5rem;
+        padding: 1rem 1.5rem;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+      }
+
+      /* loop-cards */
+      .loop-cards s-card {
+        min-width: max(160px, calc(var(--w) * 0.6));
+        min-height: calc(var(--h) * .4);
+        height: stretch;
+        margin-right: 32px;
+        /* background-color: transparent; */
+        display: flex;
+        flex-direction: column
+      }
+
+      .loop-cards s-card:first-child {
+        margin-left: 32px;
+      }
+
+      .loop-cards s-card:last-child {
+        margin-right: 0;
+      }
+
+      .loop-cards s-card *[slot=image] {
+        height: min-content;
+      }
+
+      .loop-cards s-card img {
+        width: 100%;
+      }
+
+      .scard-bottomtext {
+        margin-top: auto;
+      }
+
+      @media screen and (max-width: 833px) {
+        .slotBg-V-overflow {
+          left: 16px;
+        }
+
+        div.hero-content>*:not(:first-child) {
+          padding: 28px 24px;
+        }
+      }
+    </style>
     <div class="content hero" slot="0">
       <div class="hero-content">
         <div class="slotBg-V">
-          <video poster="https://s41.ax1x.com/2026/09/23/pnlKeSA.jpg" class="slotBg-V" muted playsinline preload="auto">
+          <video poster="https://s41.ax1x.com/2026/09/23/pnlKeSA.jpg" class="slotBg-V" muted playsinline preload="auto"
+            data-replay="hero">
             <source src="/assets/video/mc-main-s2.mp4" type="video/mp4">
             <source src="/assets/video/mc-main-s2.webm" type="video/webm">
           </video>
@@ -93,7 +122,19 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
               「岭回双壑风」<br>
               <span style="--fs:18px; --fl:42px;">&emsp;冒险新征程，大不一样</span>
             </p>
-            <div style="flex-direction: column;display: flex;">
+            <div style="flex-direction: column;display: flex;align-items: flex-end;">
+              <s-tooltip>
+                <s-icon-button slot="trigger" class="video-replay-btn" data-replay="hero">
+                  <s-icon>
+                    <svg data-v-49a22239="" viewBox="0 -960 960 960">
+                      <path data-v-49a22239=""
+                        d="M339.5-108.5q-65.5-28.5-114-77t-77-114Q120-365 120-440h80q0 117 81.5 198.5T480-160q117 0 198.5-81.5T760-440q0-117-81.5-198.5T480-720h-6l62 62-56 58-160-160 160-160 56 58-62 62h6q75 0 140.5 28.5t114 77q48.5 48.5 77 114T840-440q0 75-28.5 140.5t-77 114q-48.5 48.5-114 77T480-80q-75 0-140.5-28.5Z">
+                      </path>
+                    </svg>
+                  </s-icon>
+                </s-icon-button>
+                重新播放
+              </s-tooltip>
               <s-button mobile-only data-cmd="url:/minecraft/main/s2/|">查看</s-button>
               <s-button pc-only data-cmd="url:/minecraft/main/s2/|">立即查看</s-button>
             </div>
@@ -107,7 +148,8 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
             由此向你带来大不一样的，<br>
             <span class="text-gradient" style="--tg-start: #84fab0;--tg-end: #ff9a9e;">“冒险新征程”</span>
           </h2>
-          <h2 style="--a: center;--fs: 1.75rem;--fl: 3.25rem;--fw: 600;margin-top: calc(var(--h) * 0.5 + 2em);margin-bottom: 3em;">
+          <h2
+            style="--a: center;--fs: 1.75rem;--fl: 3.25rem;--fw: 600;margin-top: calc(var(--h) * 0.5 + 2em);margin-bottom: 3em;">
             <s-icon style="width: 1.5em;">
               <svg data-v-49a22239="" viewBox="0 -960 960 960">
                 <path data-v-49a22239=""
@@ -115,42 +157,103 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
                 </path>
               </svg>
             </s-icon><br>
-            为<span class="text-gradient" style="--tg-start: #a1c4fd;--tg-end: #c2e9fb;">“澪奈Neonai”</span>预备好<sup data-note="neonaic"></sup>
+            为
+            <span class="text-gradient" style="--tg-start: #a1c4fd;--tg-end: #c2e9fb;">“澪奈Neonai”</span>
+            预备好
+            <sup data-note="neonaic"></sup>
+            <br>
+            <small nosugar style="font-size: .7em;">她，我们的吉祥物，将要在，一直在。</small>
           </h2>
         </div>
-      </div></div>
+      </div>
+    </div>
 
-      <!-- <div class="content" slot="1" style="background: var(--s-color-surface-container, #222); color: #fff;">
-        <div style="--a: center;">
-          <h1 style="--fs:35px;--fl:60px;">纯内容区域</h1>
-          <p style="--fs:20px;--fl:36px;">可自由放置任意 HTML 内容。</p>
-          <p style="--fs:16px;--fl:24px;">
-            使用 CSS 变量控制样式：
-            <br>--t / --r / --b / --l — 绝对定位
-            <br>--fs / --fl — 字号 clamp(最小, 自动斜率, 最大)
-            <br>→ --fv 重写斜率 --fz 重写字号
-            <br>--fw — 字重，正常400，加粗700
-            <br>class="text-gradient" 时使用 --tg-start --tg-end --tg-degree 设置渐变字体
-            <br>--a — 文本对齐 (start/center/end)
-            <br>--lh - 控制行高，对p默认1.5倍，其它均为1倍
-            <br>--safezone - 预设变量，为toolbar安全高度，通常首栏的元素的top不能小于它的定义值，否则会被遮挡
-          </p>
+    <div class="content" slot="1"
+      style="background: var(--s-color-surface-container, #222); color: #fff;height: max-content;">
+      <div style="--a: start;--t: 128px;position: static;width: 100%;">
+        <h1 id="all-feat" style="--fs:35px;--fl:60px;margin: 1em 0 .5em 2em;--fw: 700;">定睛细看</h1>
+        <div class="loop-cards" data-type="pausing" data-speed="0" data-controller-type="step"
+          data-controller-pos="right-bottom">
+          <s-card nosugar type="outlined">
+            <div nosugar slot="image"><img src="https://s41.ax1x.com/2026/09/26/pn33xlF.png"></div>
+            <div nosugar slot="text" class="scard-bottomtext">
+              得益于自研的菜单插件，导航式用户界面为你带来传统却新意盎然的体验。
+              <sup data-note="dev"></sup>
+            </div>
+          </s-card>
+          <s-card nosugar type="outlined">
+            <div nosugar slot="image"><img src="https://s41.ax1x.com/2026/09/26/pn3mSL6.png"></div>
+            <div nosugar slot="text" class="scard-bottomtext">
+              把复杂写进代码，把简单交给你。优质又原创的软件，你能久久沉浸其中。
+            </div>
+          </s-card>
+          <s-card nosugar type="outlined">
+            <div nosugar slot="image"><img src="https://s41.ax1x.com/2026/09/26/pn3Uo9I.png"></div>
+            <div nosugar slot="text" class="scard-bottomtext">
+              专业的 Team 成员
+              <sup data-note="darkmattermax"></sup>
+              定不负你的期待，竭诚守护你的体验。
+            </div>
+          </s-card>
+          <s-card nosugar type="outlined">
+            <div nosugar slot="image"><img src="https://s41.ax1x.com/2026/09/26/pn33vSU.png"></div>
+            <div nosugar slot="text" class="scard-bottomtext">
+              强劲的软件也需要强力的硬件，而新采购的 Apple Macmini 正是为此。由 Apple M4 强力驱动，你能尽情痛快游玩。
+              <sup data-note="apple"></sup>
+            </div>
+          </s-card>
         </div>
-      </div> -->
+      </div>
+    </div>
 
-      <!-- 注释模板 -->
-      <template slot="notes" data-inject="notes">
-        <li data-note="neonaic">推出时间视开发进度与监管要求而定。即使推出，部分功能的使用仍有限制。</li>
-      </template>
+    <!-- 注释模板 -->
+    <template slot="notes" data-inject="notes">
+      <li data-note="neonaic">推出时间视开发进度与监管要求而定。即使推出，部分功能的使用仍有限制。</li>
+      <li data-note="dev">含有开发中内容，不代表这些内容的最终品质。</li>
+      <li data-note="apple">Apple Inc. 与本服务器、本站点的运营没有任何关联，后者的相关数据亦不经过 Apple Inc. 传输、保存或运算。</li>
+      <li data-note="darkmattermax">图片为栈流Streack团队成员 @darkmattermax</li>
+    </template>
 
-      <!-- 页面独有逻辑（循环卡片等可选组件由上方 features 声明按需加载） -->
-      <script slot="scripts" is:inline type="module">
-        import { requestInitFunc } from '/assets/app/frame/init-hooks.js';
+    <!-- 页面独有逻辑（循环卡片等可选组件由上方 features 声明按需加载） -->
+    <script slot="scripts" is:inline type="module">
+      import { requestInitFunc } from '/assets/app/frame/init-hooks.js';
 
-        requestInitFunc(() => {
-          // 需要「框架就绪」后才执行的页面逻辑
-          requestAnimationFrame(() => { document.querySelectorAll('video.slotBg-V').forEach(e => e.play()); });
+      requestInitFunc(() => {
+        // 需要「框架就绪」后才执行的页面逻辑
+        requestAnimationFrame(() => { document.querySelectorAll('video.slotBg-V').forEach(e => e.play()); });
+      });
+
+      // register replay logic
+      (function () {
+        const btns = document.querySelectorAll('.video-replay-btn');
+        btns.forEach((btn) => {
+          const bind = btn.dataset.replay;
+          if (!bind) {
+            console.error('[streack/page.replay_btn.bind] failed to find target video of ', btn, ', because no available data-replay provided.');
+            return;
+          }
+          const videos = document.querySelectorAll(`video[data-replay="${bind}"]`);
+          if (videos.length != 1) {
+            console.error('[streack/page.replay_btn.bind] failed to bind target video of ', btn, ', because no available and unique HTMLVideoElement finded.');
+            return;
+          }
+          const video = videos[0];
+
+          function onVideoStop(event) {
+            btn.disabled = false;
+          }
+          function onBtnClick(event) {
+            btn.disabled = true;
+            video.currentTime = 0;
+            video.play();
+          }
+
+          video.addEventListener('ended', onVideoStop);
+          video.addEventListener('pause', onVideoStop);
+          btn.addEventListener('click', onBtnClick);
+          btn.disabled = true;
         });
+      })();
 
-      </script>
+    </script>
 </FrameworkLayout>
