@@ -46,6 +46,12 @@
 - `data-cmd="type:param"` 声明式绑定 → `executeCommand`；内置 url / popurl / state(弃用) / note /
   slot / copy(cp) / msg；`registerCommand` 扩展（popups.js 注册 toolbar/tb、dialog/dlg、sheet/bst）。
 - `bindCommandOn(element)` 用于动态插入内容后重绑；initFramework 对 body 调用一次。
+  - ⚠️ 绑定后**保留 `data-cmd` 属性**，用 WeakSet 记「已绑定」→ 幂等（重复调用不会一点触发两次）。
+    属性是命令的**唯一载体**：`cloneNode` 只复制属性、**不复制事件监听**，
+    所以旧写法「绑定即删属性」会让克隆件既没属性也没监听、彻底点不动。
+  - **任何 cloneNode / innerHTML 注入之后都要对它调用一次 bindCommandOn**（新节点不在 WeakSet 里，
+    会正常绑定；已在里面的自动跳过）。已有先例：toolbar 抽屉克隆导航项、registerToolbarSlot 注入、
+    selector 生成卡片、loop-cards 克隆卡片。
 
 ## 布局层级与排版系统
 - 三层继承：BaseLayout（骨架 + Sober CDN + 字体）→ FrameworkLayout（s-page + Toolbar + Footer +
