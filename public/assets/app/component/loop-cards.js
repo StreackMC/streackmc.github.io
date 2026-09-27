@@ -61,6 +61,8 @@
  *   · 样式由 component/loop-cards.css 自动注入，页面无需手写 <link>
  */
 
+import { bindCommandOn } from '../frame/commands.js';
+
 const STYLE_HREF = new URL('./loop-cards.css', import.meta.url).href;
 
 /** 图标路径（24×24 实心，颜色随 currentColor） */
@@ -309,6 +311,9 @@ function initInstance(container) {
     cards.forEach((c) => lead.appendChild(c.cloneNode(true)));
     track.insertBefore(lead, track.firstChild);
     cards.forEach((c) => track.appendChild(c.cloneNode(true)));
+    // ⚠️ cloneNode 只复制属性、**不复制事件监听**：卡片上若写有 data-cmd，
+    //    克隆出来的副本需要重新绑定，否则它们只是「长得一样」的死元素
+    bindCommandOn(track);
 
     // 回绕跨度 = 后一圈第一张相对前一圈第一张的位移（即一整圈的宽度）
     const span = (posOf(track.children[cards.length]) - posOf(track.children[0])) || stripSize;

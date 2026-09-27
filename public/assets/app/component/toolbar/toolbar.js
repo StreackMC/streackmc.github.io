@@ -1,4 +1,5 @@
 import { DOM } from '../../frame/dom.js';
+import { bindCommandOn } from '../../frame/commands.js';
 
 // ============================================================
 // Toolbar 插槽管理器
@@ -124,6 +125,8 @@ export function registerToolbarSlot(name, html, opts = {}) {
   // div.style.overflow = 'hidden';
   div.innerHTML = html;
   toolbar2.appendChild(div);
+  // 插槽内容可能是页面脚本后注册的（在 initFramework 的命令绑定之后）→ 就地补绑一次
+  bindCommandOn(div);
   toolbarSlots[name] = div;
 }
 
@@ -149,6 +152,9 @@ export async function initToolbar2Slots() {
           clone.removeAttribute('mobile-only');
           navSlot.appendChild(clone);
         });
+        // ⚠️ cloneNode **不复制事件监听**，只复制属性（含 data-cmd）
+        //    → 必须对新克隆出来的这份重新绑定命令，否则抽屉里的导航项点不动
+        bindCommandOn(navSlot);
       }
 
       expandToolbar('nav');

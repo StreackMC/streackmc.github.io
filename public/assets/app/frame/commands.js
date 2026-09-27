@@ -134,10 +134,20 @@ export function executeCommand(type, param) {
   return true;
 }
 
+/** 已绑定过命令的元素（用 WeakSet 记「已绑定」，而不是删属性 —— 见 bindCommandOn 的说明） */
+const _boundTargets = new WeakSet();
+
 /**
  * 对目标元素及其全部子元素绑定命令
- * 扫描 data-cmd 属性（格式 "type:param"），转换为点击事件，消费后移除属性。
- * 用于动态插入 DOM 后重新绑定命令（如 selector 结果区、弹窗内容等）。
+ * 扫描 data-cmd 属性（格式 "type:param"），转换为点击事件。
+ * 用于动态插入 DOM 后重新绑定命令（如 selector 结果区、弹窗内容、toolbar2 抽屉里的克隆等）。
+ *
+ * ⚠️ 绑定后**保留 data-cmd 属性**，只在 WeakSet 里记一笔「已绑定」：
+ * · 属性是命令的**唯一载体** —— `cloneNode` 只带走属性，**不带走事件监听**。
+ *   旧写法在绑定时 `delete ele.dataset.cmd`，于是克隆出来的副本既没属性也没监听，
+ *   成了彻底点不动的死元素（toolbar1 的导航项被搬进移动端抽屉时正踩此坑）。
+ * · 保留属性 ⇒ 本函数**幂等**：已绑定的跳过（不会重复触发），克隆出的新节点能被正常绑定。
+ * · 属性留在 DOM 上也让「这条命令是什么」始终可查（不依赖运行时状态）。
  * @param {Element} element - 目标元素（含自身及子元素）
  */
 export function bindCommandOn(element) {
@@ -148,8 +158,9 @@ export function bindCommandOn(element) {
     : [...element.querySelectorAll('*[data-cmd]')];
 
   targets.forEach((ele) => {
+    if (_boundTargets.has(ele)) return;      // 幂等：同一元素只绑一次
+    _boundTargets.add(ele);
     const p = new String(ele.dataset.cmd).split(':');
     ele.addEventListener('click', (event) => { executeCommand(p[0], p.slice(1).join(':')); });
-    delete ele.dataset.cmd;
   });
 }
