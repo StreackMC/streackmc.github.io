@@ -7,6 +7,11 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
   <!-- 正文内容 -->
   <div style="display: contents">
     <style>
+      big {
+        --fz: 1.2em;
+        font-size: 1.2em;
+      }
+
       /* slot=0 主区域：高度可以 > 100dvh，由页面（.main）来滚动 */
       div.hero[slot] {
         height: auto;
@@ -68,14 +73,23 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
       }
 
       /* loop-cards */
+      :not(html) s-card {
+        width: max-content;
+        min-width: min(240px, calc(var(--w) * .6));
+        min-height: calc(var(--h) * .1);
+        display: flex;
+        flex-direction: column;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        margin: 0 32px;
+        /* background-color: transparent; */
+      }
+
       .loop-cards s-card {
         min-width: max(160px, calc(var(--w) * 0.6));
-        min-height: calc(var(--h) * .4);
         height: stretch;
         margin-right: 32px;
         /* background-color: transparent; */
-        display: flex;
-        flex-direction: column
       }
 
       .loop-cards s-card:first-child {
@@ -106,6 +120,159 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
         div.hero-content>*:not(:first-child) {
           padding: 28px 24px;
         }
+
+        .compare-table {
+          --cmp-line-inset: 1rem;
+        }
+
+        .compare-table th,
+        .compare-table td {
+          padding: 0 .75rem;
+        }
+      }
+    </style>
+    <style>
+      /* ——————————————————————————————————————————————
+           对比表格：粘性表头 / 分组（维度）标题 / 列宽限制
+           注意：任何一层祖先只要形成「裁剪容器」（overflow: hidden|auto|scroll），
+           sticky 就会改为相对该容器定位，页面滚动时便不再粘贴，
+           所以这一节里把 .content 与表格外层容器的 overflow 都放开。
+           —————————————————————————————————————————————— */
+
+      /* 横向对比表格 */
+      .compare-table {
+        --cmp-row-h: max(64px, calc(var(--h, 800px) * .09));
+        --cmp-line: #ffffff1f;
+        --cmp-line-2: #ffffffc9;
+        /* 分割线在每列内部左右各留出的空隙，使线只属于本列、不贯穿整张表格 */
+        --cmp-line-inset: 2rem;
+        width: 100%;
+        min-width: 480px;
+        border-collapse: collapse;
+        table-layout: fixed;
+        /* 表头粘住时与视口顶部留出的间距 */
+        --cmp-sticky-top: calc(var(--safezone) + 1px);
+        /* 单列最大宽度：不超过视口的 70%，且不超过 360px */
+        --cmp-col-w: min(calc(var(--w) * .7), 360px);
+        /* 表头行总高（行高 + 下内边距），用于计算表头下方的位置 */
+        --cmp-head-h: calc(var(--cmp-row-h) + 1.1rem);
+        /* 两列，整体也不宜过宽 */
+        max-width: calc(var(--cmp-col-w) * 2);
+        margin: 0 auto 0 auto;
+      }
+
+      /* 表格容器：宽度不足时出现横向滚动条 */
+      .content>div:has(> .compare-table) {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* 这节对比的标题：独占一行，并略微向左偏 */
+      .compare-table caption {
+        caption-side: top;
+        text-align: left;
+        padding: 0 0 1.25rem;
+        transform: translateX(-.5em);
+        font-weight: 550;
+        --fw: 550;
+        font-size: 1.15rem;
+        letter-spacing: -.012em;
+        line-height: 1.4;
+      }
+
+      .compare-table th,
+      .compare-table td {
+        padding: 0 1.75rem;
+        border: 0;
+        text-align: center;
+        vertical-align: middle;
+        font-weight: 400;
+        --fw: 400;
+        line-height: 1.6;
+        /* 分割线用背景绘制，左右内缩，因此列与列之间不会连成通栏的一条线 */
+        background-repeat: no-repeat;
+        background-size: calc(100% - var(--cmp-line-inset)) 1px;
+        overflow-wrap: break-word;
+      }
+
+      .compare-table thead th {
+        position: sticky;
+        top: var(--cmp-sticky-top);
+        z-index: 3;
+        /* 必须是不透明底色，否则粘住后下方内容会透出来 */
+        background-color: var(--s-color-surface-container, #222);
+        box-shadow: 0 1px 0 var(--cmp-line);
+        height: var(--cmp-row-h);
+        padding-bottom: 1.1rem;
+        font-size: 1.35rem;
+        font-weight: 550;
+        --fw: 550;
+        letter-spacing: -.012em;
+        line-height: 1.3;
+        background-image: linear-gradient(var(--cmp-line-2), var(--cmp-line-2));
+        background-position: center bottom;
+      }
+
+      .compare-table tbody tr {
+        height: var(--cmp-row-h);
+      }
+
+      .compare-table tbody td {
+        font-size: 1.05rem;
+      }
+
+      .compare-table tbody tr+tr td {
+        background-image: linear-gradient(var(--cmp-line), var(--cmp-line));
+        background-position: center top;
+      }
+
+      .compare-section {
+        /* 覆盖 .content 的 overflow: hidden */
+        overflow: visible;
+      }
+
+      .compare-table col {
+        width: var(--cmp-col-w);
+      }
+
+      /* 分类不同对比维度：每组开头一行 <tr class="compare-group">，
+           里面用 <th scope="colgroup" colspan="列数"> 书写该维度的标题 */
+      .compare-table tbody tr.compare-group th {
+        height: max(44px, calc(var(--h, 800px) * .07));
+        padding: 0 1.75rem;
+        text-align: left;
+        font-size: 1.2rem;
+        font-weight: 500;
+        --fw: 500;
+        letter-spacing: .04em;
+        color: #ffffffee;
+        background-image: none;
+      }
+
+      /* 宽度足够时不需要横向滚动：
+           去掉滚动容器，表头才能真正相对视口（或页面滚动容器）粘贴 */
+      .compare-section>div:has(> .compare-table) {
+        overflow: visible;
+        position: relative;
+      }
+
+      @media screen and (max-width: 833px) {
+
+        /* 窄屏才退化为「表格内部横向滚动」（此时表头不再随页面粘贴） */
+        .compare-section>div:has(> .compare-table) {
+          overflow-x: auto;
+          overflow-y: hidden;
+          overscroll-behavior-x: contain;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .compare-table tbody tr.compare-group th {
+          padding: 0 .75rem;
+        }
       }
     </style>
     <div class="content hero" slot="0">
@@ -117,13 +284,13 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
             <source src="/assets/video/mc-main-s2.webm" type="video/webm">
           </video>
           <div class="glass slotBg-V-overflow">
-            <p style="--fs: 24px;--fl: 60px;--fw: 700;--lh: 1.1em;--a: left;transform: translateX(-.5em);">
+            <p style="--fw: 700;--fs: 24px;--fl: 60px;--fw: 580;--lh: 1.1em;--a: left;transform: translateX(-.5em);">
               <span pc-only class="WenQuanWeiMiHei">&ensp;栈流</span><wbr>
               「岭回双壑风」<br>
-              <span style="--fs:18px; --fl:42px;">&emsp;冒险新征程，大不一样</span>
+              <span style="--fs:18px; --fl:42px; --fw: 550;">&emsp;冒险新征程，大不一样</span>
             </p>
             <div style="flex-direction: column;display: flex;align-items: flex-end;">
-              <s-tooltip>
+              <s-tooltip pc-only>
                 <s-icon-button slot="trigger" class="video-replay-btn" data-replay="hero">
                   <s-icon>
                     <svg data-v-49a22239="" viewBox="0 -960 960 960">
@@ -135,13 +302,13 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
                 </s-icon-button>
                 重新播放
               </s-tooltip>
-              <s-button mobile-only data-cmd="url:/minecraft/main/s2/|">查看</s-button>
-              <s-button pc-only data-cmd="url:/minecraft/main/s2/|">立即查看</s-button>
+              <s-button mobile-only nosugar data-cmd="url:/minecraft/main/s2/|">游玩</s-button>
+              <s-button pc-only data-cmd="url:/minecraft/main/s2/|">现在游玩</s-button>
             </div>
           </div>
         </div>
         <div class="glass">
-          <h2 style="--a: center;--fs: 1.75rem;--fl: 3.25rem;--fw: 600;padding-top: 3em">
+          <h2 style="--a: center;--fs: 1.75rem;--fl: 3.25rem;--fw: 500;padding-top: 3em">
             我们为<wbr>「岭回双壑风」<wbr>付出许多，<br>
             从重构底层到自研插件、<br>
             从算力跃升到价值重塑，<br>
@@ -149,7 +316,7 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
             <span class="text-gradient" style="--tg-start: #84fab0;--tg-end: #ff9a9e;">“冒险新征程”</span>
           </h2>
           <h2
-            style="--a: center;--fs: 1.75rem;--fl: 3.25rem;--fw: 600;margin-top: calc(var(--h) * 0.5 + 2em);margin-bottom: 3em;">
+            style="--a: center;--fs: 1.75rem;--fl: 3.25rem;--fw: 600;margin-top: calc(var(--h) * 0.4);margin-bottom: 3em;">
             <s-icon style="width: 1.5em;">
               <svg data-v-49a22239="" viewBox="0 -960 960 960">
                 <path data-v-49a22239=""
@@ -162,7 +329,12 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
             预备好
             <sup data-note="neonaic"></sup>
             <br>
-            <small nosugar style="font-size: .7em;">她，我们的吉祥物，将要在，一直在。</small>
+            <p nosugar style="font-size: .6em;font-weight: 400;line-height: initial;">
+              她，将要在，一直在。<br>
+              <span nosugar class="text-gradient" style="--tg-start: #a1c4fd;--tg-end: #c2e9fb;">“澪奈Neonai”</span>
+              是我们的特邀顾问。尽管身处别方，却依旧能干。<br>
+              无论是看天气还是看服务器，甚至是写代码，<strong nosugar>都行</strong>。
+            </p>
           </h2>
         </div>
       </div>
@@ -198,11 +370,179 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
           <s-card nosugar type="outlined">
             <div nosugar slot="image"><img src="https://s41.ax1x.com/2026/09/26/pn33vSU.png"></div>
             <div nosugar slot="text" class="scard-bottomtext">
-              强劲的软件也需要强力的硬件，而新采购的 Apple Macmini 正是为此。由 Apple M4 强力驱动，你能尽情痛快游玩。
+              强劲的软件也需要强力的硬件，你能尽情痛快游玩。
               <sup data-note="apple"></sup>
             </div>
           </s-card>
         </div>
+      </div>
+    </div>
+
+    <div class="content" slot="2" style="background: var(--s-color-surface-container, #222); color: #fff;height: auto;">
+      <div style="--a: center;--t: 128px;position: static;width: 100%;margin: 3rem 2rem;--fz: 1.2em;">
+        心动不如行动，<br>
+        <s-button nosugar style="font-size: 1.1em;font-weight: 290;margin-top: .6em;"
+          data-cmd="url:/minecraft/main/s2/|">现在游玩</s-button>
+      </div>
+    </div>
+
+    <div class="content compare-section" slot="3"
+      style="background: var(--s-color-surface-container, #222); color: #fff;height: max-content;">
+      <div style="--a: center;--t: 128px;position: static;width: 100%;margin: 1rem 0;">
+        <h1 style="--fs:28px;--fl:54px;--fw: 550;">细细比较</h1>
+      </div>
+      <div>
+        <table class="compare-table">
+          <colgroup>
+            <col>
+            <col>
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">S2「岭回双壑风」<br><a href="/minecraft/main/s2/">现在游玩 ></a></th>
+              <th scope="col">S1「樱飘雪霁月」<br><a href="/minecraft/main/s1/">查看更多 ></a></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- D: other -->
+            <tr class="compare-group">
+              <th scope="colgroup" colspan="2">速览</th>
+            </tr>
+            <tr>
+              <td>先进架构与软硬件<br>Streack Team 的下一代新作品</td>
+              <td>旧架构与软硬件<br>Streack Team 的开山之作</td>
+            </tr>
+            <!-- D: hardware -->
+            <tr class="compare-group">
+              <th scope="colgroup" colspan="2">硬件性能</th>
+            </tr>
+            <tr>
+              <td>Apple® Silicon M4 Full-Cores<wbr> (4.4Ghz 最高)<sup data-note="apple"></sup></td>
+              <td>
+                Intel® Xeon Platinum 8151 4vCores<wbr> (4.0Ghz 最高)<br>
+                <i style="font-size: .8em;">“低效能运营”期间为 Intel® Xeon Platinum 8259CL 4vCores<wbr> (3.5Ghz 最高)</i>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                单线独立
+              </td>
+              <td>
+                BGP 三线聚合<br>
+                300G DDoS 防御
+              </td>
+            </tr>
+            <tr>
+              <td>
+                16GB LPDDR5X 物理内存<br>
+                每秒至高 75 亿次传输，可达 120GB/s
+              </td>
+              <td>
+                16GB 服务器级 物理内存<br>
+                <i style="font-size: .8em;">“低效能运营”期间为 8GB</i>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <big>共计 2.2TB 可用存储空间</big><br>
+                至高 2.9GB/s 高速存储
+              </td>
+              <td>
+                <big>部分免费存储</big><br>
+                25GB 服务器级固态存储<br>
+                超出后按天按量额外收费
+              </td>
+            </tr>
+            <!-- D: software -->
+            <tr class="compare-group">
+              <th scope="colgroup" colspan="2">软件与系统</th>
+            </tr>
+            <tr>
+              <td>Minecraft Java Edition 1.21.8<br>亦支持基岩版</td>
+              <td>Minecraft Java Edition 1.21.4<br>亦支持基岩版</td>
+            </tr>
+            <tr>
+              <td>
+                <big>Joyous 玩法集群 2.0</big><br>
+                更多附魔<br>
+                更多进度<br>
+                更多物品<br>
+                更多合成
+              </td>
+              <td>
+                <big>Joyous 玩法集群</big><br>
+                粘液科技<br>
+                精英怪<br>
+                更多进度<br>
+                更多合成
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <s-icon style="width: 1.5em;">
+                  <svg data-v-49a22239="" viewBox="0 -960 960 960">
+                    <path data-v-49a22239=""
+                      d="M381-116q-44-36-55-92-53 17-107-2t-83-66q-30-48-22-106.5t52-97.5q-42-38-50.5-94T134-678q27-48 81.5-69.5T324-752q11-56 55-92t101-36q57 0 101 36t55 92q56-17 108.5 3t81.5 71q27 50 19.5 104.5T794-480q44 39 52.5 96.5T828-276q-29 51-81.5 68T638-208q-11 56-55 92T482-80q-57 0-101-36Zm101-44q47 0 70.5-40.5T552-280l-28-46q-11 3-21 4.5t-21 1.5q-10 0-20.5-1.5T440-326l-28 46q-24 39-.5 79.5T482-160ZM202-320q24 41 70.5 41t69.5-41l26-46q-8-8-15-17t-12-19q-5-9-9-18.5t-7-19.5h-53q-47 0-70 39.5t0 80.5Zm416 0q23 41 69.5 41t70.5-41q23-41 0-80.5T688-440h-53q-2 10-6.5 19.5T619-402q-5 10-12 19t-15 17l26 46ZM480-480Zm-155-40q3-11 7.5-21.5T342-561q5-9 11.5-17t14.5-16l-26-46q-23-41-69.5-41T202-640q-23 41 0 80.5t70 39.5h53Zm363 0q47 0 70-39.5t0-80.5q-24-41-70.5-41T618-640l-26 46q8 8 14.5 16t11.5 17q5 9 9.5 19.5T635-520h53ZM437-634q11-3 21.5-4.5T480-640q11 0 21.5 1.5T523-634l27-46q23-39 0-79.5T480-800q-47 0-70 40t0 80l27 46Zm0 0q11-3 21.5-4.5T480-640q11 0 21.5 1.5T523-634q-11-3-21.5-4.5T480-640q-11 0-21.5 1.5T437-634Zm-96 232q-5-9-9-18.5t-7-19.5q3 10 7 19.5t9 18.5q5 10 12 19t15 17q-8-8-15-17t-12-19Zm-16-118q3-11 7.5-21.5T342-561q5-9 11.5-17t14.5-16q-8 8-14.5 16T342-561q-5 9-9.5 19.5T325-520Zm157 200q-10 0-20.5-1.5T440-326q11 3 21.5 4.5T482-320q11 0 21-1.5t21-4.5q-11 3-21 4.5t-21 1.5Zm110-46q8-8 15-17t12-19q5-9 9.5-18.5T635-440q-2 10-6.5 19.5T619-402q-5 10-12 19t-15 17Zm43-154q-3-11-7.5-21.5T618-561q-5-9-11.5-17T592-594q8 8 14.5 16t11.5 17q5 9 9.5 19.5T635-520Zm-98.5 96.5Q560-447 560-480t-23.5-56.5Q513-560 480-560t-56.5 23.5Q400-513 400-480t23.5 56.5Q447-400 480-400t56.5-23.5Z">
+                    </path>
+                  </svg>
+                </s-icon><br>
+                <span nosugar class="text-gradient" style="--tg-start: #a1c4fd;--tg-end: #c2e9fb;">为“澪奈Neonai”预备好</span>
+                <sup data-note="neonaic"></sup>
+              </td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>
+                Neonaic 游群互联<br>
+                Joyous StatusAPI<br>
+                Joyous PhAPI<br>
+                Joyous AI Toolcall API
+              </td>
+              <td>
+                Joyous StatusAPI<br>
+                Joyous PhAPI
+              </td>
+            </tr>
+            <tr>
+              <td>
+                TimeMachine 自动备份<br>
+                不定期全量备份<br>
+                CoreProtect 行为回溯<br>
+                Replay 玩家录像
+              </td>
+              <td>
+                不定期全量备份<br>
+                即时备份<br>
+                CoreProtect 行为回溯<br>
+                Replay 玩家录像
+              </td>
+            </tr>
+            <tr>
+              <td>MySQL 专业数据库</td>
+              <td>SQLite 嵌入式轻量数据库</td>
+            </tr>
+            <!-- D: other -->
+            <tr class="compare-group">
+              <th scope="colgroup" colspan="2">其他</th>
+            </tr>
+            <tr>
+              <td>现行版本，具备活跃更新与 SLA 保证</td>
+              <td>不再受支持</td>
+            </tr>
+            <tr>
+              <td>活跃客户支持与服务<sup data-note="support"></sup></td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>由自有云和第三方服务商提供服务<br>数据私有存储保证<sup data-note="dataprivate"></sup></td>
+              <td>由第三方服务商提供服务</td>
+            </tr>
+            <tr>
+              <td>部分代码开源或开放</td>
+              <td>部分代码开源或开放</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -212,6 +552,8 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
       <li data-note="dev">含有开发中内容，不代表这些内容的最终品质。</li>
       <li data-note="apple">Apple Inc. 与本服务器、本站点的运营没有任何关联，后者的相关数据亦不经过 Apple Inc. 传输、保存或运算。</li>
       <li data-note="darkmattermax">图片为栈流Streack团队成员 @darkmattermax</li>
+      <li data-note="support">客户工单将在 7 个工作日内给与回复。</li>
+      <li data-note="dataprivate">指数据的存储与主要处理任务由我们自有的服务器承担，即不包括少量数据处理和传输任务。</li>
     </template>
 
     <!-- 页面独有逻辑（循环卡片等可选组件由上方 features 声明按需加载） -->
