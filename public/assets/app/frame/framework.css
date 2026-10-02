@@ -361,7 +361,7 @@ sup[data-note] a {
 }
 
 /* 每栏内部 */
-.content :not([nosugar]) {
+.content :not([nosugar]):not(s-button):not(s-divider) {
   white-space: normal;
   word-break: normal;
   text-align: var(--a, left);
