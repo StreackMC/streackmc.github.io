@@ -319,7 +319,6 @@ sup[data-note] a {
    --fz 控制字体大小，会覆盖clamp结果
    --fw 控制字重
    --fs --fl --fv 使用clamp控制字体大小，分别是最小、最大、斜率。斜率不存在可以自动计算。
-   --mx --my 控制水平、垂直方向上与其他元素的间隔
    ============================================================ */
 .contents {
   width: 100%;
@@ -369,7 +368,6 @@ sup[data-note] a {
   font-size: var(--fz, clamp(var(--fs),
         var(--fv, calc(var(--fs) + (var(--fl) - var(--fs)) * (var(--w) - var(--min-width)) / (var(--max-width) - var(--min-width)))),
         var(--fl)));
-  margin: var(--my, 0) var(--mx, 0);
   font-weight: var(--fw, initial);
 }
 
@@ -403,7 +401,8 @@ sup[data-note] a {
 }
 
 .content s-button {
-  --my: .4em;
+  margin-top: .4em;
+  margin-bottom: .4em;
 }
 
 /* 页尾 */

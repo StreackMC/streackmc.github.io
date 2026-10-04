@@ -59,7 +59,7 @@
   → DownloadLayout / SelectorLayout / DocLayout
 - `ToolLayout` / `Sidebar` 已不存在；`temple/` 是顶层源模板目录（5 文件，不参与构建）
 - `.content *` 是排版基石：子元素统一吃 `text-align: var(--a,left)` /
-  `font-size: var(--fz, clamp(var(--fs), var(--fv), var(--fl)))` / `margin: var(--my,0) var(--mx,0)`
+  `font-size: var(--fz, clamp(var(--fs), var(--fv), var(--fl)))`
   - `--fs`/`--fl` 端点字号，视口 320→1352px 线性插值；`--fz` 是硬覆盖（绕过 clamp）
   - **调字号一律给 `--fs`/`--fl`，不要写 `font-size`**（类选择器的死字号会盖过 `.content *`）；
     要覆盖就用元素内联样式
