@@ -1,4 +1,4 @@
-import { DOM } from '../../frame/dom.js';
+import { DOM, Minialized } from '../../frame/dom.js';
 import { bindCommandOn } from '../../frame/commands.js';
 
 // ============================================================
@@ -132,6 +132,22 @@ export function registerToolbarSlot(name, html, opts = {}) {
 
 /** 初始化 toolbar2 插槽：移动端导航 + 页面自定义插槽 */
 export async function initToolbar2Slots() {
+  // 0) 如果指定参数存在，则隐藏 toolbar
+  if (Minialized()) {
+    // 发现参数，隐藏
+    DOM.toolbar.root.style.display = 'none';
+    console.log('[streack-app/plugins.toolbar] Toolbar is hidden by the Minialize flag.');
+    // 重写安全区值
+    const styleEle = document.createElement('style');
+    styleEle.textContent = `
+        :root, .contents .content {
+          --safezone: 0px;
+        }
+      `;
+    styleEle.setAttribute('data-note', 'Injected by toolbar.js to hide toolbar and reset safezone');
+    document.head.appendChild(styleEle);
+  }
+
   // A) 移动端导航菜单
   const menuBtn = document.getElementById('toolbar1-menu');
   const navSlot = toolbarSlots.nav;

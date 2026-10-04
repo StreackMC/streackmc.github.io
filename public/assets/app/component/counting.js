@@ -2,6 +2,8 @@
 // 运营计时器（通用功能）
 // ============================================================
 
+import { Minialized } from "../frame/dom.js";
+
 /**
  * 刷新 Footer 中的运营计时器显示
  * 计算自建站日期（2024-12-25）至今的精确时长（天/时/分/秒）
@@ -31,6 +33,10 @@ function refreshCountup(year, month, day) {
 /** 从 window.streack.conf.info.time 读取配置并启动计时器 */
 export function initCounting() {
   try {
+    if (Minialized()) {
+      console.log('[streack-app/plugins.footer.counter] The Counter in Footer has been disabled for the Minialize flag.');
+      return;
+    };
     // conf.info.time: [enabled, year, month, day, hour, minute, second]
     const tConf = window?.streack?.conf?.info?.time;
     if (!tConf || !tConf[0]) return;
@@ -38,4 +44,10 @@ export function initCounting() {
     refreshCountup(y, m, d);
     setInterval(() => refreshCountup(y, m, d), 1000);
   } catch (_) { /* 静默忽略 */ }
+}
+
+// 由于 counter 在 Footer 里面，所以就顺势接管渲染判断
+if (Minialized()) {
+  document.querySelectorAll('div[slot="footer"]').forEach(e => { e.style.display = 'none'; });
+  console.log('[streack-app/plugins.footer.counter] The Footer has been vanished for the Minialize flag.');
 }
