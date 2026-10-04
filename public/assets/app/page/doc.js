@@ -9,6 +9,7 @@
  * 初始化统一走框架的 requestInitFunc：框架就绪后执行，无需自行监听 DOMContentLoaded。
  */
 
+import { Minialized } from '../frame/dom.js';
 import { requestInitFunc } from '../frame/init-hooks.js';
 import { CopyText } from '../frame/utils.js';
 
@@ -55,7 +56,8 @@ function initToc() {
   if (!body) return;
 
   // 页面加载时一次性判定：目录过高则默认折叠，否则保持展开
-  if (body.scrollHeight >= window.innerHeight * 0.4) {
+  // 此外需要页面不是 Minialize 模式
+  if (Minialized() || body.scrollHeight >= window.innerHeight * 0.4) {
     fold.setAttribute('folded', 'true');
   } else {
     fold.setAttribute('folded', 'false');
