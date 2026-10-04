@@ -59,9 +59,8 @@ body {
 }
 
 a {
-  color: #89b4fa;
   text-decoration: underline dotted;
-  transition: color 200ms;
+  transition: color 200ms, text-decoration 200ms;
   cursor: pointer;
 }
 
@@ -373,6 +372,12 @@ sup[data-note] a {
 
 .contents .content p {
   line-height: var(--lh, 1.5rlh);
+  margin: 0;
+}
+
+.contents .content b {
+  --fw: 525;
+  font-weight: var(--fw);
 }
 
 .content *[nowrap] {

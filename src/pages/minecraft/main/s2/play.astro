@@ -11,6 +11,20 @@ const config = {
       layerTitle: "选择网络线路",
       children: [
         {
+          label: "Streack Edgenode",
+          hint: "",
+          layerTitle: "选择 SEN 节点",
+          children: [
+            {
+              label: "杭州 BGP",
+              hint: "",
+              result: {
+                content: `地址：<a class="selectable" clickable data-cmd="cp:play-sen1.streack.top">play-sen1.streack.top</a><br><small nosugar style="font-size: .9em;">“Streack Edgenode”是最近上新的自研新线路技术，在部分情形下可为你提供更好的网络质量。</small>`
+              }
+            },
+          ]
+        },
+        {
           label: "浙江电信",
           hint: "部分时段可能质量较差",
           result: {

@@ -86,10 +86,41 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
       }
 
       .loop-cards s-card {
-        min-width: max(160px, calc(var(--w) * 0.6));
-        height: stretch;
+        width: calc(var(--w) * .6);
+        max-width: calc(var(--w) * .6);
+        /* 卡片高度自适应，不限制 */
+        height: auto;
+        min-height: 0;
         margin-right: 32px;
-        /* background-color: transparent; */
+        background-color: transparent;
+        border-width: 0;
+        align-items: stretch;
+        flex-direction: column;
+        /* 图片等比放大后溢出的部分在此裁掉 */
+        overflow: hidden;
+      }
+
+      .loop-cards s-card *[slot=image] {
+        width: 100%;
+        /* 图片区域高度固定为视口高的 0.5 */
+        height: calc(var(--h) * .6);
+        min-width: 0;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .loop-cards s-card *[slot=image] img {
+        /* 纵向不得溢出：高度锁定铺满容器；横向优先允许溢出后被裁切 */
+        width: auto;
+        height: 100%;
+        min-height: 0;
+        max-width: none;
+        max-height: 100%;
+        flex: none;
+        object-fit: cover;
       }
 
       .loop-cards s-card:first-child {
@@ -100,19 +131,21 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
         margin-right: 0;
       }
 
-      .loop-cards s-card *[slot=image] {
-        height: min-content;
-      }
-
-      .loop-cards s-card img {
-        width: 100%;
-      }
-
-      .scard-bottomtext {
-        margin-top: auto;
-      }
-
       @media screen and (max-width: 833px) {
+        .loop-cards s-card {
+          width: calc(var(--w) * .75);
+          max-width: calc(var(--w) * .75);
+          margin-right: 8px;
+        }
+
+        .loop-cards s-card:first-child {
+          margin-left: 0;
+        }
+
+        .loop-cards s-card:last-child {
+          margin-right: 0;
+        }
+
         .slotBg-V-overflow {
           left: 16px;
         }
@@ -348,20 +381,28 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
           data-controller-pos="right-bottom">
           <s-card nosugar type="outlined">
             <div nosugar slot="image"><img src="https://s41.ax1x.com/2026/10/02/pnJuXvQ.png"></div>
-            <div nosugar slot="text" class="scard-bottomtext">
-              得益于自研的菜单插件，导航式用户界面为你带来传统却新意盎然的体验。
+            <div nosugar slot="text">
+              得益于自研的菜单插件，导航式用户界面为你带来新意盎然的体验。
               <sup data-note="dev"></sup>
             </div>
           </s-card>
           <s-card nosugar type="outlined">
+            <div nosugar slot="image"><img src="https://s41.ax1x.com/2026/10/04/pnYCOQP.png"></div>
+            <div nosugar slot="text">
+              全新 Streack Edgenode 加速
+              <sup data-note="edgenode"></sup>
+              ，不仅是网络，更是跃进。
+            </div>
+          </s-card>
+          <s-card nosugar type="outlined">
             <div nosugar slot="image"><img src="https://s41.ax1x.com/2026/09/26/pn3mSL6.png"></div>
-            <div nosugar slot="text" class="scard-bottomtext">
+            <div nosugar slot="text">
               把复杂写进代码，把简单交给你。优质又原创的软件，你能久久沉浸其中。
             </div>
           </s-card>
           <s-card nosugar type="outlined">
             <div nosugar slot="image"><img src="https://s41.ax1x.com/2026/09/26/pn3Uo9I.png"></div>
-            <div nosugar slot="text" class="scard-bottomtext">
+            <div nosugar slot="text">
               专业的 Team 成员
               <sup data-note="darkmattermax"></sup>
               定不负你的期待，竭诚守护你的体验。
@@ -369,8 +410,8 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
           </s-card>
           <s-card nosugar type="outlined">
             <div nosugar slot="image"><img src="https://s41.ax1x.com/2026/09/26/pn33vSU.png"></div>
-            <div nosugar slot="text" class="scard-bottomtext">
-              强劲的软件也需要强力的硬件，你能尽情痛快游玩。
+            <div nosugar slot="text">
+              强劲的软件也需要强力的硬件。借助又上一层楼的硬件，你能尽尽情情游玩。
               <sup data-note="apple"></sup>
             </div>
           </s-card>
@@ -426,7 +467,7 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
             <tr>
               <td>
                 多线各自独立<br>
-                栈流边缘节点加速<sup data-note="edgenode"></sup>
+                Streack Edgenode加速<sup data-note="edgenode"></sup>
               </td>
               <td>
                 BGP 三线聚合<br>
@@ -554,7 +595,7 @@ import FrameworkLayout from '/src/layouts/FrameworkLayout.astro';
       <li data-note="apple">Apple Inc. 与本服务器、本站点的运营没有任何关联，后者的相关数据亦不经过 Apple Inc. 传输、保存或运算。</li>
       <li data-note="darkmattermax">图片为栈流Streack团队成员 @darkmattermax</li>
       <li data-note="support">客户工单将在 7 个工作日内给与回复。</li>
-      <li data-note="edgenode">指部分线路使用由<a href="https://github.com/StreackMC/edgenode-server/">“栈流边缘节点”</a>驱动的软件。</li>
+      <li data-note="edgenode">指部分线路使用由<a href="http://localhost:4321/minecraft/main/s2/play?selector=play%3AJava%E7%89%88.Streack+Edgenode">“Streack Edgenode”</a>驱动的软件。</li>
       <li data-note="dataprivate">指数据的存储与主要处理任务由我们自有的服务器承担，即不包括少量数据处理和传输任务。</li>
     </template>
 

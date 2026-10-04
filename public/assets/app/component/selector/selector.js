@@ -235,6 +235,7 @@ function initInstance(root, config) {
 
     let card = document.createElement('s-card');
     card.type = 'outlined';
+    card.setAttribute('nosugar', 'selector-compoent');// nosuger的值没有作用，只是为了防止覆写样式
     card.classList.add('selector-result-card');
     let content = '';
     if (result.html) {
