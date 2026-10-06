@@ -13,7 +13,7 @@ nav-preset: document
 
 ## 教程与百科
 * [无法连接到服务器的一般解决方案](./wiki/solution/)
-* [将Bedrock账户绑定至Java版账户](./wiki/linkaccount/)
+* [将 Bedrock 账户绑定至 Java 版账户](./wiki/linkaccount/)
 * [群智能体指南](./wiki/qbot/)
 * [特有进度与挑战](./wiki/advancements/)
 * [特有魔咒](./wiki/enchantments/)
@@ -25,7 +25,7 @@ nav-preset: document
 * [UUID生成器（Beta）](/webtool/uuid/)
 
 ## 近期活动
-* [「试用版密钥」不详宝库无限开](./event/2025/0920/)
+* [「竭取宝库」物品活动熵流](./event/2026/1006/)
 * [「流光通证」权益助力更好生存](./event/2025/0614/)
 * [「栈流回」回归连签奖励](./event/2025/0401b/)
 * [「栈流巡礼」签到奖励](./event/2025/0401a/)
@@ -43,8 +43,8 @@ nav-preset: document
 * [其他法律信息](/about/legal/)
 
 ## 其它链接
-* [“MCMOD找服玩”上的“栈流Streack”฿](https://play.mcmod.cn/sv20188495.html)
-* [“MCLists.cn”上的“栈流Streack”฿](https://www.mclists.cn/server/8373.html)
+* [团队组成](/about/leadership/)
+* [联系 Streack](/about/contact/)
 
 ## 存档内容
 

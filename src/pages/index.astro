@@ -46,12 +46,12 @@ import FrameworkLayout from '../layouts/FrameworkLayout.astro';
     <div class="content half" slot="1" clickable data-cmd="url:/minecraft/main/|">
       <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0YSts.png');"></div>
       <div style="--t: 3rem; --l:2rem; --a: start; --fw: 575;">
-        <h1 style="--fs:35px;--fl:60px;">全新版本<wbr>「岭回双壑风」</h1>
+        <h1 style="--fs:35px;--fl:60px;"><span style="--fs:18px;--fl:28px;">全新版本</span><br>「岭回双壑风」</h1>
         <p style="--fs:20px;--fl:36px;">新篇章，新冒险。</p>
         <s-button>即刻体验</s-button>
       </div>
     </div>
-
+<!-- 
     <div class="content half" slot="2" style="background: #fff;">
       <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/07/04/pm0d9yt.png');"></div>
       <div mobile-only class="glass" light style="--b: 3.1rem; --r:auto; --l: auto; --a: center; padding: 1rem; color: #000000;">
@@ -61,6 +61,18 @@ import FrameworkLayout from '../layouts/FrameworkLayout.astro';
       <div pc-only class="glass" light style="--b: 3.1rem; --r:1rem; --a: end; padding: 1rem; color: #000000;">
         <p class="text" style="--fs:20px;--fl:36px;">由 Apple M4 驱动<sup data-note="apple"></sup></p>
         <h1 class="text" style="--fs:35px;--fl:60px; width:calc(5em + 5em * clamp(0, (100vw - 1299px) / 1px, 1));">强劲性能，<wbr>超乎想象。</h1>
+      </div>
+    </div> -->
+
+    <div class="content half" slot="2" style="background: #fff;" clickable data-cmd="url://streack.top/Joyous-MenuEditor/">
+      <div class="slotBg-I" style="--u:url('https://s41.ax1x.com/2026/10/06/pnYXxKg.png');"></div>
+      <div mobile-only class="glass" light style="--b: 3.1rem; --r:auto; --l: auto; --a: center; padding: 1rem; color: #000000;">
+        <p class="text" style="--fs:20px;--fl:36px;">菜单编辑器</p>
+        <h1 class="text" style="--fs:35px;--fl:60px; margin-top: 0;">再定义菜单</h1>
+      </div>
+      <div pc-only class="glass" light style="--b: 3.1rem; --r:1rem; --a: end; padding: 1rem; color: #000000;">
+        <p class="text" style="--fs:20px;--fl:36px;">Joyous 菜单编辑器</p>
+        <h1 class="text" style="--fs:35px;--fl:60px; width:calc(5em + 5em * clamp(0, (100vw - 1299px) / 1px, 1)); margin-top: 0;">重新定义何谓菜单</h1>
       </div>
     </div>
 
@@ -84,7 +96,7 @@ import FrameworkLayout from '../layouts/FrameworkLayout.astro';
   <template slot="notes" data-inject="notes">
     <li data-note="sakura">首栏的樱花林中粉色复式建筑由<a href="https://www.bilibili.com/video/BV1Nb421H7NF/" target="_blank">@雪島べま</a>设计，由服内成员建造。</li>
     <li data-note="media">图片或视频摄制使用了光影 ComplementaryUnbound(EuphoriaPatches)与共计16倍采样抗锯齿技术，并为在线查看而压缩优化。实际效果受限于冒险家客户端与设备性能，仅供参考。</li>
-    <li data-note="apple">Apple Inc. 与本服务器、本站点的运营没有任何关联，后者的相关数据亦不经过 Apple Inc. 传输、保存或运算。</li>
+    <!-- <li data-note="apple">Apple Inc. 与本服务器、本站点的运营没有任何关联，后者的相关数据亦不经过 Apple Inc. 传输、保存或运算。</li> -->
   </template>
 
   <!-- 弹窗 -->
