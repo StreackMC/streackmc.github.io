@@ -22,3 +22,6 @@ repo.sh
 
 # Secrets / 本地密钥（LLM 等，严禁提交）
 /secret.json
+
+# summary.js 增量缓存（本地状态，无需提交）
+/.summary-cache.json
