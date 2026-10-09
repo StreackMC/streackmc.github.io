@@ -5,7 +5,7 @@ toc: false
 nav-preset: document
 ---
 
-![栈流Streack的宣传图片，含有栈流Streack的基本信息](https://streack.top/assets/img/referral_1.png "宣传图")
+<!-- ![栈流Streack的宣传图片，含有栈流Streack的基本信息](https://streack.top/assets/img/referral_1.png "宣传图") -->
 
 ## QuickStart
 * [资讯一览](./news/)
@@ -51,5 +51,5 @@ nav-preset: document
 > [x] 以下文章或主题已不适用现行的 Streack ，仅供存档。
 
 * [优化粘液科技体验](./wiki/slimefun/)
-* [服务器特性](./policy/feature/)
+* [服务器特性](./wiki/feature/)
 * [历次调研结果公示](./survey/)
