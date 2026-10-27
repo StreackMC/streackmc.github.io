@@ -18,13 +18,8 @@ nav-preset: document
 ## Unknown Host (未知的主机)
 您输入的服务器地址有问题，请**检查拼写错误**。<br>
 若拼写是正确且地址为最新地址，那么请：
-* 打开您设备上的终端（Windows为Powershell或命令提示符、Linux为bash、安卓可用Termux等）
-* 输入命令`nslookup streack.kdxiaoyi.top`查询结果。
-* 若没有解析出任何IP地址，为您的DNS提供商出错，请更换。
+* 更换您的DNS
 * ~~排除域名过期的可能性~~
-
-> [i] 以上教程还是太高级了？看不懂？<br>
-> 那我也没办法，要不你[百度一下฿](https://www.baidu.com/s?wd=%E6%88%91%E7%9A%84%E4%B8%96%E7%95%8C%20Unknown%20Host%20%E9%94%99%E8%AF%AF%E6%8F%90%E7%A4%BA)？
 
 ## Server Closed （服务器已关闭）
 服务器正在重启，请稍后再试
@@ -46,3 +41,17 @@ nav-preset: document
 ## 无法连接至身份验证服务器
 巨硬和Mojang抽风，没有什么解决方案。<br>
 
+## Microsoft 账户限制
+你正版账号绑定的微软账号在 Xbox 中不允许进行多人游戏。
+
+> [x] 在修改设置之前，你需要确保**Xbox账户是成人账户**，儿童账户**不能**修改这个设置。
+
+转到[XBOX设置 > 隐私和在线安全](https://www.xbox.com/zh-CN/user/settings/privacy-and-safety#:~:text=%E5%B1%8F%E8%94%BD-,%E6%82%A8%E5%8F%AF%E4%BB%A5%E5%8A%A0%E5%85%A5%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F,-%E5%9C%A8%20XBOX%20%E5%A4%9A)，登录账号后点击“XBOX 和 Windows 10 设备在线安全”：
+
+![一张网页截图，为 XBOX 设置页面并标出目标标签栏的位置](https://s41.ax1x.com/2026/10/26/pnrG7FI.png "“XBOX 和 Windows 10 设备在线安全”的位置")
+
+在页面下方找到“您可以加入多人游戏”并允许：
+
+![一张网页截图，为 XBOX 设置页面并说明如何允许多人游戏](https://s41.ax1x.com/2026/10/26/pnrGLSf.png "如何授权多人游戏")
+
+保存后重新打开游戏，多人游戏即可使用。
