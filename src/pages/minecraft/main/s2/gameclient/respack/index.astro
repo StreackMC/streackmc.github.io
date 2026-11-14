@@ -1,0 +1,42 @@
+---
+import DownloadLayout from '/src/layouts/DownloadLayout.astro';
+---
+<DownloadLayout title="下载“适用于栈流‘主生存服’资源包”的预览版构建 — 栈流Streack" theme="light"
+  heading="下载“适用于栈流‘主生存服’资源包”的预览版构建">
+  <!-- 导航项 -->
+  <template slot="toolbar-nav" data-toolbar-nav toolbar-set="mc-main"></template>
+
+  <!-- 区域 1：版本日志 / 说明（标题由 DownloadLayout 的 heading 参数渲染） -->
+  <p>
+    此页面用于下载“适用于栈流‘主生存服’资源包”的预览版构建。<br>
+    <b>在绝大多数情况下，你无需额外下载此资源包即可正常游玩。</b>因此本下载仅适用于排除故障、执行测试计划等少数用途。<br>
+    预览版构建可能存在错误。
+  </p>
+
+  <!-- 区域 2：下载按钮 -->
+  <s-button slot="buttons" data-cmd="url:https://github.com/StreackMC/streack-resourcepack/archive/refs/heads/master.zip">下载最新未处理的全量构建</s-button>
+  <s-button slot="buttons" data-cmd="url:https://gh.kdxiaoyi.top/github.com/StreackMC/streack-resourcepack/archive/refs/heads/master.zip">下载最新未处理的全量构建（备用）</s-button>
+  <s-button slot="buttons" data-cmd="purl:https://github.com/StreackMC/streack-resourcepack/actions/workflows/dev_build.yml">查看全部版本</s-button>
+
+  <!-- 区域 3：淡化附加信息 -->
+  <div slot="additional-info">
+    <p>需要访问外部页面或资源<sup data-note="unresolvable"></sup>。你将需要：</p>
+    <ul>
+      <li>与测试计划相符合的 Minecraft Java Edition 客户端</li>
+    </ul>
+    <p style="margin-top: 1rem;">
+      SHA256：
+      <span class="sha256 selectable"
+        data-sha256="f48ddecc522aed87fd64d21df651460f14813bdd247bb982597bd3d9a6d219e5"></span>
+      <br>&nbsp;
+    </p>
+  </div>
+
+  <!-- 注释模板 -->
+  <template slot="notes" data-inject="notes">
+    <li data-note="unresolvable">部分国家或地区可能无法访问这些页面与资源。</li>
+  </template>
+
+  <!-- 页面脚本 -->
+  <script slot="scripts" is:inline type="module" src="/assets/app/page/download.js"></script>
+</DownloadLayout>

@@ -1,4 +1,4 @@
-// pmd框架自定义设置项区 详见文档：https://kdxhub.github.io/PagesSober/ (有待更新)
+// 旧的 pmd 框架兼容
 const conf = {
   info: {
     /*浏览器语言检测覆写*/

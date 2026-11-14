@@ -19,7 +19,12 @@ const config = {
               label: "杭州 BGP",
               hint: "",
               result: {
-                content: `地址：<a class="selectable" clickable data-cmd="cp:play-sen1.streack.top">play-sen1.streack.top</a><br><small nosugar style="font-size: .9em;">“Streack Edgenode”是最近上新的自研新线路技术，在部分情形下可为你提供更好的网络质量。</small>`
+                content: `
+                  地址：<a class="selectable" clickable data-cmd="cp:play-sen1.streack.top">play-sen1.streack.top</a><br>
+                  <small nosugar style="font-size: .9em;">“Streack Edgenode”是最近上新的自研新线路技术，在部分情形下可为你提供更好的网络质量。</small><br>
+                  <s-button data-cmd="url:/minecraft/main/s2/gameclient/|" type="outlined">获取客户端</s-button><br>
+                  <small nosugar style="font-size: .9em;">使用我们提供的客户端是可选项。其中亦提供游戏启动器的备份。</small>
+                `
               }
             },
           ]
@@ -28,14 +33,22 @@ const config = {
           label: "浙江电信",
           hint: "",
           result: {
-            content: `地址：<a class="selectable" clickable data-cmd="cp:play.streack.top">play.streack.top</a>`
+            content: `
+              地址：<a class="selectable" clickable data-cmd="cp:play.streack.top">play.streack.top</a><br>
+              <s-button data-cmd="url:/minecraft/main/s2/gameclient/|" type="outlined">获取客户端</s-button><br>
+              <small nosugar style="font-size: .9em;">使用我们提供的客户端是可选项。其中亦提供游戏启动器的备份。</small>
+            `
           }
         },
         {
           label: "山东移动",
           hint: "",
           result: {
-            content: `地址：<a class="selectable" clickable data-cmd="cp:play2.streack.top">play2.streack.top</a>`
+            content: `
+              地址：<a class="selectable" clickable data-cmd="cp:play2.streack.top">play2.streack.top</a><br>
+              <s-button data-cmd="url:/minecraft/main/s2/gameclient/|" type="outlined">获取客户端</s-button><br>
+              <small nosugar style="font-size: .9em;">使用我们提供的客户端是可选项。其中亦提供游戏启动器的备份。</small>
+            `
           }
         },
       ]
@@ -53,7 +66,7 @@ const config = {
               <p class="unselectable">
                 地址：<a class="selectable" clickable data-cmd="cp:be.streack.top">be.streack.top</a><br>
                 端口：<a class="selectable" clickable data-cmd="cp:25882">25882</a><br>
-                <s-button data-cmd="url:minecraft://?addExternalServer=%E6%A0%88%E6%B5%81Streack%7Cbe.streack.top%3A25882|">打开Minecraft: Bedrock Edition</s-button><br>
+                <s-button data-cmd="url:minecraft://?addExternalServer=%E6%A0%88%E6%B5%81Streack%7Cbe.streack.top%3A25882|" type="outlined">打开Minecraft: Bedrock Edition</s-button><br>
                 <small nosugar style="font-size: .9em;">需要你的设备上安装“Minecraft”；不支持“我的世界：移动版”。</small>
               </p>`
           }
@@ -66,7 +79,7 @@ const config = {
               <p class="unselectable">
                 地址：<a class="selectable" clickable data-cmd="cp:be2.streack.top">be2.streack.top</a><br>
                 端口：<a class="selectable" clickable data-cmd="cp:25882">25882</a><br>
-                <s-button data-cmd="url:minecraft://?addExternalServer=%E6%A0%88%E6%B5%81Streack%7Cbe2.streack.top%3A25882|">打开Minecraft: Bedrock Edition</s-button><br>
+                <s-button data-cmd="url:minecraft://?addExternalServer=%E6%A0%88%E6%B5%81Streack%7Cbe2.streack.top%3A25882|" type="outlined">打开Minecraft: Bedrock Edition</s-button><br>
                 <small nosugar style="font-size: .9em;">需要你的设备上安装“Minecraft”；不支持“我的世界：移动版”。</small>
               </p>`
           }

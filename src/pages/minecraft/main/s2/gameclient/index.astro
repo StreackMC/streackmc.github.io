@@ -1,0 +1,140 @@
+---
+import SelectorLayout from '/src/layouts/SelectorLayout.astro';
+const config = {
+  title: "下载适用于“主生存服S2”的客户端与配套资源",
+  description: "使用可选地专用客户端可以帮助你获得更好的体验。如果你不想使用，这里亦提供其他游戏资源。",
+  layerTitle: "选择下载项目",
+  options: [
+    {
+      label: "专用客户端",
+      hint: "可选项目",
+      result: {
+        content: `还在开发中。`
+      }
+    },
+    {
+      label: "配套游戏资源",
+      hint: "",
+      layerTitle: "选择适用平台",
+      children: [
+        {
+          label: "多平台",
+          hint: "",
+          layerTitle: "选择项目",
+          children: [
+            {
+              label: "Hello! Minecraft Launcher",
+              hint: "HMCL",
+              result: {
+                content: `
+                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#hello-minecraft-launcher" type="outlined">在外部页面获取</s-button><br>
+                  <small nosugar style="font-size: .9em;">
+                    部分国家或地区可能无法访问这些页面与资源。<br>
+                    资源从互联网收集，我们无法保证可用性。<br>
+                    我们不对使用这些资源产生的法律后果负责。<br>
+                  </small>
+                `
+              }
+            },
+          ],
+        },
+        {
+          label: "Windows®",
+          hint: "",
+          layerTitle: "选择项目",
+          children: [
+            {
+              label: "PCL2",
+              hint: "",
+              result: {
+                content: `
+                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#pcl2" type="outlined">在外部页面获取</s-button><br>
+                  <small nosugar style="font-size: .9em;">
+                    部分国家或地区可能无法访问这些页面与资源。<br>
+                    资源从互联网收集，我们无法保证可用性。<br>
+                    我们不对使用这些资源产生的法律后果负责。<br>
+                  </small>
+                `
+              }
+            },
+            {
+              label: "BakaXL",
+              hint: "",
+              result: {
+                content: `
+                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#bakaxl" type="outlined">在外部页面获取</s-button><br>
+                  <small nosugar style="font-size: .9em;">
+                    部分国家或地区可能无法访问这些页面与资源。<br>
+                    资源从互联网收集，我们无法保证可用性。<br>
+                    我们不对使用这些资源产生的法律后果负责。<br>
+                  </small>
+                `
+              }
+            },
+            {
+              label: "PCL Community Edition",
+              hint: "",
+              result: {
+                content: `
+                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#pcl-community-edition" type="outlined">在外部页面获取</s-button><br>
+                  <small nosugar style="font-size: .9em;">
+                    部分国家或地区可能无法访问这些页面与资源。<br>
+                    资源从互联网收集，我们无法保证可用性。<br>
+                    我们不对使用这些资源产生的法律后果负责。<br>
+                  </small>
+                `
+              }
+            },
+          ],
+        },
+        {
+          label: "Android™",
+          hint: "",
+          layerTitle: "选择项目",
+          children: [
+            {
+              label: "Zalith Launcher",
+              hint: "",
+              result: {
+                content: `
+                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#zalithlauncher" type="outlined">在外部页面获取</s-button><br>
+                  <small nosugar style="font-size: .9em;">
+                    部分国家或地区可能无法访问这些页面与资源。<br>
+                    资源从互联网收集，我们无法保证可用性。<br>
+                    我们不对使用这些资源产生的法律后果负责。<br>
+                  </small>
+                `
+              }
+            },
+            {
+              label: "Fold Minecraft Launcher",
+              hint: "",
+              result: {
+                content: `
+                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#fold-minecraft-launcher" type="outlined">在外部页面获取</s-button><br>
+                  <small nosugar style="font-size: .9em;">
+                    部分国家或地区可能无法访问这些页面与资源。<br>
+                    资源从互联网收集，我们无法保证可用性。<br>
+                    我们不对使用这些资源产生的法律后果负责。<br>
+                  </small>
+                `
+              }
+            },
+          ],
+        },
+      ]
+    },
+  ]
+};
+---
+
+<SelectorLayout
+  title="下载客户端 - S2「岭回双壑风」 — 栈流Streack"
+  description="加入第三方公益服务器栈流Streack S2「岭回双壑风」的客户端下载页面，并提供启动器备份下载"
+  theme="light"
+  config={config}
+  id="play"
+>
+  <template slot="toolbar-nav" data-toolbar-nav toolbar-set="mc-main"></template>
+
+</SelectorLayout>
