@@ -12,8 +12,8 @@
       }
     },
     {
-      "label": "Generate Search Suggestions",
-      "detail": "构建站点后运行 summary.j：调用 LLM 汇总各可读页面的标题与关键词，更新搜索数据",
+      "label": "Run Search Suggestions Helper",
+      "detail": "构建站点后运行搜索索引实用工具",
       "type": "shell",
       "command": "ASTRO_TELEMETRY_DISABLED=1 npx astro build && node summary.js",
       "problemMatcher": [],
@@ -45,7 +45,7 @@
     },
     {
       "label": "Generate Search Suggestions (dry-run)",
-      "detail": "仅扫描 dist 并列出将处理的页面（含增量计划），不调用 LLM、不写文件",
+      "detail": "仅扫描 dist 并列出将处理的页面（含增量计划），不调用 LLM 或修改数据。",
       "type": "shell",
       "command": "ASTRO_TELEMETRY_DISABLED=1 npx astro build && node summary.js --dry-run",
       "problemMatcher": [],
