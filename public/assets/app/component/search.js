@@ -98,7 +98,6 @@ function filterSuggestions(query = '') {
 
   const q = query.toLowerCase();
   const scored = [];
-  const maxItems = calcMaxSuggestionItems();  // 限制最多返回的匹配项数量，避免性能问题
 
   for (const item of searchSuggestionData) {
     let score = 0;
@@ -120,7 +119,6 @@ function filterSuggestions(query = '') {
     if (item.link.toLowerCase().includes(q)) score += 8;
 
     if (score > 0) scored.push({ item, score });
-    if (scored.length >= maxItems) break;  // 达到最大条目数限制，提前退出
   }
 
   // 按得分降序排列
@@ -210,7 +208,7 @@ function renderSuggestions(items) {
 
   const currentQuery = searchInput.value.trim();
   const hasQuery = !!currentQuery;
-  const maxItems = items.length;
+  const maxItems = calcMaxSuggestionItems();
   const bingReserved = hasQuery ? 1 : 0;  // 有查询时预留底部 Bing 搜索项的位置
   const limited = items.slice(0, Math.max(0, maxItems - bingReserved));
 
