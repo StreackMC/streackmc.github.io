@@ -10,7 +10,7 @@ import { openURL } from '../frame/utils.js';
 import { requestInitFunc } from '../frame/init-hooks.js';
 import { registerCommand } from '../frame/commands.js';
 import { toolbarSlots, toolbarExpanded, expandToolbar, shrinkToolbar } from './toolbar/toolbar.js';
-
+import { fixedSearchResult } from '../config/fixed-search-result.js';
 
 // ============================================================
 //  DOM 引用（toolbar 由 includes 动态加载，故使用惰性查询）
@@ -48,7 +48,9 @@ export function initSearch() {
 //  数据与状态
 // ============================================================
 
-/** 从 JSON 加载的搜索建议原始数据 */
+/** @typedef {{keywords: string[], title: string, link: string, summary: string}} SearchSuggestionItem */
+
+/** 从 JSON 加载的搜索建议原始数据 @type {SearchSuggestionItem[]} */
 let searchSuggestionData = [];
 
 /** 当前键盘高亮的建议项索引（-1 表示无高亮） */
@@ -89,13 +91,21 @@ async function loadSearchSuggestions() {
  * 根据输入查询对建议数据进行匹配和排序
  * 匹配优先级：关键词完全匹配(100) > 关键词前缀匹配(50) > 关键词包含(20) > 标题包含(10) > 链接包含(8)
  * @param {string} query - 用户输入的查询文本
- * @returns {Array} 按相关度降序排列的匹配项
+ * @returns {{matches: SearchSuggestionItem[], allow_external_search: boolean}} 按相关度降序排列的匹配项
  */
 function filterSuggestions(query = '') {
-  if (!searchSuggestionData.length) return [];
+  if (!searchSuggestionData?.length) return { matches: [], allow_external_search: true };
   // 空查询返回全部建议
-  if (!query) return searchSuggestionData.slice();
+  if (!query) return { matches: searchSuggestionData.slice(), allow_external_search: true };
 
+  // 检查固定搜索结果配置，若匹配则直接返回覆盖结果
+  for (const fixed of fixedSearchResult) {
+    if (fixed.reg.some((r) => r.test(query))) {
+      return { matches: fixed.overwrite.slice(), allow_external_search: !!fixed?.allow_external_search };
+    }
+  }
+
+  // 使用评分引擎排序结果
   const q = query.toLowerCase();
   const scored = [];
 
@@ -123,7 +133,7 @@ function filterSuggestions(query = '') {
 
   // 按得分降序排列
   scored.sort((a, b) => b.score - a.score);
-  return scored.map((s) => s.item);
+  return { matches: scored.map((s) => s.item), allow_external_search: true };
 }
 
 
@@ -200,16 +210,17 @@ function setHighlight(index) {
  * - 根据可用高度限制显示数量
  * - 有查询时在最底部保留一个「在 Bing 上查找」快捷入口
  * - 每项带图标、标题、交错动画延迟、鼠标悬停高亮
- * @param {Array} items - 经过 filterSuggestions 排序后的建议项
+ * @param {{matches: SearchSuggestionItem[], allow_external_search: boolean}} filtered - 经过 filterSuggestions 排序后的建议项
  */
-function renderSuggestions(items) {
+function renderSuggestions(filtered) {
+  const [items, allowExternalSearch] = [filtered.matches, filtered.allow_external_search];
   searchSuggestions.innerHTML = '';
   currentSuggestionItems = [];
 
   const currentQuery = searchInput.value.trim();
   const hasQuery = !!currentQuery;
   const maxItems = calcMaxSuggestionItems();
-  const bingReserved = hasQuery ? 1 : 0;  // 有查询时预留底部 Bing 搜索项的位置
+  const bingReserved = allowExternalSearch && hasQuery ? 1 : 0;  // 有查询时并且允许时预留底部 Bing 搜索项的位置
   const limited = items.slice(0, Math.max(0, maxItems - bingReserved));
 
   // 渲染匹配到的站内建议项
