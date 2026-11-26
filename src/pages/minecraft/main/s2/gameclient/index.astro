@@ -7,123 +7,153 @@ const config = {
   options: [
     {
       label: "专用客户端",
-      hint: "可选项目",
-      result: {
-        content: `还在开发中。`
-      }
+      hint: "非必须项目",
+      layerTitle: "选择客户端版本",
+      children: [
+        {
+          label: "Java 版 1.21.4",
+          result: {
+            content: `
+              <a href="https://github.com/kdxhub/Streack/releases/tag/modpack-1.0" target="_blank">正式版本 v1.0</a><br>
+              <small nosugar style="font-size: .9em;">
+                部分国家或地区可能无法访问这些页面与资源。<br>
+              </small>
+            `
+          }
+        },
+      ],
     },
     {
       label: "配套游戏资源",
       hint: "",
-      layerTitle: "选择适用平台",
+      layerTitle: "选择子项目",
       children: [
         {
-          label: "多平台",
+          label: "游戏启动器",
           hint: "",
-          layerTitle: "选择项目",
+          layerTitle: "选择适用平台",
           children: [
             {
-              label: "Hello! Minecraft Launcher",
-              hint: "HMCL",
-              result: {
-                content: `
-                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#hello-minecraft-launcher" type="outlined">在外部页面获取</s-button><br>
-                  <small nosugar style="font-size: .9em;">
-                    部分国家或地区可能无法访问这些页面与资源。<br>
-                    资源从互联网收集，我们无法保证可用性。<br>
-                    我们不对使用这些资源产生的法律后果负责。<br>
-                  </small>
-                `
-              }
+              label: "多平台",
+              hint: "",
+              layerTitle: "选择项目",
+              children: [
+                {
+                  label: "Hello! Minecraft Launcher",
+                  hint: "HMCL",
+                  result: {
+                    content: `
+                        <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#hello-minecraft-launcher" type="outlined">在外部页面获取</s-button><br>
+                        <small nosugar style="font-size: .9em;">
+                          部分国家或地区可能无法访问这些页面与资源。<br>
+                          资源从互联网收集，我们无法保证可用性。<br>
+                          我们不对使用这些资源产生的法律后果负责。<br>
+                        </small>
+                      `
+                  }
+                },
+              ],
+            },
+            {
+              label: "Windows®",
+              hint: "",
+              layerTitle: "选择项目",
+              children: [
+                {
+                  label: "PCL2",
+                  hint: "",
+                  result: {
+                    content: `
+                        <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#pcl2" type="outlined">在外部页面获取</s-button><br>
+                        <small nosugar style="font-size: .9em;">
+                          部分国家或地区可能无法访问这些页面与资源。<br>
+                          资源从互联网收集，我们无法保证可用性。<br>
+                          我们不对使用这些资源产生的法律后果负责。<br>
+                        </small>
+                      `
+                  }
+                },
+                {
+                  label: "BakaXL",
+                  hint: "",
+                  result: {
+                    content: `
+                        <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#bakaxl" type="outlined">在外部页面获取</s-button><br>
+                        <small nosugar style="font-size: .9em;">
+                          部分国家或地区可能无法访问这些页面与资源。<br>
+                          资源从互联网收集，我们无法保证可用性。<br>
+                          我们不对使用这些资源产生的法律后果负责。<br>
+                        </small>
+                      `
+                  }
+                },
+                {
+                  label: "PCL Community Edition",
+                  hint: "",
+                  result: {
+                    content: `
+                        <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#pcl-community-edition" type="outlined">在外部页面获取</s-button><br>
+                        <small nosugar style="font-size: .9em;">
+                          部分国家或地区可能无法访问这些页面与资源。<br>
+                          资源从互联网收集，我们无法保证可用性。<br>
+                          我们不对使用这些资源产生的法律后果负责。<br>
+                        </small>
+                      `
+                  }
+                },
+              ],
+            },
+            {
+              label: "Android™",
+              hint: "",
+              layerTitle: "选择项目",
+              children: [
+                {
+                  label: "Zalith Launcher",
+                  hint: "",
+                  result: {
+                    content: `
+                        <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#zalithlauncher" type="outlined">在外部页面获取</s-button><br>
+                        <small nosugar style="font-size: .9em;">
+                          部分国家或地区可能无法访问这些页面与资源。<br>
+                          资源从互联网收集，我们无法保证可用性。<br>
+                          我们不对使用这些资源产生的法律后果负责。<br>
+                        </small>
+                      `
+                  }
+                },
+                {
+                  label: "Fold Minecraft Launcher",
+                  hint: "",
+                  result: {
+                    content: `
+                        <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#fold-minecraft-launcher" type="outlined">在外部页面获取</s-button><br>
+                        <small nosugar style="font-size: .9em;">
+                          部分国家或地区可能无法访问这些页面与资源。<br>
+                          资源从互联网收集，我们无法保证可用性。<br>
+                          我们不对使用这些资源产生的法律后果负责。<br>
+                        </small>
+                      `
+                  }
+                },
+              ],
             },
           ],
         },
         {
-          label: "Windows®",
+          label: "Streack 资源包预览版",
           hint: "",
-          layerTitle: "选择项目",
-          children: [
-            {
-              label: "PCL2",
-              hint: "",
-              result: {
-                content: `
-                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#pcl2" type="outlined">在外部页面获取</s-button><br>
-                  <small nosugar style="font-size: .9em;">
-                    部分国家或地区可能无法访问这些页面与资源。<br>
-                    资源从互联网收集，我们无法保证可用性。<br>
-                    我们不对使用这些资源产生的法律后果负责。<br>
-                  </small>
-                `
-              }
-            },
-            {
-              label: "BakaXL",
-              hint: "",
-              result: {
-                content: `
-                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#bakaxl" type="outlined">在外部页面获取</s-button><br>
-                  <small nosugar style="font-size: .9em;">
-                    部分国家或地区可能无法访问这些页面与资源。<br>
-                    资源从互联网收集，我们无法保证可用性。<br>
-                    我们不对使用这些资源产生的法律后果负责。<br>
-                  </small>
-                `
-              }
-            },
-            {
-              label: "PCL Community Edition",
-              hint: "",
-              result: {
-                content: `
-                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#pcl-community-edition" type="outlined">在外部页面获取</s-button><br>
-                  <small nosugar style="font-size: .9em;">
-                    部分国家或地区可能无法访问这些页面与资源。<br>
-                    资源从互联网收集，我们无法保证可用性。<br>
-                    我们不对使用这些资源产生的法律后果负责。<br>
-                  </small>
-                `
-              }
-            },
-          ],
+          result: {
+            content: `
+              <s-button data-cmd="url:/minecraft/main/s2/gameclient/respack/|" type="outlined">获取</s-button><br>
+              <small nosugar style="font-size: .9em;">
+                通常情况下不需要下载本项目。详情请阅读对应页面。
+              </small>
+            `
+          }
         },
-        {
-          label: "Android™",
-          hint: "",
-          layerTitle: "选择项目",
-          children: [
-            {
-              label: "Zalith Launcher",
-              hint: "",
-              result: {
-                content: `
-                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#zalithlauncher" type="outlined">在外部页面获取</s-button><br>
-                  <small nosugar style="font-size: .9em;">
-                    部分国家或地区可能无法访问这些页面与资源。<br>
-                    资源从互联网收集，我们无法保证可用性。<br>
-                    我们不对使用这些资源产生的法律后果负责。<br>
-                  </small>
-                `
-              }
-            },
-            {
-              label: "Fold Minecraft Launcher",
-              hint: "",
-              result: {
-                content: `
-                  <s-button data-cmd="url:https://github.com/kdxhub/mc-launcher-legacy#fold-minecraft-launcher" type="outlined">在外部页面获取</s-button><br>
-                  <small nosugar style="font-size: .9em;">
-                    部分国家或地区可能无法访问这些页面与资源。<br>
-                    资源从互联网收集，我们无法保证可用性。<br>
-                    我们不对使用这些资源产生的法律后果负责。<br>
-                  </small>
-                `
-              }
-            },
-          ],
-        },
-      ]
-    },
+      ],
+    }
   ]
 };
 ---
