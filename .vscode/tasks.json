@@ -15,7 +15,7 @@
       "label": "Run Search Suggestions Helper",
       "detail": "构建站点后运行搜索索引实用工具",
       "type": "shell",
-      "command": "ASTRO_TELEMETRY_DISABLED=1 npx astro build && node summary.js",
+      "command": "ASTRO_TELEMETRY_DISABLED=1 npm run build:release && node summary.js",
       "problemMatcher": [],
       "group": {
         "kind": "build",
@@ -31,7 +31,7 @@
       "label": "Generate Search Suggestions (incremental)",
       "detail": "增量更新：只重新总结内容发生变化的页面（读取 .summary-cache.json 指纹缓存），未变化的复用旧条目",
       "type": "shell",
-      "command": "ASTRO_TELEMETRY_DISABLED=1 npx astro build && node summary.js --incremental -y",
+      "command": "ASTRO_TELEMETRY_DISABLED=1 npm run build:release && node summary.js --incremental -y",
       "problemMatcher": [],
       "group": {
         "kind": "build",
@@ -47,7 +47,7 @@
       "label": "Generate Search Suggestions (dry-run)",
       "detail": "仅扫描 dist 并列出将处理的页面（含增量计划），不调用 LLM 或修改数据。",
       "type": "shell",
-      "command": "ASTRO_TELEMETRY_DISABLED=1 npx astro build && node summary.js --dry-run",
+      "command": "ASTRO_TELEMETRY_DISABLED=1 npm run build:release && node summary.js --dry-run",
       "problemMatcher": [],
       "group": {
         "kind": "build",

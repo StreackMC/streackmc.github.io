@@ -40,6 +40,6 @@
 
 ## 构建
 - 调试：`npm run build`（= astro build），public/ 资源原样复制，便于排查；`npm run dev` 同样不压缩。
-- Release：`npm run build:release` = `npm run build && node tools/minify-public.mjs && node tools/insert-copyright.mjs`。前者把 dist 中来自 public/ 的 JS/CSS 用 esbuild 压缩、移除全部原注释后只保留一行版权头；后者给 dist 下所有 HTML/CSS/JS 开头插入版权注释（覆盖 Astro 自己生成的 CSS）。版权文案统一在 `tools/license-header.mjs`；CI 用此命令，两个脚本的 `--check` 可校验产物是否最新。
+- Release：`npm run build:release` = `npm run build && node tools/minify-public.mjs && node tools/insert-copyright.mjs`；CI 与 `.vscode/tasks.json` 的 summary 任务都用它，`Execute Astro Server` 仍走 dev。前者把 dist 中来自 public/ 的 JS/CSS 用 esbuild 压缩、移除全部原注释后只保留一行版权头；后者给 dist 下所有 HTML/CSS/JS 开头插入版权注释（覆盖 Astro 自己生成的 CSS）。版权文案统一在 `tools/license-header.mjs`；两个脚本的 `--check` 可校验产物是否最新。
 - Astro 默认 `compressHTML: true`；src 打包的 CSS/JS 由 Vite/esbuild 压缩。public/ 图片/HTML/JSON 不在压缩脚本范围内。
 - public/ 或外链 `<script>` 必须加 `is:inline`；slot 属性冲突用 `display:contents` 包裹；查产物前先 build（public 透传会留旧文件）。

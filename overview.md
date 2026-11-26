@@ -28,7 +28,7 @@ Streack/
 ├── package.json              # 依赖管理（astro ^5.7.0）
 ├── tsconfig.json             # TypeScript 严格模式
 ├── .github/workflows/
-│   └── build_and_release.yml  # GitHub Actions（Node 22 + astro build）
+│   └── build_and_release.yml  # GitHub Actions（Node 22 + npm run build:release）
 ├── public/                    # 静态资源目录
 │   ├── assets/               # 框架 JS/CSS、图片、视频
 │   ├── webtool/code/         # 工具页 JS/CSS
