@@ -1,5 +1,6 @@
 User-agent: *
 Disallow: /assets/archived-file/
+Disallow: /_md/
 Disallow: /404.html
 
 Sitemap: https://streack.top/sitemap-index.xml
