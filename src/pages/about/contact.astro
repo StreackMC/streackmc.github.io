@@ -24,7 +24,7 @@ import FrameworkLayout from '../../layouts/FrameworkLayout.astro';
       </div>
     </div>
     <div class="content" slot="1" style="height: max-content;">
-      <div style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: start; width: 65%;">
+      <div class="listed-scard-container">
         <h2 style="--fs:24px;--fl:38px; margin: 1rem auto 2rem 0;">产品与服务支持</h2>
         <div class="listed-items">
           <s-card type="outlined">
@@ -82,7 +82,7 @@ import FrameworkLayout from '../../layouts/FrameworkLayout.astro';
       </div>
     </div>
     <div class="content" slot="2" style="height: max-content;">
-      <div style="position: relative; padding-top: var(--safezone, 0); --l:auto; --r:auto; --a: start; width: 65%;">
+      <div class="listed-scard-container">
         <s-divider></s-divider>
         <h2 style="--fs:24px;--fl:38px; margin: 1rem auto 2rem 0;">社群与媒体</h2>
         <div class="listed-items">
@@ -124,6 +124,15 @@ import FrameworkLayout from '../../layouts/FrameworkLayout.astro';
   </div>
 
   <style>
+    div.listed-scard-container {
+      width: 65%;
+      position: relative;
+      padding-top: var(--safezone, 0);
+      --l:auto;
+      --r:auto;
+      --a: start;
+    }
+
     div.listed-items {
       position: relative;
       width: min(1024px, calc(var(--w) * 0.6));
@@ -137,12 +146,12 @@ import FrameworkLayout from '../../layouts/FrameworkLayout.astro';
 
     div.listed-items s-card {
       display: inline-block;
-      width: 100%;
+      width: calc(50% - 1rem);
       margin-bottom: 1rem;
       break-inside: avoid;
       padding: 1rem 1.5rem;
       height: 100%;
-      max-width: 360px;
+      max-width: unset;
       background: transparent;
       border-width: 0;
     }
@@ -164,6 +173,18 @@ import FrameworkLayout from '../../layouts/FrameworkLayout.astro';
       --lh: 1.5em;
       font-size: 1rem;
       line-height: var(--lh);
+    }
+
+    @media screen and (max-width: 833px) {
+      div.listed-scard-container {
+        width: 80%;
+      }
+      div.listed-items {
+        width: calc(var(--w) * 0.8);
+      }
+      div.listed-items s-card {
+        width: 100%;
+      }
     }
   </style>
 </FrameworkLayout>

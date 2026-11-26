@@ -380,6 +380,14 @@ sup[data-note] a {
   font-weight: var(--fw);
 }
 
+.contents .content small {
+  --fz: 0.8em;
+}
+
+.contents .content big {
+  --fz: 1.2em;
+}
+
 .content *[nowrap] {
   white-space: nowrap;
   text-overflow: ellipsis;
