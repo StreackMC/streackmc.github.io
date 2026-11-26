@@ -88,4 +88,5 @@ GitHub Actions 中不受此限制。
 1. **推送至 GitHub**：`git push origin astro-transfer`，然后创建 Pull Request 合并至主分支
 2. **GitHub Pages 部署**：推送后 GitHub Actions 将自动构建并部署
 3. **本地预览**：`ASTRO_TELEMETRY_DISABLED=1 npx astro dev` 启动开发服务器
-4. **构建验证**：`ASTRO_TELEMETRY_DISABLED=1 npx astro build` 生成 `dist/` 目录
+4. **构建验证（调试）**：`ASTRO_TELEMETRY_DISABLED=1 npm run build` 生成 `dist/`，public/ 资源保持原样便于排查
+5. **Release 构建**：`ASTRO_TELEMETRY_DISABLED=1 npm run build:release` 在构建后压缩 dist 中来自 public/ 的 JS/CSS（含移除全部注释）；GitHub Actions 使用此命令

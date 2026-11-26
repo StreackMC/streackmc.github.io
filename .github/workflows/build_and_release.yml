@@ -43,8 +43,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build with Astro
-        run: npm run build
+      - name: Build with Astro (release)
+        run: npm run build:release
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
